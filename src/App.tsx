@@ -47,8 +47,12 @@ function App() {
       p="2"
       maxW="350"
       height="100vh"
+      maxHeight="900"
+      mt="2"
       gridTemplateRows={`80% calc(20% - var(${SPACE_ROW_GAP}))`}
-      m="auto"
+      border="2px"
+      borderRadius="md"
+      mx="auto"
     >
       <Box
         w="150px"
