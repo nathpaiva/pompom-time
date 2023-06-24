@@ -1,6 +1,6 @@
 # pompom time
 
-This project aims to help women how to learn open source and order then engage us (women) to know more about our body.
+Pompom Time aims to help women how to contribute for open projects. Besides that, it's to encourage us to know more about our bodies.
 
 To develop this project we are using the following technologies:
 
