@@ -1,9 +1,11 @@
-import { render } from '@testing-library/react'
-import App from './App'
+import { render } from '@utils/test'
+
+import { App } from './App'
 
 describe('App', () => {
-  it('Hello', () => {
+  it('should render the app with two buttons', () => {
     const { getByText } = render(<App />)
-    expect(getByText('My title')).toBeVisible()
+    expect(getByText('Start pulse')).toBeVisible()
+    expect(getByText('Reset')).toBeVisible()
   })
 })

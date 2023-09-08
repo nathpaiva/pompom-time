@@ -1,4 +1,4 @@
-import { Box, Button, ChakraProvider, Text } from '@chakra-ui/react'
+import { Box, Button, Text } from '@chakra-ui/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 const PULSE_LIMIT = 20
@@ -6,7 +6,7 @@ const PULSE_INTERVAL = 500
 // TODO: change this value to use the theme used by the row-gap
 const SPACE_ROW_GAP = '--chakra-space-5'
 
-function App() {
+export function App() {
   const [startPulse, setStartPulse] = useState(false)
   const [internalPulse, setInternalPulse] = useState(1)
   const interval = useRef<NodeJS.Timeout>()
@@ -95,13 +95,3 @@ function App() {
     </Box>
   )
 }
-
-function WrapperApp() {
-  return (
-    <ChakraProvider>
-      <App />
-    </ChakraProvider>
-  )
-}
-
-export default WrapperApp
