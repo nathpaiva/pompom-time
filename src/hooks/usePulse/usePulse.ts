@@ -1,16 +1,36 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
 const PULSE_LIMIT = 20
 const PULSE_INTERVAL = 500
 
-export const usePulse = () => {
+interface IUsePulse {
+  pulseInterval: number
+  isPulseStarted: boolean
+  handleStartStopPulse: () => void
+}
+
+interface IUsePulseParams {
+  pulseLimit?: number
+  pulseIntervalTimer?: number
+}
+
+type TUsePulse = (param?: IUsePulseParams) => IUsePulse
+
+export const usePulse: TUsePulse = (param) => {
+  const { _PULSE_INTERVAL, _PULSE_LIMIT } = useMemo(
+    () => ({
+      _PULSE_INTERVAL: param?.pulseIntervalTimer ?? PULSE_INTERVAL,
+      _PULSE_LIMIT: param?.pulseLimit ?? PULSE_LIMIT,
+    }),
+    [param?.pulseIntervalTimer, param?.pulseLimit],
+  )
+
   const [isPulseStarted, setIsPulseStarted] = useState(false)
   const [pulseInterval, setPulseInterval] = useState(1)
   const interval = useRef<NodeJS.Timeout>()
 
   const pulseTimer = useCallback(() => {
     let _pulse = 1
-
     /**
      * if has interval and the pulse is running:
      * - clean the interval
@@ -34,7 +54,7 @@ export const usePulse = () => {
        * - reset the pulse interval
        * - reset internal interval
        */
-      if (_pulse === PULSE_LIMIT) {
+      if (_pulse === _PULSE_LIMIT) {
         _pulse = 1
         clearInterval(interval.current)
 
@@ -48,8 +68,8 @@ export const usePulse = () => {
       // increase the pulse
       _pulse += 1
       setPulseInterval(_pulse)
-    }, PULSE_INTERVAL)
-  }, [isPulseStarted])
+    }, _PULSE_INTERVAL)
+  }, [isPulseStarted, _PULSE_INTERVAL, _PULSE_LIMIT])
 
   const handleStartStopPulse = () => {
     setIsPulseStarted((prev) => !prev)
@@ -60,6 +80,5 @@ export const usePulse = () => {
     pulseInterval,
     isPulseStarted,
     handleStartStopPulse,
-    pulseTimer,
   }
 }
