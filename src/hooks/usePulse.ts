@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 
-const PULSE_LIMIT = 5
+const PULSE_LIMIT = 20
 const PULSE_INTERVAL = 500
 
 export const usePulse = () => {
