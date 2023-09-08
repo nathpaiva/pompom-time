@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/5ac626a0-10f8-4841-aaca-914e8165f023/deploy-status)](https://app.netlify.com/sites/pompom-time/deploys)
+
 # pompom time
 
 Pompom Time aims to help women how to contribute for open projects. Besides that, it's to encourage us to know more about our bodies.
