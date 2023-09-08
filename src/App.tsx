@@ -1,44 +1,12 @@
 import { Box, Button, Text } from '@chakra-ui/react'
-import { useCallback, useEffect, useRef, useState } from 'react'
 
-const PULSE_LIMIT = 20
-const PULSE_INTERVAL = 500
+import { usePulse } from './hooks'
+
 // TODO: change this value to use the theme used by the row-gap
 const SPACE_ROW_GAP = '--chakra-space-5'
 
 export function App() {
-  const [startPulse, setStartPulse] = useState(false)
-  const [internalPulse, setInternalPulse] = useState(1)
-  const interval = useRef<NodeJS.Timeout>()
-
-  const pulseTimer = useCallback(() => {
-    let pulse = 1
-
-    if (interval.current && !startPulse) {
-      pulse = 1
-      clearInterval(interval.current)
-      setInternalPulse(pulse)
-      return
-    }
-
-    interval.current = setInterval(() => {
-      if (pulse === PULSE_LIMIT || !startPulse) {
-        clearInterval(interval.current)
-        setStartPulse(false)
-      }
-
-      pulse += 1
-      setInternalPulse(pulse)
-    }, PULSE_INTERVAL)
-  }, [startPulse])
-
-  const handleStartStopPulse = useCallback(() => {
-    setStartPulse((prev) => !prev)
-  }, [])
-
-  useEffect(() => {
-    pulseTimer()
-  }, [startPulse, pulseTimer])
+  const { pulseInterval, isPulseStarted, handleStartStopPulse } = usePulse()
 
   return (
     <Box
@@ -65,7 +33,7 @@ export function App() {
         alignItems="center"
       >
         <Text variant="span" fontSize="2xl">
-          pulse {internalPulse}
+          pulse {pulseInterval}
         </Text>
       </Box>
 
@@ -77,7 +45,7 @@ export function App() {
         height="auto"
       >
         <Button
-          isDisabled={startPulse}
+          isDisabled={isPulseStarted}
           onClick={handleStartStopPulse}
           colorScheme="purple"
         >
@@ -85,7 +53,7 @@ export function App() {
         </Button>
 
         <Button
-          isDisabled={!startPulse}
+          isDisabled={!isPulseStarted}
           onClick={handleStartStopPulse}
           colorScheme="pink"
         >
