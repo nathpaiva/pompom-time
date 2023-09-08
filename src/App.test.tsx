@@ -1,4 +1,5 @@
 import { render } from '@utils/test'
+import { describe, expect, it } from 'vitest'
 
 import { App } from './App'
 
