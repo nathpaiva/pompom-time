@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "paths": {
-      "@utils/test": ["./src/utils/testSetup.tsx"]
+      "@utils/test": ["./src/utils/testWrapper.tsx"]
     }
   },
   "include": ["vite.config.ts", ".eslintrc.cjs", "src"],

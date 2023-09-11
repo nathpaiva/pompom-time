@@ -13,7 +13,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/setupTests.ts'],
     alias: {
-      '@utils/test': new URL('./src/utils/testSetup', import.meta.url).pathname,
+      '@utils/test': new URL('./src/utils/testWrapper.tsx', import.meta.url)
+        .pathname,
     },
     coverage: {
       provider: 'istanbul',
