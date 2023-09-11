@@ -28,9 +28,9 @@ export const usePulse: TUsePulse = (param) => {
   const [isPulseStarted, setIsPulseStarted] = useState(false)
   const [pulseInterval, setPulseInterval] = useState(1)
   const interval = useRef<NodeJS.Timeout>()
+  const _pulse = useRef(1)
 
   const pulseTimer = useCallback(() => {
-    let _pulse = 1
     /**
      * if has interval and the pulse is running:
      * - clean the interval
@@ -38,11 +38,11 @@ export const usePulse: TUsePulse = (param) => {
      * - reset internal interval
      */
     if (interval.current && isPulseStarted) {
-      _pulse = 1
+      _pulse.current = 1
       clearInterval(interval.current)
 
       interval.current = undefined
-      setPulseInterval(_pulse)
+      setPulseInterval(_pulse.current)
       return
     }
 
@@ -54,20 +54,20 @@ export const usePulse: TUsePulse = (param) => {
        * - reset the pulse interval
        * - reset internal interval
        */
-      if (_pulse === _PULSE_LIMIT) {
-        _pulse = 1
+      if (_pulse.current === _PULSE_LIMIT) {
+        _pulse.current = 1
         clearInterval(interval.current)
 
         interval.current = undefined
-        setPulseInterval(_pulse)
+        setPulseInterval(_pulse.current)
         setIsPulseStarted((prev) => !prev)
 
         return
       }
 
       // increase the pulse
-      _pulse += 1
-      setPulseInterval(_pulse)
+      _pulse.current += 1
+      setPulseInterval(_pulse.current)
     }, _PULSE_INTERVAL)
   }, [isPulseStarted, _PULSE_INTERVAL, _PULSE_LIMIT])
 
