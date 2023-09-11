@@ -1,24 +1,20 @@
-import { Box } from '@chakra-ui/react'
+import { Grid, GridItem } from '@chakra-ui/react'
+import { Outlet, useNavigation } from 'react-router-dom'
 
-// TODO: change this value to use the theme used by the row-gap
-const SPACE_ROW_GAP = '--chakra-space-5'
+import { Navigation } from './components'
 
 export function App() {
+  const navigation = useNavigation()
+
+  console.log('🚀 ~ file: App.tsx:12 ~ App ~ navigation:', navigation)
   return (
-    <Box
-      display="grid"
-      rowGap="5"
-      p="2"
-      maxW="350"
-      height="100vh"
-      maxHeight="900"
-      mt="2"
-      gridTemplateRows={`80% calc(20% - var(${SPACE_ROW_GAP}))`}
-      border="2px"
-      borderRadius="md"
-      mx="auto"
-    >
-      Hello
-    </Box>
+    <Grid templateColumns="200px 1fr" gap={6}>
+      <Navigation />
+
+      <GridItem>
+        <h1>Hello... My main page</h1>
+        <Outlet />
+      </GridItem>
+    </Grid>
   )
 }
