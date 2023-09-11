@@ -1,13 +1,9 @@
-import { Box, Button, Text } from '@chakra-ui/react'
-
-import { usePulse } from './hooks'
+import { Box } from '@chakra-ui/react'
 
 // TODO: change this value to use the theme used by the row-gap
 const SPACE_ROW_GAP = '--chakra-space-5'
 
 export function App() {
-  const { pulseInterval, isPulseStarted, handleStartStopPulse } = usePulse()
-
   return (
     <Box
       display="grid"
@@ -22,44 +18,7 @@ export function App() {
       borderRadius="md"
       mx="auto"
     >
-      <Box
-        w="150px"
-        h="150px"
-        bgGradient="radial(gray.300, yellow.400, pink.200)"
-        borderRadius={100}
-        margin="auto"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Text variant="span" fontSize="2xl">
-          pulse {pulseInterval}
-        </Text>
-      </Box>
-
-      <Box
-        display="grid"
-        gridTemplateColumns="repeat(2, 1fr)"
-        columnGap="5"
-        alignItems="end"
-        height="auto"
-      >
-        <Button
-          isDisabled={isPulseStarted}
-          onClick={handleStartStopPulse}
-          colorScheme="purple"
-        >
-          Start pulse
-        </Button>
-
-        <Button
-          isDisabled={!isPulseStarted}
-          onClick={handleStartStopPulse}
-          colorScheme="pink"
-        >
-          Reset
-        </Button>
-      </Box>
+      Hello
     </Box>
   )
 }
