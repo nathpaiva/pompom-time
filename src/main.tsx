@@ -6,7 +6,9 @@ import { RouterProvider } from 'react-router-dom'
 
 import { router } from './routes'
 
-netlifyIdentity.init()
+netlifyIdentity.init({
+  logo: false,
+})
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
