@@ -1,4 +1,4 @@
-import { Box, Button, Text } from '@chakra-ui/react'
+import { Box, Button, ButtonGroup, Text } from '@chakra-ui/react'
 
 import { usePulse } from './hooks'
 
@@ -37,7 +37,7 @@ export function Workout() {
         </Text>
       </Box>
 
-      <Box
+      <ButtonGroup
         display="grid"
         gridTemplateColumns="repeat(2, 1fr)"
         columnGap="5"
@@ -59,7 +59,7 @@ export function Workout() {
         >
           Reset
         </Button>
-      </Box>
+      </ButtonGroup>
     </Box>
   )
 }

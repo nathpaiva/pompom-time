@@ -1,4 +1,4 @@
-import { Box, GridItem, Stack } from '@chakra-ui/react'
+import { Link as ChakraLink, GridItem, Stack } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 
 import { useAuth } from '../Auth'
@@ -7,18 +7,33 @@ export const Navigation = () => {
   const { user } = useAuth()
 
   return (
-    <GridItem as="nav">
+    <GridItem as="nav" p="3">
       <Stack spacing={2} as="ul">
         <li>
-          <Link to="admin/workout">workout</Link>
+          <ChakraLink as={Link} to="admin/workout">
+            workout time
+          </ChakraLink>
         </li>
         <li>
-          <Box as={Link} to="logout" sx={{ display: user ? 'block' : 'none' }}>
+          <ChakraLink as={Link} to="#">
+            (TBD) insights
+          </ChakraLink>
+        </li>
+        <li>
+          <ChakraLink
+            as={Link}
+            to="logout"
+            sx={{ display: user ? 'block' : 'none' }}
+          >
             logout
-          </Box>
-          <Box as={Link} to="login" sx={{ display: !user ? 'block' : 'none' }}>
+          </ChakraLink>
+          <ChakraLink
+            as={Link}
+            to="login"
+            sx={{ display: !user ? 'block' : 'none' }}
+          >
             login
-          </Box>
+          </ChakraLink>
         </li>
       </Stack>
     </GridItem>
