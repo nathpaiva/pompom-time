@@ -1,0 +1,8 @@
+[build]
+  command = "yarn build"
+  publish = "dist"
+  functions = "functions"
+
+[dev]
+  functions = "functions"
+  targetPort = 4200

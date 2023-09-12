@@ -4,9 +4,10 @@ import { describe, expect, it } from 'vitest'
 import { App } from './App'
 
 describe('App', () => {
-  it('should render the app with two buttons', () => {
+  it('should render the app with navigation and the user logged out', () => {
     const { getByText } = render(<App />)
-    expect(getByText('Start pulse')).toBeVisible()
-    expect(getByText('Reset')).toBeVisible()
+    expect(getByText('logout')).not.toBeVisible()
+    expect(getByText('login')).toBeVisible()
+    expect(getByText('workout time')).toBeVisible()
   })
 })

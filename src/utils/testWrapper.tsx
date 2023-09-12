@@ -1,9 +1,19 @@
 import { ChakraProvider } from '@chakra-ui/react'
 import { render, RenderOptions } from '@testing-library/react'
+import netlifyIdentity from 'netlify-identity-widget'
 import React, { ReactElement } from 'react'
+import { BrowserRouter } from 'react-router-dom'
+
+netlifyIdentity.init({
+  logo: false,
+})
 
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
-  return <ChakraProvider>{children}</ChakraProvider>
+  return (
+    <BrowserRouter>
+      <ChakraProvider>{children}</ChakraProvider>
+    </BrowserRouter>
+  )
 }
 
 const customRender = (

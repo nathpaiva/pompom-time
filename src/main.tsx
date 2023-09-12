@@ -1,13 +1,19 @@
 import { ChakraProvider } from '@chakra-ui/react'
+import netlifyIdentity from 'netlify-identity-widget'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { RouterProvider } from 'react-router-dom'
 
-import { App } from './App'
+import { router } from './routes'
+
+netlifyIdentity.init({
+  logo: false,
+})
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ChakraProvider>
-      <App />
+      <RouterProvider router={router} />
     </ChakraProvider>
   </React.StrictMode>,
 )
