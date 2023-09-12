@@ -1,23 +1,40 @@
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-} from 'react-router-dom'
+import { createBrowserRouter } from 'react-router-dom'
 
 import { App } from '../App'
 import { ProtectedRoute } from '../components'
 import { Login, Logout, Workout } from '../pages'
 
-export const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/" element={<App />}>
-      <Route path="login" element={<Login />} />
-      <Route path="logout" element={<Logout />} />
+export enum RouteEnum {
+  login = 'login',
+  logout = 'logout',
+  admin = 'admin',
+  workout = 'workout',
+}
 
-      {/* to all authenticated users */}
-      <Route path="/admin" element={<ProtectedRoute />}>
-        <Route path="workout" element={<Workout />} />
-      </Route>
-    </Route>,
-  ),
-)
+// TODO: validate if this is the best way to create the routes
+export const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <App />,
+    children: [
+      {
+        path: RouteEnum.login,
+        element: <Login />,
+      },
+      {
+        path: RouteEnum.logout,
+        element: <Logout />,
+      },
+      {
+        path: RouteEnum.admin,
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: RouteEnum.workout,
+            element: <Workout />,
+          },
+        ],
+      },
+    ],
+  },
+])
