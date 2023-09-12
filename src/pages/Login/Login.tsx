@@ -1,17 +1,18 @@
-import { FormControl, FormLabel, Input, Stack } from '@chakra-ui/react'
+import { Button, Stack } from '@chakra-ui/react'
+import { Navigate } from 'react-router-dom'
+
+import { useAuth } from '../../components'
 
 export const Login = () => {
-  return (
-    <Stack as="form" spacing={3}>
-      <FormControl isRequired id="user-name">
-        <FormLabel>Username:</FormLabel>
-        <Input placeholder="username" />
-      </FormControl>
+  const { user, handleLoggedIn: handlerLoggedIn } = useAuth()
 
-      <FormControl isRequired id="password">
-        <FormLabel>Password:</FormLabel>
-        <Input placeholder="password" type="password" />
-      </FormControl>
+  if (user) {
+    return <Navigate to="/admin/workout" />
+  }
+
+  return (
+    <Stack spacing={3}>
+      <Button onClick={handlerLoggedIn}>Login</Button>
     </Stack>
   )
 }
