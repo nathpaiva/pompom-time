@@ -7,7 +7,7 @@ describe('Login', () => {
   it('should render the login page and open the iframe', () => {
     const { getByText } = render(<Login />)
 
-    const button = getByText('Login')
+    const button = getByText('Hey there,')
     expect(button).toBeVisible()
 
     fireEvent.click(button)

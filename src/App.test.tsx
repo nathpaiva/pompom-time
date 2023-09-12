@@ -8,6 +8,6 @@ describe('App', () => {
     const { getByText } = render(<App />)
     expect(getByText('logout')).not.toBeVisible()
     expect(getByText('login')).toBeVisible()
-    expect(getByText('workout')).toBeVisible()
+    expect(getByText('workout time')).toBeVisible()
   })
 })
