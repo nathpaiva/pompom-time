@@ -1,9 +1,14 @@
 import { ChakraProvider } from '@chakra-ui/react'
 import { render, RenderOptions } from '@testing-library/react'
 import React, { ReactElement } from 'react'
+import { BrowserRouter } from 'react-router-dom'
 
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
-  return <ChakraProvider>{children}</ChakraProvider>
+  return (
+    <BrowserRouter>
+      <ChakraProvider>{children}</ChakraProvider>
+    </BrowserRouter>
+  )
 }
 
 const customRender = (
