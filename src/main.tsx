@@ -6,6 +6,7 @@ import { RouterProvider } from 'react-router-dom'
 
 import { router } from './routes'
 
+// TODO: move it to another file
 const _theme = {
   styles: {
     global: {

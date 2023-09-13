@@ -4,15 +4,17 @@ import {
   Center,
   FormControl,
   FormLabel,
-  Heading,
   Input,
-  SimpleGrid,
-  Stack,
   Text,
 } from '@chakra-ui/react'
-import { FormEvent, useState } from 'react'
+import { FormEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 import { Navigate } from 'react-router-dom'
+
+import { Greet } from './components'
+
+const IMAGE_CONTAINER_WIDTH_SIZE = 450
+const IMAGE_CONTAINER_WIDTH_SIZE_PX = `${IMAGE_CONTAINER_WIDTH_SIZE}px`
 
 const buttonStyle = {
   position: 'absolute',
@@ -20,25 +22,28 @@ const buttonStyle = {
 }
 
 export const Login = () => {
-  const [formFocus, setFormFocus] = useState<'login' | 'register'>('login')
-
+  /**
+   * create container ref to have the div width
+   * so can use to calculate the transform to move each children
+   */
+  const containerRef = useRef<HTMLDivElement>(null)
+  // state to manage the form should be visible
+  const [formFocus, setFormFocus] = useState<'login' | 'register'>('register')
+  // state to manage the inputs
   const [loginFormData, setFormData] = useState({
     email: undefined,
     password: undefined,
   })
   const { loginUser, isLoggedIn } = useIdentityContext()
 
-  const [msg, setMsg] = useState('')
-
-  if (isLoggedIn) {
-    return <Navigate to="/admin/workout" />
-  }
+  const [errorMessage, setErrorMessage] = useState<string>()
 
   const onSubmitHandle = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    console.log('formFocus', formFocus)
     async function login() {
       const { email, password } = loginFormData
-
+      console.log('>>>>')
       try {
         console.log('🚀 ~ file: Login.tsx:48 ~ Login ~ password:', {
           password,
@@ -46,27 +51,17 @@ export const Login = () => {
         })
 
         if (!email || !password) {
-          throw new Error('Please enter email and password')
+          throw new Error('Email and password are required')
         }
 
         const user = await loginUser(email, password)
         console.log('🚀 ~ file: Login.tsx:60 ~ onSubmit={async ~ user:', user)
       } catch (err) {
-        console.log('🚀 ~ file: Login.tsx:38 ~ login ~ err:', err)
-        setMsg('Error: ' + (err as any).message)
+        setErrorMessage('Error: ' + (err as Error).message)
       }
     }
 
     login()
-    // .then((user) => {
-    //   console.log('Success! Logged in', user)
-    //   navigate('/admin/workout')
-    // })
-    // .catch((err) => {
-    //   console.error(err)
-    //   console.error(err.message)
-    //   setMsg('Error: ' + err.message)
-    // })
   }
 
   const onChangeHandle = (e: FormEvent<HTMLInputElement>) => {
@@ -78,57 +73,89 @@ export const Login = () => {
   }
 
   const switchForm = (form: 'login' | 'register') => {
-    if (form === formFocus) {
-      console.log(`should call submit function for: ${form}`, loginFormData)
-      return
-    }
+    console.log('veio')
+    if (form === formFocus) return
+
     setFormFocus(form)
   }
 
+  const changeStyle = useCallback(
+    (offsetWidth: number) => {
+      const arrElements = [...document.querySelectorAll('[data-move]')]
+      const moveTo =
+        formFocus === 'login' ? IMAGE_CONTAINER_WIDTH_SIZE - offsetWidth : 0
+
+      arrElements.forEach((item) => {
+        item.setAttribute('style', `transform: translateX(${moveTo}px)`)
+      })
+    },
+    [formFocus],
+  )
+
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    const { offsetWidth } = containerRef.current
+
+    changeStyle(offsetWidth)
+  }, [changeStyle])
+
+  if (isLoggedIn) {
+    return <Navigate to="/admin/workout" />
+  }
+
   return (
-    <Stack spacing={3}>
-      <Heading as="h2">Hey there,</Heading>
-
-      <Text>Welcome to Pompom time!</Text>
-      <Text>Please log in to get started on your journey to pompom time.</Text>
-
-      <SimpleGrid
-        columns={2}
-        spacing={3}
-        templateColumns="1fr 700px"
-        position="relative"
+    <Box
+      as="section"
+      position="relative"
+      sx={{
+        display: 'flex',
+        overflow: 'hidden',
+      }}
+      ref={containerRef}
+    >
+      {/* register form control */}
+      <Box
+        sx={{
+          bgColor: 'red.100',
+          minHeight: '500px',
+          minWidth: `calc(100% - ${IMAGE_CONTAINER_WIDTH_SIZE_PX})`,
+          transition: 'transform 250ms',
+        }}
+        data-move
       >
-        {/* register form control */}
-        <Box
-          display={formFocus === 'register' ? 'block' : 'none'}
-          sx={{
-            bgColor: 'red.100',
-            minHeight: '500px',
-          }}
-        >
-          <Text>Register</Text>
-        </Box>
+        <Greet />
+        <Text>Register</Text>
+      </Box>
 
-        {/* nice image */}
-        <Center
-          sx={{
-            bg: 'purple.100',
-          }}
-        >
-          Nice image
-        </Center>
+      {/* nice image */}
+      <Center
+        sx={{
+          bg: 'purple.100',
+          minWidth: IMAGE_CONTAINER_WIDTH_SIZE_PX,
+          transition: 'transform 250ms',
+        }}
+        data-move
+      >
+        Nice image
+      </Center>
 
-        {/* login form control */}
-        <Box
-          as="form"
-          onSubmit={onSubmitHandle}
-          rowGap="2"
-          display={formFocus === 'login' ? 'grid' : 'none'}
-          sx={{
-            bgColor: 'orange.100',
-            minHeight: '500px',
-          }}
-        >
+      {/* login form control */}
+      <Box
+        as="form"
+        onSubmit={onSubmitHandle}
+        rowGap="2"
+        sx={{
+          bgColor: 'orange.100',
+          minHeight: '500px',
+          minWidth: `calc(100% - ${IMAGE_CONTAINER_WIDTH_SIZE_PX})`,
+          transition: 'transform 250ms',
+        }}
+        id="login-form"
+        data-move
+      >
+        <Greet />
+        <div>
           <FormControl as="fieldset" rowGap="2" display="grid">
             <FormLabel>Email</FormLabel>
             <Input
@@ -148,27 +175,37 @@ export const Login = () => {
               placeholder="Password"
             />
           </FormControl>
-        </Box>
+          <div>{errorMessage}</div>
+        </div>
+      </Box>
 
-        {/* actions button */}
-        <Button
-          sx={{
-            ...buttonStyle,
-            left: 0,
-          }}
-          onClick={() => switchForm('register')}
-        >
-          Register
-        </Button>
-        <Button
-          sx={{ ...buttonStyle, right: 0 }}
-          onClick={() => switchForm('login')}
-        >
-          Login
-        </Button>
-      </SimpleGrid>
+      {/* actions button */}
+      <Button
+        sx={{ ...buttonStyle, left: 0 }}
+        onClick={() => switchForm('register')}
+      >
+        Register
+      </Button>
 
-      <div>{msg}</div>
-    </Stack>
+      {/* TODO: disabled button when form is submitted */}
+      <Button
+        sx={{ ...buttonStyle, right: 0 }}
+        onClick={
+          formFocus !== 'login'
+            ? () => {
+                switchForm('login')
+              }
+            : undefined
+        }
+        type={formFocus === 'login' ? 'submit' : 'button'}
+        form={formFocus === 'login' ? 'login-form' : undefined}
+        isDisabled={
+          formFocus === 'login' &&
+          Object.values(loginFormData).includes(undefined)
+        }
+      >
+        Login
+      </Button>
+    </Box>
   )
 }
