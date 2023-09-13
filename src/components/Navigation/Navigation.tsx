@@ -1,10 +1,9 @@
 import { Link as ChakraLink, GridItem, Stack } from '@chakra-ui/react'
+import { useIdentityContext } from 'react-netlify-identity'
 import { Link } from 'react-router-dom'
 
-import { useAuth } from '../Auth'
-
 export const Navigation = () => {
-  const { user } = useAuth()
+  const { isLoggedIn } = useIdentityContext()
 
   return (
     <GridItem as="nav" p="3">
@@ -23,14 +22,14 @@ export const Navigation = () => {
           <ChakraLink
             as={Link}
             to="logout"
-            sx={{ display: user ? 'block' : 'none' }}
+            sx={{ display: isLoggedIn ? 'block' : 'none' }}
           >
             logout
           </ChakraLink>
           <ChakraLink
             as={Link}
             to="login"
-            sx={{ display: !user ? 'block' : 'none' }}
+            sx={{ display: !isLoggedIn ? 'block' : 'none' }}
           >
             login
           </ChakraLink>
