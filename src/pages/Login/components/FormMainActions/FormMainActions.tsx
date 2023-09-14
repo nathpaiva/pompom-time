@@ -22,8 +22,13 @@ export const FormMainActions = ({ formFocus }: IFormMainActions) => {
           left: 0,
           paddingRight: ({ theme }) =>
             formFocus === EnumFormType.register ? '200px' : theme,
-          opacity: formFocus === EnumFormType.reset ? 0 : 1,
-          transition: 'opacity .3s 250ms, padding-right .3s 250ms',
+          // opacity: formFocus === EnumFormType.reset ? 0 : 1,
+          transform:
+            formFocus === EnumFormType.reset
+              ? 'translateX(-100px)'
+              : 'translateX(0)',
+
+          transition: 'transform 250ms, padding-right 250ms',
         }}
         type="submit"
         form="register"
@@ -38,8 +43,13 @@ export const FormMainActions = ({ formFocus }: IFormMainActions) => {
           right: 0,
           paddingRight: ({ theme }) =>
             formFocus === EnumFormType.login ? '200px' : theme,
-          opacity: formFocus === EnumFormType.reset ? 0 : 1,
-          transition: 'opacity .5s 250ms, padding-right .5s 250ms',
+          // opacity: formFocus === EnumFormType.reset ? 0 : 1,
+          transform:
+            formFocus === EnumFormType.reset
+              ? 'translateX(260px)'
+              : 'translateX(0)',
+
+          transition: 'transform 250ms, padding-right 250ms',
         }}
         type="submit"
         form="login"

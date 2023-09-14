@@ -13,7 +13,6 @@ import { EnumFormType } from '../../types'
 
 export interface IFormComponentPropsCommon {
   onChangeHandle: (e: FormEvent<HTMLInputElement>) => void
-  errorMessage?: string
   onSubmit: (e: FormEvent<HTMLFormElement>) => void
   formTitle: string
 }
@@ -37,7 +36,6 @@ type IFormComponentProps = IFormComponentPropsCommon &
 
 export const FormComponent = ({
   onChangeHandle,
-  errorMessage,
   formType,
   onSubmit,
   switchToReset,
@@ -56,7 +54,7 @@ export const FormComponent = ({
         bgColor: 'red.100',
         minHeight: '500px',
         minWidth: containerSize,
-        transition: 'transform .5s 250ms',
+        transition: 'transform 250ms',
         p: '2rem',
       }}
       id={formType}
@@ -139,7 +137,6 @@ export const FormComponent = ({
         >
           Never mind
         </Button>
-        <div>{errorMessage}</div>
       </div>
     </Box>
   )
