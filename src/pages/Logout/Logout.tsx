@@ -4,13 +4,15 @@ import { useIdentityContext } from 'react-netlify-identity'
 import { Navigate } from 'react-router-dom'
 
 export const Logout = () => {
-  const { logoutUser, user } = useIdentityContext()
+  const { logoutUser, isLoggedIn } = useIdentityContext()
 
   useEffect(() => {
-    logoutUser()
-  }, [logoutUser])
+    if (isLoggedIn) {
+      logoutUser()
+    }
+  }, [isLoggedIn, logoutUser])
 
-  if (!user) {
+  if (!isLoggedIn) {
     return <Navigate to="/login" />
   }
 
