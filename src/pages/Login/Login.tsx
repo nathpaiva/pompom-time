@@ -1,86 +1,19 @@
-import {
-  Box,
-  Button,
-  Center,
-  FormControl,
-  FormLabel,
-  Input,
-} from '@chakra-ui/react'
+import { Box, Button, Center } from '@chakra-ui/react'
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 import { Navigate } from 'react-router-dom'
 
-import { Greet } from './components'
-
-const IMAGE_CONTAINER_WIDTH_SIZE = 450
-const IMAGE_CONTAINER_WIDTH_SIZE_PX = `${IMAGE_CONTAINER_WIDTH_SIZE}px`
+import { FormComponent } from './components'
+import {
+  IMAGE_CONTAINER_WIDTH_SIZE,
+  IMAGE_CONTAINER_WIDTH_SIZE_PX,
+} from './constants'
+import { EnumForm } from './types'
 
 const buttonStyle = {
   position: 'absolute',
   bottom: 0,
 }
-
-const FormComponent = ({
-  onChangeHandle,
-  errorMessage,
-  formType,
-}: {
-  onChangeHandle: (e: FormEvent<HTMLInputElement>) => void
-  errorMessage?: string
-  formType: TFormType
-}) => (
-  <div>
-    {formType === 'register' && (
-      <FormControl as="fieldset" rowGap="2" display="grid">
-        <FormLabel>Full name</FormLabel>
-        <Input
-          onChange={onChangeHandle}
-          type="name"
-          name="fullName"
-          placeholder="name"
-        />
-      </FormControl>
-    )}
-
-    <FormControl as="fieldset" rowGap="2" display="grid">
-      <FormLabel>Email</FormLabel>
-      <Input
-        onChange={onChangeHandle}
-        type="email"
-        name="email"
-        placeholder="Email"
-      />
-    </FormControl>
-
-    <FormControl as="fieldset" rowGap="2" display="grid">
-      <FormLabel>Password</FormLabel>
-      <Input
-        onChange={onChangeHandle}
-        type="password"
-        name="password"
-        placeholder="Password"
-      />
-    </FormControl>
-    {/* if is login should show recover pass button */}
-    {formType === 'login' && (
-      <Button
-        onClick={() => {
-          console.log('>>>>')
-        }}
-        isDisabled
-        sx={{
-          display: 'block',
-          margin: '10px auto',
-        }}
-      >
-        Forgot Password
-      </Button>
-    )}
-    <div>{errorMessage}</div>
-  </div>
-)
-
-type TFormType = 'login' | 'register'
 
 export const Login = () => {
   /**
@@ -89,7 +22,7 @@ export const Login = () => {
    */
   const containerRef = useRef<HTMLDivElement>(null)
   // state to manage the form should be visible
-  const [formFocus, setFormFocus] = useState<TFormType>('login')
+  const [formFocus, setFormFocus] = useState<EnumForm>(EnumForm.login)
   // state to manage the inputs
   const [loginFormData, setFormData] = useState({
     email: undefined,
@@ -102,10 +35,10 @@ export const Login = () => {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const { id } = e.target as HTMLFormElement & { id: TFormType }
+    const { id } = e.target as HTMLFormElement & { id: EnumForm }
 
     if (formFocus !== id) {
-      switchForm()
+      switchForm(id)
       return
     }
 
@@ -118,7 +51,7 @@ export const Login = () => {
         }
 
         const actionToSubmit =
-          id === 'login'
+          id === EnumForm.login
             ? async () => await loginUser(email, password)
             : async () =>
                 await signupUser(email, password, {
@@ -142,19 +75,21 @@ export const Login = () => {
     }))
   }
 
-  const switchForm = () => {
-    setFormFocus((prevState) => {
-      const switchTo = prevState === 'login' ? 'register' : 'login'
-
-      return switchTo
-    })
+  const switchForm = (id: EnumForm) => {
+    setFormFocus(id)
+    setErrorMessage(undefined)
   }
 
   const changeStyle = useCallback(
     (offsetWidth: number) => {
       const arrElements = [...document.querySelectorAll('[data-move]')]
-      const moveTo =
-        formFocus === 'login' ? IMAGE_CONTAINER_WIDTH_SIZE - offsetWidth : 0
+      let moveTo = IMAGE_CONTAINER_WIDTH_SIZE - offsetWidth
+
+      if (formFocus === EnumForm.reset) {
+        moveTo = moveTo + -offsetWidth
+      } else {
+        moveTo = formFocus === EnumForm.login ? moveTo : 0
+      }
 
       arrElements.forEach((item) => {
         item.setAttribute('style', `transform: translateX(${moveTo}px)`)
@@ -167,6 +102,10 @@ export const Login = () => {
     if (!containerRef.current) return
 
     const { offsetWidth } = containerRef.current
+    console.log(
+      '🚀 ~ file: Login.tsx:108 ~ useEffect ~ offsetWidth:',
+      offsetWidth,
+    )
 
     changeStyle(offsetWidth)
   }, [changeStyle])
@@ -185,29 +124,16 @@ export const Login = () => {
       }}
       ref={containerRef}
     >
-      {/* register form control */}
-      <Box
-        as="form"
+      <FormComponent
+        // {/* register form */}
+        errorMessage={errorMessage}
+        onChangeHandle={onChangeHandle}
+        formType={EnumForm.register}
         onSubmit={onSubmit}
-        sx={{
-          bgColor: 'red.100',
-          minHeight: '500px',
-          minWidth: `calc(100% - ${IMAGE_CONTAINER_WIDTH_SIZE_PX})`,
-          transition: 'transform 250ms',
-        }}
-        id="register"
-        data-move
-      >
-        <Greet />
-        <FormComponent
-          errorMessage={errorMessage}
-          onChangeHandle={onChangeHandle}
-          formType="register"
-        />
-      </Box>
+      />
 
-      {/* nice image */}
       <Center
+        // {/* nice image */}
         sx={{
           bg: 'purple.100',
           minWidth: IMAGE_CONTAINER_WIDTH_SIZE_PX,
@@ -218,34 +144,36 @@ export const Login = () => {
         Nice image
       </Center>
 
-      {/* login form control */}
-      <Box
-        as="form"
+      <FormComponent
+        // {/* login form */}
+        errorMessage={errorMessage}
+        onChangeHandle={onChangeHandle}
+        formType={EnumForm.login}
         onSubmit={onSubmit}
-        rowGap="2"
-        sx={{
-          bgColor: 'orange.100',
-          minHeight: '500px',
-          minWidth: `calc(100% - ${IMAGE_CONTAINER_WIDTH_SIZE_PX})`,
-          transition: 'transform 250ms',
+        switchToReset={() => {
+          switchForm(EnumForm.reset)
         }}
-        id="login"
-        data-move
-      >
-        <Greet />
-        <FormComponent
-          errorMessage={errorMessage}
-          onChangeHandle={onChangeHandle}
-          formType="login"
-        />
-      </Box>
+      />
+
+      <FormComponent
+        // {/* login form */}
+        errorMessage={errorMessage}
+        onChangeHandle={onChangeHandle}
+        formType={EnumForm.reset}
+        onSubmit={(e) => {
+          e.preventDefault()
+          console.log('will submit')
+        }}
+        switchToReset={() => {
+          switchForm(EnumForm.login)
+        }}
+      />
 
       {/* actions button */}
       <Button sx={{ ...buttonStyle, left: 0 }} form="register" type="submit">
         Register
       </Button>
 
-      {/* TODO: disabled button when form is submitted */}
       <Button sx={{ ...buttonStyle, right: 0 }} type="submit" form="login">
         Login
       </Button>
