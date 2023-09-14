@@ -1,5 +1,4 @@
 import { fireEvent, render } from '@utils/test'
-import { describe, expect, it } from 'vitest'
 
 import { Login } from './Login'
 
