@@ -1,14 +1,21 @@
-import { Box, Button, FormControl, FormLabel, Input } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+} from '@chakra-ui/react'
 import { FormEvent } from 'react'
 
 import { IMAGE_CONTAINER_WIDTH_SIZE_PX } from '../../constants'
 import { EnumForm } from '../../types'
-import { Greet } from '../Greet'
 
 export interface IFormComponentPropsCommon {
   onChangeHandle: (e: FormEvent<HTMLInputElement>) => void
   errorMessage?: string
   onSubmit: (e: FormEvent<HTMLFormElement>) => void
+  formTitle: string
 }
 
 interface TLoginForm {
@@ -34,6 +41,7 @@ export const FormComponent = ({
   formType,
   onSubmit,
   switchToReset,
+  formTitle,
 }: IFormComponentProps) => {
   const containerSize =
     formType !== EnumForm.reset
@@ -48,13 +56,14 @@ export const FormComponent = ({
         bgColor: 'red.100',
         minHeight: '500px',
         minWidth: containerSize,
-        transition: 'transform 250ms',
+        transition: 'transform .5s 250ms',
       }}
       id={formType}
       data-move
     >
-      <Greet />
-
+      <Heading textAlign="center" size="lg" mb={4}>
+        {formTitle}
+      </Heading>
       <div>
         {/* reset form */}
         {/* if is register should add input name  */}
@@ -69,7 +78,6 @@ export const FormComponent = ({
             />
           </FormControl>
         )}
-
         {/* all forms */}
         <FormControl as="fieldset" rowGap="2" display="grid">
           <FormLabel>Email</FormLabel>
@@ -80,14 +88,13 @@ export const FormComponent = ({
             placeholder="Email"
           />
         </FormControl>
-
         {/* login & register  */}
         <FormControl
           as="fieldset"
           rowGap="2"
           display="grid"
           sx={{
-            display: EnumForm.reset !== formType ? 'block' : 'none',
+            display: formType !== EnumForm.reset ? 'block' : 'none',
           }}
         >
           {/* if is login should show recover pass button */}
@@ -112,27 +119,25 @@ export const FormComponent = ({
             placeholder="Password"
           />
         </FormControl>
-
         {/* actions */}
         {/* reset */}
         <Button
           type="submit"
           form={formType}
-          sx={{ display: EnumForm.reset === formType ? 'block' : 'none' }}
+          sx={{ display: formType === EnumForm.reset ? 'block' : 'none' }}
         >
-          Get Password Reset Link
+          Send recovery email
         </Button>
         {/* reset */}
         <Button
           variant="link"
           sx={{
-            display: EnumForm.reset === formType ? 'block' : 'none',
+            display: formType === EnumForm.reset ? 'block' : 'none',
           }}
           onClick={switchToReset}
         >
           Never mind
         </Button>
-
         <div>{errorMessage}</div>
       </div>
     </Box>

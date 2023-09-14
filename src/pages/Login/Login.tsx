@@ -1,9 +1,9 @@
-import { Box, Button, Center } from '@chakra-ui/react'
+import { Box, Button, Center, SystemStyleObject } from '@chakra-ui/react'
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 import { Navigate } from 'react-router-dom'
 
-import { FormComponent } from './components'
+import { FormComponent, Greet } from './components'
 import {
   IMAGE_CONTAINER_WIDTH_SIZE,
   IMAGE_CONTAINER_WIDTH_SIZE_PX,
@@ -14,6 +14,11 @@ const buttonStyle = {
   position: 'absolute',
   bottom: 0,
 }
+// const buttonStyle = (hide: boolean): SystemStyleObject => ({
+//   position: 'absolute',
+//   bottom: 0,
+//   display: hide ? 'none' : 'inline-flex',
+// })
 
 export const Login = () => {
   /**
@@ -29,7 +34,8 @@ export const Login = () => {
     password: undefined,
     fullName: undefined,
   })
-  const { loginUser, isLoggedIn, signupUser } = useIdentityContext()
+  const { loginUser, isLoggedIn, signupUser, requestPasswordRecovery } =
+    useIdentityContext()
 
   const [errorMessage, setErrorMessage] = useState<string>()
 
@@ -60,6 +66,30 @@ export const Login = () => {
 
         await actionToSubmit()
       } catch (err) {
+        setErrorMessage('Error: ' + (err as Error).message)
+      }
+    }
+
+    _submit()
+  }
+
+  const onSubmitRecoverPassword = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    async function _submit() {
+      const { email } = loginFormData
+
+      try {
+        if (!email) {
+          throw new Error('Email is required')
+        }
+
+        await requestPasswordRecovery(email)
+        setFormFocus(EnumForm.login)
+        // create success message, use Toaster
+        // clean form after submit
+      } catch (err) {
+        // change this message to use Toaster
         setErrorMessage('Error: ' + (err as Error).message)
       }
     }
@@ -102,10 +132,6 @@ export const Login = () => {
     if (!containerRef.current) return
 
     const { offsetWidth } = containerRef.current
-    console.log(
-      '🚀 ~ file: Login.tsx:108 ~ useEffect ~ offsetWidth:',
-      offsetWidth,
-    )
 
     changeStyle(offsetWidth)
   }, [changeStyle])
@@ -126,6 +152,7 @@ export const Login = () => {
     >
       <FormComponent
         // {/* register form */}
+        formTitle="Sign up"
         errorMessage={errorMessage}
         onChangeHandle={onChangeHandle}
         formType={EnumForm.register}
@@ -137,15 +164,16 @@ export const Login = () => {
         sx={{
           bg: 'purple.100',
           minWidth: IMAGE_CONTAINER_WIDTH_SIZE_PX,
-          transition: 'transform 250ms',
+          transition: 'transform .5s 250ms',
         }}
         data-move
       >
-        Nice image
+        <Greet />
       </Center>
 
       <FormComponent
         // {/* login form */}
+        formTitle="Log in"
         errorMessage={errorMessage}
         onChangeHandle={onChangeHandle}
         formType={EnumForm.login}
@@ -157,24 +185,48 @@ export const Login = () => {
 
       <FormComponent
         // {/* reset form */}
+        formTitle="Recover password"
         errorMessage={errorMessage}
         onChangeHandle={onChangeHandle}
         formType={EnumForm.reset}
-        onSubmit={(e) => {
-          e.preventDefault()
-          console.log('will submit')
-        }}
+        onSubmit={onSubmitRecoverPassword}
         switchToReset={() => {
           switchForm(EnumForm.login)
         }}
       />
 
       {/* actions button */}
-      <Button sx={{ ...buttonStyle, left: 0 }} form="register" type="submit">
+      <Button
+        sx={{
+          ...buttonStyle,
+          left: 0,
+          opacity: formFocus === EnumForm.reset ? 0 : 1,
+          transition:
+            // formFocus === EnumForm.reset
+            // ? 'opacity 250ms'
+            'opacity 250ms',
+          // : 'opacity .3s 250ms',
+        }}
+        type="submit"
+        form="register"
+      >
         Register
       </Button>
 
-      <Button sx={{ ...buttonStyle, right: 0 }} type="submit" form="login">
+      <Button
+        sx={{
+          ...buttonStyle,
+          right: 0,
+          opacity: formFocus === EnumForm.reset ? 0 : 1,
+          transition:
+            // formFocus === EnumForm.reset
+            // ? 'opacity 250ms'
+            'opacity 250ms',
+          // : 'opacity .5s 250ms',
+        }}
+        type="submit"
+        form="login"
+      >
         Login
       </Button>
     </Box>

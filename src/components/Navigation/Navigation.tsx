@@ -13,22 +13,22 @@ export const Navigation = () => {
     <GridItem as="nav" p="3">
       <Stack spacing={2} as="ul">
         <Box as="li" sx={loggedStyle(isLoggedIn)}>
-          <ChakraLink as={Link} to="admin/workout">
+          <ChakraLink as={Link} to="admin/workout" variant="button">
             workout time
           </ChakraLink>
         </Box>
         <Box as="li" sx={loggedStyle(isLoggedIn)}>
-          <ChakraLink as={Link} to="#">
+          <ChakraLink as={Link} to="#" variant="button">
             (TBD) insights
           </ChakraLink>
         </Box>
         <Box as="li" sx={loggedStyle(isLoggedIn)}>
-          <ChakraLink as={Link} to="logout">
+          <ChakraLink as={Link} to="logout" variant="button">
             logout
           </ChakraLink>
         </Box>
         <Box as="li" sx={loggedStyle(!isLoggedIn)}>
-          <ChakraLink as={Link} to="login">
+          <ChakraLink as={Link} to="login" variant="button">
             login
           </ChakraLink>
         </Box>
