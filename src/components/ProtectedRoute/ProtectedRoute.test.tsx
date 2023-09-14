@@ -11,7 +11,7 @@ vi.mock('react-netlify-identity', () => ({
 }))
 
 describe('ProtectedRoute', () => {
-  beforeEach(() => {
+  afterEach(() => {
     vi.resetAllMocks()
   })
 

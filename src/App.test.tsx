@@ -11,7 +11,7 @@ vi.mock('react-netlify-identity', () => ({
 }))
 
 describe('App', () => {
-  beforeEach(() => {
+  afterEach(() => {
     vi.resetAllMocks()
   })
 
