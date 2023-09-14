@@ -2,14 +2,41 @@ import { render } from '@utils/test'
 
 import { Logout } from './Logout'
 
-describe('Logout', () => {
-  describe('when the user is not logged in', () => {
-    it('should render the Logout page and open the iframe', () => {
+const { _useIdentityContext } = vi.hoisted(() => {
+  return { _useIdentityContext: vi.fn() }
+})
+
+vi.mock('react-netlify-identity', () => ({
+  useIdentityContext: _useIdentityContext,
+}))
+
+describe('Page::Logout', () => {
+  afterEach(() => {
+    vi.resetAllMocks()
+  })
+
+  describe('when the user is authenticated', () => {
+    it('should logout', () => {
+      const logoutUser = vi.fn()
+
+      vi.mocked(_useIdentityContext).mockReturnValue({
+        isLoggedIn: true,
+        logoutUser,
+      })
+      render(<Logout />)
+
+      expect(logoutUser).toHaveBeenCalled()
+    })
+  })
+
+  describe('when the user not is authenticated', () => {
+    it('should redirect to login page', () => {
+      vi.mocked(_useIdentityContext).mockReturnValue({
+        isLoggedIn: false,
+      })
       render(<Logout />)
 
       expect(window.location.pathname).toBe('/login')
     })
   })
-
-  it.todo('should test if the user is logged in')
 })
