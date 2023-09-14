@@ -23,7 +23,7 @@ export interface TUseIdentityForm {
   formTypeOpened: EnumFormType
 }
 
-export const useIdentityForm = () => {
+export const useIdentityForm = (): TUseIdentityForm => {
   // get initial credentials from netlify identity
   const { loginUser, isLoggedIn, signupUser, requestPasswordRecovery } =
     useIdentityContext()
@@ -39,7 +39,7 @@ export const useIdentityForm = () => {
     EnumFormType.login,
   )
   // state to manage the inputs
-  const [loginFormData, setFormData] = useState({
+  const [inputFormData, setInputFormData] = useState({
     email: undefined,
     password: undefined,
     fullName: undefined,
@@ -62,7 +62,7 @@ export const useIdentityForm = () => {
     }
 
     async function _submit() {
-      const { email, password, fullName } = loginFormData
+      const { email, password, fullName } = inputFormData
 
       try {
         if (!email || !password) {
@@ -113,7 +113,7 @@ export const useIdentityForm = () => {
     e.preventDefault()
 
     async function _submit() {
-      const { email } = loginFormData
+      const { email } = inputFormData
 
       try {
         if (!email) {
@@ -147,7 +147,7 @@ export const useIdentityForm = () => {
    */
   const onChangeHandle = (e: FormEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget
-    setFormData((prevFormData) => ({
+    setInputFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
     }))

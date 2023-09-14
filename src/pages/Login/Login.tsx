@@ -6,6 +6,9 @@ import { IMAGE_CONTAINER_WIDTH_SIZE_PX } from './constants'
 import { useIdentityForm } from './hooks'
 import { EnumFormType } from './types'
 
+// TODO:
+// - Add input validation
+// - add input hints
 export const Login = () => {
   const {
     isLoggedIn,
@@ -47,6 +50,7 @@ export const Login = () => {
           transition: 'transform 250ms',
           p: '2rem',
         }}
+        borderRadius="sm"
         data-move
       >
         <Greet />
@@ -71,6 +75,9 @@ export const Login = () => {
         onSubmit={onSubmitRecoverPassword}
         switchToReset={() => {
           setFormTypeOpened(EnumFormType.login)
+        }}
+        sxContainer={{
+          bg: 'purple.100',
         }}
       />
 
