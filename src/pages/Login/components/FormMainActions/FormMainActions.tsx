@@ -1,9 +1,9 @@
 import { Button } from '@chakra-ui/react'
 
-import { EnumForm } from '../../types'
+import { EnumFormType } from '../../types'
 
 interface IFormMainActions {
-  formFocus: EnumForm
+  formFocus: EnumFormType
 }
 
 const buttonStyle = {
@@ -21,8 +21,8 @@ export const FormMainActions = ({ formFocus }: IFormMainActions) => {
           ...buttonStyle,
           left: 0,
           paddingRight: ({ theme }) =>
-            formFocus === EnumForm.register ? '200px' : theme,
-          opacity: formFocus === EnumForm.reset ? 0 : 1,
+            formFocus === EnumFormType.register ? '200px' : theme,
+          opacity: formFocus === EnumFormType.reset ? 0 : 1,
           transition: 'opacity .3s 250ms, padding-right .3s 250ms',
         }}
         type="submit"
@@ -37,8 +37,8 @@ export const FormMainActions = ({ formFocus }: IFormMainActions) => {
           ...buttonStyle,
           right: 0,
           paddingRight: ({ theme }) =>
-            formFocus === EnumForm.login ? '200px' : theme,
-          opacity: formFocus === EnumForm.reset ? 0 : 1,
+            formFocus === EnumFormType.login ? '200px' : theme,
+          opacity: formFocus === EnumFormType.reset ? 0 : 1,
           transition: 'opacity .5s 250ms, padding-right .5s 250ms',
         }}
         type="submit"

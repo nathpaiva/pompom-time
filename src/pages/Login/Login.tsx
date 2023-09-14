@@ -1,4 +1,4 @@
-import { Box, Button, Center, useToast } from '@chakra-ui/react'
+import { Box, Center, useToast } from '@chakra-ui/react'
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 import { Navigate } from 'react-router-dom'
@@ -8,7 +8,7 @@ import {
   IMAGE_CONTAINER_WIDTH_SIZE,
   IMAGE_CONTAINER_WIDTH_SIZE_PX,
 } from './constants'
-import { EnumForm } from './types'
+import { EnumFormType } from './types'
 
 export const Login = () => {
   const toast = useToast()
@@ -18,7 +18,9 @@ export const Login = () => {
    */
   const containerRef = useRef<HTMLDivElement>(null)
   // state to manage the form should be visible
-  const [formFocus, setFormFocus] = useState<EnumForm>(EnumForm.login)
+  const [formTypeOpened, setFormTypeOpened] = useState<EnumFormType>(
+    EnumFormType.login,
+  )
   // state to manage the inputs
   const [loginFormData, setFormData] = useState({
     email: undefined,
@@ -32,9 +34,9 @@ export const Login = () => {
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const { id } = e.target as HTMLFormElement & { id: EnumForm }
+    const { id } = e.target as HTMLFormElement & { id: EnumFormType }
 
-    if (formFocus !== id) {
+    if (formTypeOpened !== id) {
       switchForm(id)
       return
     }
@@ -48,7 +50,7 @@ export const Login = () => {
         }
 
         const actionToSubmit =
-          id === EnumForm.login
+          id === EnumFormType.login
             ? async () => await loginUser(email, password)
             : async () =>
                 await signupUser(email, password, {
@@ -61,7 +63,7 @@ export const Login = () => {
           : 'Hey there'
 
         const toastMessage =
-          id === EnumForm.login
+          id === EnumFormType.login
             ? `${greetName}. Welcome back to Pompom time`
             : `${greetName}. Welcome to Pompom time`
 
@@ -94,7 +96,7 @@ export const Login = () => {
         }
 
         await requestPasswordRecovery(email)
-        setFormFocus(EnumForm.login)
+        setFormTypeOpened(EnumFormType.login)
         toast({
           title: 'The email has been sent',
           status: 'info',
@@ -121,8 +123,8 @@ export const Login = () => {
     }))
   }
 
-  const switchForm = (id: EnumForm) => {
-    setFormFocus(id)
+  const switchForm = (id: EnumFormType) => {
+    setFormTypeOpened(id)
     setErrorMessage(undefined)
   }
 
@@ -131,17 +133,17 @@ export const Login = () => {
       const arrElements = [...document.querySelectorAll('[data-move]')]
       let moveTo = IMAGE_CONTAINER_WIDTH_SIZE - offsetWidth
 
-      if (formFocus === EnumForm.reset) {
+      if (formTypeOpened === EnumFormType.reset) {
         moveTo = moveTo + -offsetWidth
       } else {
-        moveTo = formFocus === EnumForm.login ? moveTo : 0
+        moveTo = formTypeOpened === EnumFormType.login ? moveTo : 0
       }
 
       arrElements.forEach((item) => {
         item.setAttribute('style', `transform: translateX(${moveTo}px)`)
       })
     },
-    [formFocus],
+    [formTypeOpened],
   )
 
   useEffect(() => {
@@ -171,7 +173,7 @@ export const Login = () => {
         formTitle="Sign up"
         errorMessage={errorMessage}
         onChangeHandle={onChangeHandle}
-        formType={EnumForm.register}
+        formType={EnumFormType.register}
         onSubmit={onSubmit}
       />
 
@@ -193,10 +195,10 @@ export const Login = () => {
         formTitle="Log in"
         errorMessage={errorMessage}
         onChangeHandle={onChangeHandle}
-        formType={EnumForm.login}
+        formType={EnumFormType.login}
         onSubmit={onSubmit}
         switchToReset={() => {
-          switchForm(EnumForm.reset)
+          switchForm(EnumFormType.reset)
         }}
       />
 
@@ -205,14 +207,14 @@ export const Login = () => {
         formTitle="Recover password"
         errorMessage={errorMessage}
         onChangeHandle={onChangeHandle}
-        formType={EnumForm.reset}
+        formType={EnumFormType.reset}
         onSubmit={onSubmitRecoverPassword}
         switchToReset={() => {
-          switchForm(EnumForm.login)
+          switchForm(EnumFormType.login)
         }}
       />
 
-      <FormMainActions formFocus={formFocus} />
+      <FormMainActions formFocus={formTypeOpened} />
     </Box>
   )
 }

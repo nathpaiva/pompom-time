@@ -9,7 +9,7 @@ import {
 import { FormEvent } from 'react'
 
 import { IMAGE_CONTAINER_WIDTH_SIZE_PX } from '../../constants'
-import { EnumForm } from '../../types'
+import { EnumFormType } from '../../types'
 
 export interface IFormComponentPropsCommon {
   onChangeHandle: (e: FormEvent<HTMLInputElement>) => void
@@ -19,16 +19,16 @@ export interface IFormComponentPropsCommon {
 }
 
 interface TLoginForm {
-  formType: EnumForm.login
+  formType: EnumFormType.login
   switchToReset: () => void
 }
 interface TRegisterForm {
-  formType: EnumForm.register
+  formType: EnumFormType.register
   switchToReset?: never
 }
 
 interface TResetForm {
-  formType: EnumForm.reset
+  formType: EnumFormType.reset
   switchToReset: () => void
 }
 
@@ -44,7 +44,7 @@ export const FormComponent = ({
   formTitle,
 }: IFormComponentProps) => {
   const containerSize =
-    formType !== EnumForm.reset
+    formType !== EnumFormType.reset
       ? `calc(100% - ${IMAGE_CONTAINER_WIDTH_SIZE_PX})`
       : '100%'
 
@@ -68,7 +68,7 @@ export const FormComponent = ({
       <div>
         {/* reset form */}
         {/* if is register should add input name  */}
-        {formType === EnumForm.register && (
+        {formType === EnumFormType.register && (
           <FormControl as="fieldset" rowGap="2" display="grid">
             <FormLabel>Full name</FormLabel>
             <Input
@@ -95,11 +95,11 @@ export const FormComponent = ({
           rowGap="2"
           display="grid"
           sx={{
-            display: formType !== EnumForm.reset ? 'block' : 'none',
+            display: formType !== EnumFormType.reset ? 'block' : 'none',
           }}
         >
           {/* if is login should show recover pass button */}
-          {formType === EnumForm.login && (
+          {formType === EnumFormType.login && (
             <Button
               variant="link"
               onClick={switchToReset}
@@ -125,7 +125,7 @@ export const FormComponent = ({
         <Button
           type="submit"
           form={formType}
-          sx={{ display: formType === EnumForm.reset ? 'block' : 'none' }}
+          sx={{ display: formType === EnumFormType.reset ? 'block' : 'none' }}
         >
           Send recovery email
         </Button>
@@ -133,7 +133,7 @@ export const FormComponent = ({
         <Button
           variant="link"
           sx={{
-            display: formType === EnumForm.reset ? 'block' : 'none',
+            display: formType === EnumFormType.reset ? 'block' : 'none',
           }}
           onClick={switchToReset}
         >
