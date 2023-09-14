@@ -156,7 +156,7 @@ export const Login = () => {
       />
 
       <FormComponent
-        // {/* login form */}
+        // {/* reset form */}
         errorMessage={errorMessage}
         onChangeHandle={onChangeHandle}
         formType={EnumForm.reset}

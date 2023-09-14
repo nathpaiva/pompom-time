@@ -56,6 +56,7 @@ export const FormComponent = ({
       <Greet />
 
       <div>
+        {/* reset form */}
         {/* if is register should add input name  */}
         {formType === EnumForm.register && (
           <FormControl as="fieldset" rowGap="2" display="grid">
@@ -69,6 +70,7 @@ export const FormComponent = ({
           </FormControl>
         )}
 
+        {/* all forms */}
         <FormControl as="fieldset" rowGap="2" display="grid">
           <FormLabel>Email</FormLabel>
           <Input
@@ -78,25 +80,8 @@ export const FormComponent = ({
             placeholder="Email"
           />
         </FormControl>
-        {/*  */}
 
-        <Button
-          type="submit"
-          form={formType}
-          sx={{ display: EnumForm.reset === formType ? 'block' : 'none' }}
-        >
-          Get Password Reset Link
-        </Button>
-        <Button
-          variant="link"
-          sx={{
-            display: EnumForm.reset === formType ? 'block' : 'none',
-          }}
-          onClick={switchToReset}
-        >
-          Never mind
-        </Button>
-
+        {/* login & register  */}
         <FormControl
           as="fieldset"
           rowGap="2"
@@ -127,6 +112,26 @@ export const FormComponent = ({
             placeholder="Password"
           />
         </FormControl>
+
+        {/* actions */}
+        {/* reset */}
+        <Button
+          type="submit"
+          form={formType}
+          sx={{ display: EnumForm.reset === formType ? 'block' : 'none' }}
+        >
+          Get Password Reset Link
+        </Button>
+        {/* reset */}
+        <Button
+          variant="link"
+          sx={{
+            display: EnumForm.reset === formType ? 'block' : 'none',
+          }}
+          onClick={switchToReset}
+        >
+          Never mind
+        </Button>
 
         <div>{errorMessage}</div>
       </div>
