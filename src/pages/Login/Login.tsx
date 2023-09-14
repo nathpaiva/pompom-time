@@ -1,26 +1,17 @@
-import { Box, Button, Center, SystemStyleObject } from '@chakra-ui/react'
+import { Box, Button, Center, useToast } from '@chakra-ui/react'
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 import { Navigate } from 'react-router-dom'
 
-import { FormComponent, Greet } from './components'
+import { FormComponent, FormMainActions, Greet } from './components'
 import {
   IMAGE_CONTAINER_WIDTH_SIZE,
   IMAGE_CONTAINER_WIDTH_SIZE_PX,
 } from './constants'
 import { EnumForm } from './types'
 
-const buttonStyle = {
-  position: 'absolute',
-  bottom: 0,
-}
-// const buttonStyle = (hide: boolean): SystemStyleObject => ({
-//   position: 'absolute',
-//   bottom: 0,
-//   display: hide ? 'none' : 'inline-flex',
-// })
-
 export const Login = () => {
+  const toast = useToast()
   /**
    * create container ref to have the div width
    * so can use to calculate the transform to move each children
@@ -64,9 +55,27 @@ export const Login = () => {
                   full_name: fullName,
                 })
 
-        await actionToSubmit()
+        const user = await actionToSubmit()
+        const greetName = user?.user_metadata
+          ? `Hi ${user.user_metadata.full_name}`
+          : 'Hey there'
+
+        const toastMessage =
+          id === EnumForm.login
+            ? `${greetName}. Welcome back to Pompom time`
+            : `${greetName}. Welcome to Pompom time`
+
+        toast({
+          title: toastMessage,
+          status: 'success',
+          isClosable: true,
+        })
       } catch (err) {
-        setErrorMessage('Error: ' + (err as Error).message)
+        toast({
+          title: (err as Error).message,
+          status: 'error',
+          isClosable: true,
+        })
       }
     }
 
@@ -86,11 +95,18 @@ export const Login = () => {
 
         await requestPasswordRecovery(email)
         setFormFocus(EnumForm.login)
-        // create success message, use Toaster
+        toast({
+          title: 'The email has been sent',
+          status: 'info',
+          isClosable: true,
+        })
         // clean form after submit
       } catch (err) {
-        // change this message to use Toaster
-        setErrorMessage('Error: ' + (err as Error).message)
+        toast({
+          title: (err as Error).message,
+          status: 'error',
+          isClosable: true,
+        })
       }
     }
 
@@ -160,11 +176,12 @@ export const Login = () => {
       />
 
       <Center
-        // {/* nice image */}
+        // {/* info component */}
         sx={{
           bg: 'purple.100',
           minWidth: IMAGE_CONTAINER_WIDTH_SIZE_PX,
           transition: 'transform .5s 250ms',
+          p: '2rem',
         }}
         data-move
       >
@@ -195,40 +212,7 @@ export const Login = () => {
         }}
       />
 
-      {/* actions button */}
-      <Button
-        sx={{
-          ...buttonStyle,
-          left: 0,
-          opacity: formFocus === EnumForm.reset ? 0 : 1,
-          transition:
-            // formFocus === EnumForm.reset
-            // ? 'opacity 250ms'
-            'opacity 250ms',
-          // : 'opacity .3s 250ms',
-        }}
-        type="submit"
-        form="register"
-      >
-        Register
-      </Button>
-
-      <Button
-        sx={{
-          ...buttonStyle,
-          right: 0,
-          opacity: formFocus === EnumForm.reset ? 0 : 1,
-          transition:
-            // formFocus === EnumForm.reset
-            // ? 'opacity 250ms'
-            'opacity 250ms',
-          // : 'opacity .5s 250ms',
-        }}
-        type="submit"
-        form="login"
-      >
-        Login
-      </Button>
+      <FormMainActions formFocus={formFocus} />
     </Box>
   )
 }

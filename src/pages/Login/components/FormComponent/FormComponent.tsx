@@ -57,6 +57,7 @@ export const FormComponent = ({
         minHeight: '500px',
         minWidth: containerSize,
         transition: 'transform .5s 250ms',
+        p: '2rem',
       }}
       id={formType}
       data-move
