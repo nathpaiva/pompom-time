@@ -1,40 +1,37 @@
-import { Link as ChakraLink, GridItem, Stack } from '@chakra-ui/react'
+import { Box, Link as ChakraLink, GridItem, Stack } from '@chakra-ui/react'
+import { useIdentityContext } from 'react-netlify-identity'
 import { Link } from 'react-router-dom'
 
-import { useAuth } from '../Auth'
+const loggedStyle = (check: boolean) => ({
+  display: check ? 'block' : 'none',
+})
 
 export const Navigation = () => {
-  const { user } = useAuth()
+  const { isLoggedIn } = useIdentityContext()
 
   return (
     <GridItem as="nav" p="3">
       <Stack spacing={2} as="ul">
-        <li>
-          <ChakraLink as={Link} to="admin/workout">
+        <Box as="li" sx={loggedStyle(isLoggedIn)}>
+          <ChakraLink as={Link} to="admin/workout" variant="button">
             workout time
           </ChakraLink>
-        </li>
-        <li>
-          <ChakraLink as={Link} to="#">
+        </Box>
+        <Box as="li" sx={loggedStyle(isLoggedIn)}>
+          <ChakraLink as={Link} to="#" variant="button">
             (TBD) insights
           </ChakraLink>
-        </li>
-        <li>
-          <ChakraLink
-            as={Link}
-            to="logout"
-            sx={{ display: user ? 'block' : 'none' }}
-          >
+        </Box>
+        <Box as="li" sx={loggedStyle(isLoggedIn)}>
+          <ChakraLink as={Link} to="logout" variant="button">
             logout
           </ChakraLink>
-          <ChakraLink
-            as={Link}
-            to="login"
-            sx={{ display: !user ? 'block' : 'none' }}
-          >
+        </Box>
+        <Box as="li" sx={loggedStyle(!isLoggedIn)}>
+          <ChakraLink as={Link} to="login" variant="button">
             login
           </ChakraLink>
-        </li>
+        </Box>
       </Stack>
     </GridItem>
   )

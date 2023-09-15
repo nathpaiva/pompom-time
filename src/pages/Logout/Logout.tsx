@@ -1,17 +1,18 @@
 import { Progress } from '@chakra-ui/react'
 import { useEffect } from 'react'
+import { useIdentityContext } from 'react-netlify-identity'
 import { Navigate } from 'react-router-dom'
 
-import { useAuth } from '../../components'
-
 export const Logout = () => {
-  const { handleLoggedOut, user } = useAuth()
+  const { logoutUser, isLoggedIn } = useIdentityContext()
 
   useEffect(() => {
-    handleLoggedOut()
-  }, [handleLoggedOut])
+    if (isLoggedIn) {
+      logoutUser()
+    }
+  }, [isLoggedIn, logoutUser])
 
-  if (!user) {
+  if (!isLoggedIn) {
     return <Navigate to="/login" />
   }
 

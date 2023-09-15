@@ -1,5 +1,4 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
 
 import { usePulse } from './usePulse'
 

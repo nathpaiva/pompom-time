@@ -1,30 +1,91 @@
-import { Button, Heading, Stack, Text } from '@chakra-ui/react'
+import { Box, Center } from '@chakra-ui/react'
 import { Navigate } from 'react-router-dom'
 
-import { useAuth } from '../../components'
+import { FormComponent, FormMainActions, Greet } from './components'
+import { IMAGE_CONTAINER_WIDTH_SIZE_PX } from './constants'
+import { useIdentityForm } from './hooks'
+import { EnumFormType } from './types'
 
+// TODO:
+// - Add input validation
+// - add input hints
 export const Login = () => {
-  const { user, handleLoggedIn } = useAuth()
+  const {
+    isLoggedIn,
+    containerRef,
+    onChangeHandle,
+    onSubmit,
+    setFormTypeOpened,
+    onSubmitRecoverPassword,
+    formTypeOpened,
+  } = useIdentityForm()
 
-  if (user) {
+  if (isLoggedIn) {
     return <Navigate to="/admin/workout" />
   }
 
   return (
-    <Stack spacing={3}>
-      <Heading as="h2">Hey there,</Heading>
-      <Text>Welcome to Pompom time!</Text>
-      <Text>Please log in to get started on your journey to pompom time.</Text>
+    <Box
+      as="section"
+      position="relative"
+      sx={{
+        display: 'flex',
+        overflow: 'hidden',
+      }}
+      ref={containerRef}
+    >
+      <FormComponent
+        // {/* register form */}
+        formTitle="Sign up"
+        onChangeHandle={onChangeHandle}
+        formType={EnumFormType.register}
+        onSubmit={onSubmit}
+        formIsHidden={formTypeOpened === EnumFormType.register}
+        // formTypeOpened
+      />
 
-      <Button
-        onClick={handleLoggedIn}
-        colorScheme="purple"
-        maxWidth="200"
-        width="100%"
-        alignSelf="center"
+      <Center
+        // {/* info component */}
+        sx={{
+          bg: 'purple.100',
+          minWidth: IMAGE_CONTAINER_WIDTH_SIZE_PX,
+          transition: 'transform 250ms',
+          p: '2rem',
+        }}
+        borderRadius="sm"
+        data-move
       >
-        Let's go!
-      </Button>
-    </Stack>
+        <Greet />
+      </Center>
+
+      <FormComponent
+        // {/* login form */}
+        formTitle="Log in"
+        onChangeHandle={onChangeHandle}
+        formType={EnumFormType.login}
+        onSubmit={onSubmit}
+        formIsHidden={formTypeOpened === EnumFormType.login}
+        switchToReset={() => {
+          setFormTypeOpened(EnumFormType.reset)
+        }}
+      />
+
+      <FormComponent
+        // {/* reset form */}
+        formTitle="Recover password"
+        onChangeHandle={onChangeHandle}
+        formType={EnumFormType.reset}
+        onSubmit={onSubmitRecoverPassword}
+        formIsHidden={formTypeOpened === EnumFormType.reset}
+        switchToReset={() => {
+          setFormTypeOpened(EnumFormType.login)
+        }}
+        sxContainer={{
+          bg: 'purple.100',
+        }}
+      />
+
+      <FormMainActions formFocus={formTypeOpened} />
+    </Box>
   )
 }
