@@ -34,9 +34,6 @@ const customRender = (
     ...options,
   })
 
-export * from '@testing-library/react'
-export { customRender as render }
-
 const { _hoisted_useIdentityContext } = vi.hoisted(() => {
   return { _hoisted_useIdentityContext: vi.fn() }
 })
@@ -45,4 +42,5 @@ vi.mock('react-netlify-identity', () => ({
   useIdentityContext: _hoisted_useIdentityContext,
 }))
 
-export { _hoisted_useIdentityContext }
+export * from '@testing-library/react'
+export { customRender as render, _hoisted_useIdentityContext }
