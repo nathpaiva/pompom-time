@@ -1,4 +1,4 @@
-import { render } from '@utils/test'
+import { render, screen } from '@utils/test'
 
 import { App } from './App'
 
@@ -10,6 +10,19 @@ vi.mock('react-netlify-identity', () => ({
   useIdentityContext: _useIdentityContext,
 }))
 
+const expectedCommonItems = () => {
+  expect(screen.getByText('Pompom time')).toBeVisible()
+  expect(
+    screen.getByText(`This app is still under construction.`),
+  ).toBeVisible()
+  expect(
+    screen.getByText(
+      'The purpose is to have a place where you can control and see your progress doing pompoarism workout.',
+    ),
+  ).toBeTruthy()
+  expect(screen.getByText('home')).toBeVisible()
+}
+
 describe('App', () => {
   afterEach(() => {
     vi.resetAllMocks()
@@ -20,11 +33,13 @@ describe('App', () => {
       vi.mocked(_useIdentityContext).mockReturnValue({
         isLoggedIn: false,
       })
+      render(<App />)
 
-      const { getByText } = render(<App />)
-      expect(getByText('logout')).not.toBeVisible()
-      expect(getByText('workout time')).not.toBeVisible()
-      expect(getByText('login')).toBeVisible()
+      expect(screen.getByText('logout')).not.toBeVisible()
+      expect(screen.getByText('workout time')).not.toBeVisible()
+      expect(screen.getByText('login')).toBeVisible()
+
+      expectedCommonItems()
     })
   })
 
@@ -33,10 +48,12 @@ describe('App', () => {
       vi.mocked(_useIdentityContext).mockReturnValue({
         isLoggedIn: true,
       })
-      const { getByText } = render(<App />)
-      expect(getByText('logout')).toBeVisible()
-      expect(getByText('workout time')).toBeVisible()
-      expect(getByText('login')).not.toBeVisible()
+      render(<App />)
+
+      expect(screen.getByText('logout')).toBeVisible()
+      expect(screen.getByText('workout time')).toBeVisible()
+      expect(screen.getByText('login')).not.toBeVisible()
+      expectedCommonItems()
     })
   })
 })

@@ -21,6 +21,11 @@ export default defineConfig({
       include: ['src/**/*'],
       reporter: ['text', 'json', 'html'],
       exclude: [
+        'src/colorPalette.ts',
+        'src/utils/testWrapper.ts',
+        'src/utils/noop.ts',
+        // TODO: after create the theme, remove this line
+        'src/utils/theme.ts',
         'src/**/index.ts',
         'src/**/index.tsx',
         'src/**/*.d.ts',

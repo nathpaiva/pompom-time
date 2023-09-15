@@ -3,7 +3,15 @@ import { render, RenderOptions } from '@testing-library/react'
 import React, { ReactElement } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 
-const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
+const AllTheProviders = ({
+  children,
+  initialEntries = '/',
+}: {
+  children: React.ReactNode
+  initialEntries?: string
+}) => {
+  window.history.pushState({}, 'Test page', initialEntries)
+
   return (
     <BrowserRouter>
       <ChakraProvider>{children}</ChakraProvider>
@@ -13,8 +21,18 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
 
 const customRender = (
   ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>,
-) => render(ui, { wrapper: AllTheProviders, ...options })
+  options?: Omit<RenderOptions, 'wrapper'> & { initialEntries?: string },
+) =>
+  render(ui, {
+    wrapper: ({ children }) => (
+      <AllTheProviders
+        initialEntries={options ? options.initialEntries : undefined}
+      >
+        {children}
+      </AllTheProviders>
+    ),
+    ...options,
+  })
 
 export * from '@testing-library/react'
 export { customRender as render }
