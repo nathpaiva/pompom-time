@@ -17,7 +17,7 @@ export default defineConfig({
         .pathname,
     },
     coverage: {
-      provider: 'istanbul',
+      provider: 'v8',
       include: ['src/**/*'],
       reporter: ['text', 'json', 'html'],
       exclude: [
