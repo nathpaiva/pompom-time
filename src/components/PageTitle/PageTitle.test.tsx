@@ -40,7 +40,7 @@ describe('PageTitle', () => {
       expect(screen.getByText('Welcome, User Test.')).toBeTruthy()
     })
 
-    describe.only('on logout page', () => {
+    describe('on logout page', () => {
       it('should render the wait title', () => {
         vi.mocked(_useIdentityContext).mockReturnValue({
           isLoggedIn: true,
