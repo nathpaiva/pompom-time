@@ -11,25 +11,63 @@ vi.mock('react-netlify-identity', () => ({
   useIdentityContext: _useIdentityContext,
 }))
 
+const logoutUser = vi.fn()
+const loginUser = vi.fn()
+const signupUser = vi.fn()
+const requestPasswordRecovery = vi.fn()
+
+const userDataMock = {
+  email: 'user@test.com',
+  password: 'XXXX',
+  fullName: 'User Test',
+}
+
+const expectForms = (shouldHave: {
+  loginForm?: boolean
+  registerForm?: boolean
+  resetForm?: boolean
+}) => {
+  const loginForm = screen.getByTestId(EnumFormType.login)
+  const registerForm = screen.getByTestId(EnumFormType.register)
+  const resetForm = screen.getByTestId(EnumFormType.reset)
+
+  expect(loginForm).toHaveAttribute('aria-hidden', `${shouldHave.loginForm}`)
+  expect(registerForm).toHaveAttribute(
+    'aria-hidden',
+    `${shouldHave.registerForm}`,
+  )
+  expect(resetForm).toHaveAttribute('aria-hidden', `${shouldHave.resetForm}`)
+
+  return {
+    loginForm,
+    registerForm,
+    resetForm,
+  }
+}
+
 describe('Page::Login', () => {
-  const logoutUser = vi.fn()
-  const loginUser = vi.fn()
-  const signupUser = vi.fn()
-  const requestPasswordRecovery = vi.fn()
   afterEach(() => {
     vi.resetAllMocks()
   })
 
   describe('when the user is authenticated', () => {
-    it.todo('should log in and redirect to the home page')
+    it('should redirect to the workout page', () => {
+      vi.mocked(_useIdentityContext).mockReturnValue({
+        isLoggedIn: true,
+        logoutUser,
+        loginUser,
+        signupUser,
+        requestPasswordRecovery,
+      })
+
+      render(<Login />)
+
+      expect(window.location.pathname).toBe('/admin/workout')
+    })
   })
 
   describe('when the user not is authenticated', () => {
     it('should render the login form and login the user', async () => {
-      const userDataMock = {
-        email: 'user@test.com',
-        password: 'XXXX',
-      }
       vi.mocked(_useIdentityContext).mockReturnValue({
         isLoggedIn: false,
         logoutUser,
@@ -40,14 +78,11 @@ describe('Page::Login', () => {
 
       render(<Login />)
 
-      // get each form and check if only login is visible
-      const loginForm = screen.getByTestId(EnumFormType.login)
-      const registerForm = screen.getByTestId(EnumFormType.register)
-      const resetForm = screen.getByTestId(EnumFormType.reset)
-
-      expect(loginForm).toHaveAttribute('aria-hidden', 'true')
-      expect(registerForm).toHaveAttribute('aria-hidden', 'false')
-      expect(resetForm).toHaveAttribute('aria-hidden', 'false')
+      const { loginForm } = expectForms({
+        loginForm: true,
+        registerForm: false,
+        resetForm: false,
+      })
 
       // check if the form has the title
       const loginFormTitle = screen.getByText('Log in')
@@ -80,9 +115,6 @@ describe('Page::Login', () => {
     })
 
     it('should render the login form and move to reset pass', async () => {
-      const userDataMock = {
-        email: 'user@test.com',
-      }
       vi.mocked(_useIdentityContext).mockReturnValue({
         isLoggedIn: false,
         logoutUser,
@@ -94,13 +126,11 @@ describe('Page::Login', () => {
       render(<Login />)
 
       // get each form and check if only login is visible
-      const loginForm = screen.getByTestId(EnumFormType.login)
-      const registerForm = screen.getByTestId(EnumFormType.register)
-      const resetForm = screen.getByTestId(EnumFormType.reset)
-
-      expect(loginForm).toHaveAttribute('aria-hidden', 'true')
-      expect(registerForm).toHaveAttribute('aria-hidden', 'false')
-      expect(resetForm).toHaveAttribute('aria-hidden', 'false')
+      const { loginForm, resetForm } = expectForms({
+        loginForm: true,
+        registerForm: false,
+        resetForm: false,
+      })
 
       // get forgotButton and move to reset form
       const forgotButton = screen.getByText('Forgot Password')
@@ -108,6 +138,19 @@ describe('Page::Login', () => {
       await act(() => fireEvent.click(forgotButton))
 
       // check if login is not visible and register is visible
+      expect(loginForm).toHaveAttribute('aria-hidden', 'false')
+      expect(resetForm).toHaveAttribute('aria-hidden', 'true')
+
+      // check if are able to back to login form
+      const neverMindButton = screen.getByText('Never mind')
+      expect(neverMindButton).toBeVisible()
+      await act(() => fireEvent.click(neverMindButton))
+
+      expect(loginForm).toHaveAttribute('aria-hidden', 'true')
+      expect(resetForm).toHaveAttribute('aria-hidden', 'false')
+
+      // than back to reset and call the reset function
+      await act(() => fireEvent.click(forgotButton))
       expect(loginForm).toHaveAttribute('aria-hidden', 'false')
       expect(resetForm).toHaveAttribute('aria-hidden', 'true')
 
@@ -138,16 +181,12 @@ describe('Page::Login', () => {
     })
 
     it('should render the login form and move to register and create a new user', async () => {
-      const userDataMock = {
-        email: 'user@test.com',
-        password: 'XXXX',
-        fullName: 'User Test',
-      }
-      const signupUser = vi.fn(() => ({
+      vi.mocked(signupUser).mockReturnValue({
         user_metadata: {
           full_name: userDataMock.fullName,
         },
-      }))
+      })
+
       vi.mocked(_useIdentityContext).mockReturnValue({
         isLoggedIn: false,
         logoutUser,
@@ -159,13 +198,11 @@ describe('Page::Login', () => {
       render(<Login />)
 
       // get each form and check if only login is visible
-      const loginForm = screen.getByTestId(EnumFormType.login)
-      const registerForm = screen.getByTestId(EnumFormType.register)
-      const resetForm = screen.getByTestId(EnumFormType.reset)
-
-      expect(loginForm).toHaveAttribute('aria-hidden', 'true')
-      expect(registerForm).toHaveAttribute('aria-hidden', 'false')
-      expect(resetForm).toHaveAttribute('aria-hidden', 'false')
+      const { loginForm, registerForm } = expectForms({
+        loginForm: true,
+        registerForm: false,
+        resetForm: false,
+      })
 
       const buttonToRegister = screen.getByText('Register')
       expect(buttonToRegister).toBeVisible()

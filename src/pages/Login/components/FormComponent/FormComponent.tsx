@@ -118,71 +118,61 @@ export const FormComponent = ({
           />
         </FormControl>
         {/* login & register  */}
-        <FormControl
-          as="fieldset"
-          display="grid"
-          sx={{
-            display: formType !== EnumFormType.reset ? 'block' : 'none',
-          }}
-        >
-          <InputGroup size="md">
-            <Input
-              pr="4.5rem"
-              type={show ? 'text' : 'password'}
-              placeholder="Enter password"
-              name="password"
-              data-testid={`${formType}-password`}
-              onChange={onChangeHandle}
-            />
-            <InputRightElement width="4.5rem">
-              <Button
-                h="1.75rem"
-                size="sm"
-                onClick={handleClick}
-                colorScheme="purple"
-              >
-                {show ? 'Hide' : 'Show'}
-              </Button>
-            </InputRightElement>
-          </InputGroup>
+        {formType !== EnumFormType.reset && (
+          <FormControl as="fieldset" display="grid">
+            <InputGroup size="md">
+              <Input
+                pr="4.5rem"
+                type={show ? 'text' : 'password'}
+                placeholder="Enter password"
+                name="password"
+                data-testid={`${formType}-password`}
+                onChange={onChangeHandle}
+              />
+              <InputRightElement width="4.5rem">
+                <Button
+                  h="1.75rem"
+                  size="sm"
+                  onClick={handleClick}
+                  colorScheme="purple"
+                >
+                  {show ? 'Hide' : 'Show'}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
 
-          {/* if is login should show recover pass button */}
-          {formType === EnumFormType.login && (
-            <Button
-              variant="link"
-              onClick={switchToReset}
-              size="xs"
-              sx={{
-                position: 'absolute',
-                bottom: '-20px',
-                right: '0',
-              }}
-            >
-              Forgot Password
-            </Button>
-          )}
-        </FormControl>
+            {/* if is login should show recover pass button */}
+            {formType === EnumFormType.login && (
+              <Button
+                variant="link"
+                onClick={switchToReset}
+                size="xs"
+                sx={{
+                  position: 'absolute',
+                  bottom: '-20px',
+                  right: '0',
+                }}
+              >
+                Forgot Password
+              </Button>
+            )}
+          </FormControl>
+        )}
         {/* actions */}
+
         {/* reset */}
-        <Button
-          type="submit"
-          form={formType}
-          sx={{ display: formType === EnumFormType.reset ? 'block' : 'none' }}
-          colorScheme="purple"
-        >
-          Send recovery email
-        </Button>
+        {formType === EnumFormType.reset && (
+          <Button type="submit" form={formType} colorScheme="purple">
+            Send recovery email
+          </Button>
+        )}
+
         {/* reset */}
-        <Button
-          variant="link"
-          size="xs"
-          sx={{
-            display: formType === EnumFormType.reset ? 'block' : 'none',
-          }}
-          onClick={switchToReset}
-        >
-          Never mind
-        </Button>
+        {formType === EnumFormType.reset && (
+          <Button variant="link" size="xs" onClick={switchToReset}>
+            Never mind
+          </Button>
+        )}
       </Card>
     </Box>
   )
