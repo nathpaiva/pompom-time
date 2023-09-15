@@ -1,14 +1,6 @@
-import { render, screen } from '@utils/test'
+import { _hoisted_useIdentityContext, render, screen } from '@utils/test'
 
 import { PageTitle } from './PageTitle'
-
-const { _useIdentityContext } = vi.hoisted(() => {
-  return { _useIdentityContext: vi.fn() }
-})
-
-vi.mock('react-netlify-identity', () => ({
-  useIdentityContext: _useIdentityContext,
-}))
 
 describe('PageTitle', () => {
   afterEach(() => {
@@ -17,7 +9,7 @@ describe('PageTitle', () => {
 
   describe('user logged out', () => {
     it('should render the default title', () => {
-      vi.mocked(_useIdentityContext).mockReturnValue({
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         isLoggedIn: false,
       })
       render(<PageTitle />)
@@ -27,7 +19,7 @@ describe('PageTitle', () => {
   })
   describe('user logged in', () => {
     it('should render title with the user name', () => {
-      vi.mocked(_useIdentityContext).mockReturnValue({
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         isLoggedIn: true,
         user: {
           user_metadata: {
@@ -42,7 +34,7 @@ describe('PageTitle', () => {
 
     describe('on logout page', () => {
       it('should render the wait title', () => {
-        vi.mocked(_useIdentityContext).mockReturnValue({
+        vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
           isLoggedIn: true,
           user: {
             user_metadata: {

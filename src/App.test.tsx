@@ -1,14 +1,6 @@
-import { render, screen } from '@utils/test'
+import { _hoisted_useIdentityContext, render, screen } from '@utils/test'
 
 import { App } from './App'
-
-const { _useIdentityContext } = vi.hoisted(() => {
-  return { _useIdentityContext: vi.fn() }
-})
-
-vi.mock('react-netlify-identity', () => ({
-  useIdentityContext: _useIdentityContext,
-}))
 
 const expectedCommonItems = () => {
   expect(screen.getByText('Pompom time')).toBeVisible()
@@ -30,7 +22,7 @@ describe('App', () => {
 
   describe('user logged out', () => {
     it('should render not auth navigation', () => {
-      vi.mocked(_useIdentityContext).mockReturnValue({
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         isLoggedIn: false,
       })
       render(<App />)
@@ -45,7 +37,7 @@ describe('App', () => {
 
   describe('user logged in', () => {
     it('should render auth navigation', () => {
-      vi.mocked(_useIdentityContext).mockReturnValue({
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         isLoggedIn: true,
       })
       render(<App />)
