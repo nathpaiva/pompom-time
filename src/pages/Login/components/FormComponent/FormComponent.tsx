@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   FormControl,
+  FormLabel,
   Heading,
   Input,
   InputGroup,
@@ -90,45 +91,48 @@ export const FormComponent = ({
           width: '70%',
           mx: 'auto',
           p: '2rem',
-          gap: '5px',
+          gap: '20px',
           ...sxForm,
         }}
       >
         {/* reset form */}
         {/* if is register should add input name  */}
         {formType === EnumFormType.register && (
-          <FormControl as="fieldset" display="grid">
+          <FormControl as="fieldset" display="grid" variant="floating">
             <Input
               onChange={onChangeHandle}
               type="name"
               name="fullName"
               data-testid={`${formType}-fullName`}
-              placeholder="Enter your name"
+              placeholder=" "
             />
+            <FormLabel>Name</FormLabel>
           </FormControl>
         )}
         {/* all forms */}
-        <FormControl as="fieldset" display="grid">
+        <FormControl as="fieldset" display="grid" variant="floating">
           <Input
             onChange={onChangeHandle}
             type="email"
             name="email"
             data-testid={`${formType}-email`}
-            placeholder="Enter your email"
+            placeholder=" "
           />
+          <FormLabel>Email</FormLabel>
         </FormControl>
         {/* login & register  */}
         {formType !== EnumFormType.reset && (
-          <FormControl as="fieldset" display="grid">
+          <FormControl as="fieldset" display="grid" variant="floating">
             <InputGroup size="md">
               <Input
                 pr="4.5rem"
                 type={show ? 'text' : 'password'}
-                placeholder="Enter password"
+                placeholder=" "
                 name="password"
                 data-testid={`${formType}-password`}
                 onChange={onChangeHandle}
               />
+              <FormLabel>Password</FormLabel>
               <InputRightElement width="4.5rem">
                 <Button
                   h="1.75rem"

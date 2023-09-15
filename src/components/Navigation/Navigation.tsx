@@ -1,37 +1,48 @@
-import { Box, Link as ChakraLink, GridItem, Stack } from '@chakra-ui/react'
+import { GridItem, Stack } from '@chakra-ui/react'
 import { useIdentityContext } from 'react-netlify-identity'
-import { Link } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
-const loggedStyle = (check: boolean) => ({
-  display: check ? 'block' : 'none',
-})
+import { LiContainer } from './components'
 
 export const Navigation = () => {
+  const { pathname } = useLocation()
   const { isLoggedIn } = useIdentityContext()
 
   return (
     <GridItem as="nav" p="3">
       <Stack spacing={2} as="ul">
-        <Box as="li" sx={loggedStyle(isLoggedIn)}>
-          <ChakraLink as={Link} to="admin/workout" variant="button">
-            workout time
-          </ChakraLink>
-        </Box>
-        <Box as="li" sx={loggedStyle(isLoggedIn)}>
-          <ChakraLink as={Link} to="#" variant="button">
-            (TBD) insights
-          </ChakraLink>
-        </Box>
-        <Box as="li" sx={loggedStyle(isLoggedIn)}>
-          <ChakraLink as={Link} to="logout" variant="button">
-            logout
-          </ChakraLink>
-        </Box>
-        <Box as="li" sx={loggedStyle(!isLoggedIn)}>
-          <ChakraLink as={Link} to="login" variant="button">
-            login
-          </ChakraLink>
-        </Box>
+        <LiContainer label="home" isCurrent={pathname === '/'} to="/" />
+
+        <LiContainer
+          label="workout time"
+          to="admin/workout"
+          isCurrent={pathname === '/admin/workout'}
+          isToShowItem={isLoggedIn}
+          isAuthItem
+        />
+
+        <LiContainer
+          label="(TBD) insights"
+          to="#"
+          isCurrent={pathname === '/#'}
+          isAuthItem
+          isToShowItem={isLoggedIn}
+        />
+
+        <LiContainer
+          label="logout"
+          to="logout"
+          isCurrent={pathname === '/logout'}
+          isAuthItem
+          isToShowItem={isLoggedIn}
+        />
+        <LiContainer
+          label="login"
+          to="login"
+          isCurrent={pathname === '/login'}
+          isAuthItem
+          isToShowItem={!isLoggedIn}
+        />
       </Stack>
     </GridItem>
   )

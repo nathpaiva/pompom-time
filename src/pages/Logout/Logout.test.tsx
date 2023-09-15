@@ -1,14 +1,6 @@
-import { render } from '@utils/test'
+import { _hoisted_useIdentityContext, render } from '@utils/test'
 
 import { Logout } from './Logout'
-
-const { _useIdentityContext } = vi.hoisted(() => {
-  return { _useIdentityContext: vi.fn() }
-})
-
-vi.mock('react-netlify-identity', () => ({
-  useIdentityContext: _useIdentityContext,
-}))
 
 describe('Page::Logout', () => {
   afterEach(() => {
@@ -19,7 +11,7 @@ describe('Page::Logout', () => {
     it('should logout', () => {
       const logoutUser = vi.fn()
 
-      vi.mocked(_useIdentityContext).mockReturnValue({
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         isLoggedIn: true,
         logoutUser,
       })
@@ -31,7 +23,7 @@ describe('Page::Logout', () => {
 
   describe('when the user not is authenticated', () => {
     it('should redirect to login page', () => {
-      vi.mocked(_useIdentityContext).mockReturnValue({
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         isLoggedIn: false,
       })
       render(<Logout />)

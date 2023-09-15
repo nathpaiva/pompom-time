@@ -21,9 +21,14 @@ export interface TUseIdentityForm {
   setFormTypeOpened: Dispatch<React.SetStateAction<EnumFormType>>
   onSubmitRecoverPassword: (e: FormEvent<HTMLFormElement>) => void
   formTypeOpened: EnumFormType
+  showPage: boolean
 }
 
 export const useIdentityForm = (): TUseIdentityForm => {
+  // this is state is to manage the time to render the form
+  // so the calculation can happen to focus on login form
+  // TODO: take a look to see if this is the best approach
+  const [shouldShowPage, setShouldShowPage] = useState(false)
   // get initial credentials from netlify identity
   const { loginUser, isLoggedIn, signupUser, requestPasswordRecovery } =
     useIdentityContext()
@@ -185,6 +190,10 @@ export const useIdentityForm = (): TUseIdentityForm => {
     moveToFormType(offsetWidth)
   }, [moveToFormType])
 
+  useEffect(() => {
+    setShouldShowPage(true)
+  }, [])
+
   return {
     isLoggedIn,
     containerRef,
@@ -193,5 +202,6 @@ export const useIdentityForm = (): TUseIdentityForm => {
     setFormTypeOpened,
     onSubmitRecoverPassword,
     formTypeOpened,
+    showPage: shouldShowPage,
   }
 }

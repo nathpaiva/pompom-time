@@ -18,6 +18,7 @@ export const Login = () => {
     setFormTypeOpened,
     onSubmitRecoverPassword,
     formTypeOpened,
+    showPage,
   } = useIdentityForm()
 
   if (isLoggedIn) {
@@ -31,6 +32,8 @@ export const Login = () => {
       sx={{
         display: 'flex',
         overflow: 'hidden',
+        opacity: showPage ? '1' : '0',
+        transition: 'opacity .1s 250ms',
       }}
       ref={containerRef}
     >

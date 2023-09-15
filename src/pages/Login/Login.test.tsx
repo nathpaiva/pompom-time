@@ -1,15 +1,13 @@
-import { act, fireEvent, render, screen } from '@utils/test'
+import {
+  _hoisted_useIdentityContext,
+  act,
+  fireEvent,
+  render,
+  screen,
+} from '@utils/test'
 
 import { Login } from './Login'
 import { EnumFormType } from './types'
-
-const { _useIdentityContext } = vi.hoisted(() => {
-  return { _useIdentityContext: vi.fn() }
-})
-
-vi.mock('react-netlify-identity', () => ({
-  useIdentityContext: _useIdentityContext,
-}))
 
 const logoutUser = vi.fn()
 const loginUser = vi.fn()
@@ -52,7 +50,7 @@ describe('Page::Login', () => {
 
   describe('when the user is authenticated', () => {
     it('should redirect to the workout page', () => {
-      vi.mocked(_useIdentityContext).mockReturnValue({
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         isLoggedIn: true,
         logoutUser,
         loginUser,
@@ -68,7 +66,7 @@ describe('Page::Login', () => {
 
   describe('when the user not is authenticated', () => {
     it('should render the login form and login the user', async () => {
-      vi.mocked(_useIdentityContext).mockReturnValue({
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         isLoggedIn: false,
         logoutUser,
         loginUser,
@@ -115,7 +113,7 @@ describe('Page::Login', () => {
     })
 
     it('should render the login form and move to reset pass', async () => {
-      vi.mocked(_useIdentityContext).mockReturnValue({
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         isLoggedIn: false,
         logoutUser,
         loginUser,
@@ -187,7 +185,7 @@ describe('Page::Login', () => {
         },
       })
 
-      vi.mocked(_useIdentityContext).mockReturnValue({
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         isLoggedIn: false,
         logoutUser,
         loginUser,
