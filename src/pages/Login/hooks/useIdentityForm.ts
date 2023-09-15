@@ -127,7 +127,7 @@ export const useIdentityForm = (): TUseIdentityForm => {
           status: 'info',
           isClosable: true,
         })
-        // clean form after submit
+        // TODO: clean form after submit
       } catch (err) {
         toast({
           title: (err as Error).message,

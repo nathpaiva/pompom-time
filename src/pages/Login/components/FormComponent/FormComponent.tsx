@@ -20,6 +20,7 @@ export interface IFormComponentPropsCommon {
   formTitle: string
   sxContainer?: SystemStyleObject
   sxForm?: SystemStyleObject
+  formIsHidden?: boolean
 }
 
 interface TLoginForm {
@@ -50,6 +51,7 @@ export const FormComponent = ({
   formTitle,
   sxContainer,
   sxForm,
+  formIsHidden,
 }: IFormComponentProps) => {
   const [show, setShow] = useState(false)
   const handleClick = () => setShow(!show)
@@ -74,7 +76,9 @@ export const FormComponent = ({
         ...sxContainer,
       }}
       id={formType}
+      data-testid={formType}
       data-move
+      aria-hidden={formIsHidden}
     >
       <Heading textAlign="center" size="lg" mb={4}>
         {formTitle}
@@ -98,6 +102,7 @@ export const FormComponent = ({
               onChange={onChangeHandle}
               type="name"
               name="fullName"
+              data-testid={`${formType}-fullName`}
               placeholder="Enter your name"
             />
           </FormControl>
@@ -108,6 +113,7 @@ export const FormComponent = ({
             onChange={onChangeHandle}
             type="email"
             name="email"
+            data-testid={`${formType}-email`}
             placeholder="Enter your email"
           />
         </FormControl>
@@ -125,6 +131,7 @@ export const FormComponent = ({
               type={show ? 'text' : 'password'}
               placeholder="Enter password"
               name="password"
+              data-testid={`${formType}-password`}
               onChange={onChangeHandle}
             />
             <InputRightElement width="4.5rem">

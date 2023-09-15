@@ -40,6 +40,8 @@ export const Login = () => {
         onChangeHandle={onChangeHandle}
         formType={EnumFormType.register}
         onSubmit={onSubmit}
+        formIsHidden={formTypeOpened === EnumFormType.register}
+        // formTypeOpened
       />
 
       <Center
@@ -62,6 +64,7 @@ export const Login = () => {
         onChangeHandle={onChangeHandle}
         formType={EnumFormType.login}
         onSubmit={onSubmit}
+        formIsHidden={formTypeOpened === EnumFormType.login}
         switchToReset={() => {
           setFormTypeOpened(EnumFormType.reset)
         }}
@@ -73,6 +76,7 @@ export const Login = () => {
         onChangeHandle={onChangeHandle}
         formType={EnumFormType.reset}
         onSubmit={onSubmitRecoverPassword}
+        formIsHidden={formTypeOpened === EnumFormType.reset}
         switchToReset={() => {
           setFormTypeOpened(EnumFormType.login)
         }}
