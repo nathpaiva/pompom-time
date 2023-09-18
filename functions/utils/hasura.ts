@@ -1,20 +1,30 @@
 import fetch from 'node-fetch'
 
-// TODO: change this type
-interface PromiseResponse {
-  data: any
+interface IModelExtends {
+  variables: any
+  response: any
 }
 
-// TODO: change this type
-interface TQueryParams {
+interface IPromiseResponse<T extends ['response']> {
+  data: T
+}
+
+interface IQueryParams<T extends IModelExtends> {
   query: string
-  variables?: any
+  variables: T['variables']
 }
 
-export async function query({ query, variables = {} }: TQueryParams) {
+interface IResponse<T extends IModelExtends> {
+  response: T['response']
+}
+
+export async function query<T extends IModelExtends>({
+  query,
+  variables = {},
+}: IQueryParams<T>): Promise<IResponse<T>> {
   try {
     if (!process.env.HASURA_API_URL || !process.env.HASURA_GRAPHQL_ADMIN_SECRET)
-      return
+      throw new Error('defined env')
 
     const result = await fetch(process.env.HASURA_API_URL, {
       method: 'POST',
@@ -26,10 +36,12 @@ export async function query({ query, variables = {} }: TQueryParams) {
     })
 
     // TODO: change this type
-    const { data } = (await result.json()) as PromiseResponse
+    const { data } = (await result.json()) as IPromiseResponse<T['response']>
 
-    return data
+    return {
+      response: data,
+    }
   } catch (error) {
-    return error
+    return Promise.reject(error)
   }
 }

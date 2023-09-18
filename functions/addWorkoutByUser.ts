@@ -2,16 +2,13 @@ import type { Handler, HandlerEvent, HandlerContext } from '@netlify/functions'
 
 import { query } from './utils/hasura'
 
-interface IWorkout {
-  user_id: string
-  name: string
-  type: string
-  repeat: boolean
-  goal_per_day: number
-  interval: number
-  rest: number
-  squeeze: number
-  stop_after: number
+interface IMutationAddWorkoutByUser {
+  response: {
+    insert_workouts: {
+      returning: IWorkout[]
+    }
+  }
+  variables: IWorkout
 }
 
 const listUserWorkouts: Handler = async (
@@ -32,6 +29,7 @@ const listUserWorkouts: Handler = async (
       squeeze,
       stop_after,
     } = JSON.parse(event.body) as IWorkout
+
     if (!context.clientContext) {
       throw new Error('Should be authenticated')
     }
@@ -46,16 +44,15 @@ const listUserWorkouts: Handler = async (
       rest: +rest,
       squeeze: +squeeze,
       stop_after: +stop_after,
-    } satisfies IWorkout
-    console.log('nem vem', {
-      variables,
-    })
+    }
 
     const {
-      insert_workouts: { returning },
-    } = await query({
+      response: {
+        insert_workouts: { returning },
+      },
+    } = await query<IMutationAddWorkoutByUser>({
       query: `
-      mutation InsertWorkouts(
+      mutation MutationAddWorkoutByUser(
         $user_id: String,
         $name: String,
         $type: String,

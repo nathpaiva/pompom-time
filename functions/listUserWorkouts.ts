@@ -2,6 +2,14 @@ import type { Handler, HandlerEvent, HandlerContext } from '@netlify/functions'
 
 import { query } from './utils/hasura'
 
+interface IWorkoutsByUserId {
+  response: { workouts: IWorkout[] }
+  hasVariables: true
+  variables: {
+    user_id: string
+  }
+}
+
 const listUserWorkouts: Handler = async (
   _event: HandlerEvent,
   context: HandlerContext,
@@ -11,10 +19,12 @@ const listUserWorkouts: Handler = async (
       throw new Error('Should be authenticated')
     }
 
-    const { workouts } = await query({
+    const {
+      response: { workouts },
+    } = await query<IWorkoutsByUserId>({
       query: `
-      query Workouts {
-        workouts(where: {user_id: {_eq: "${context.clientContext.user.email}"}}) {
+      query WorkoutsByUserId($user_id: String,) {
+        workouts(where: {user_id: {_eq: $user_id}}) {
           created_at
           goal_per_day
           id
@@ -30,6 +40,9 @@ const listUserWorkouts: Handler = async (
         }
       }
       `,
+      variables: {
+        user_id: context.clientContext.user.email,
+      },
     })
 
     return {
