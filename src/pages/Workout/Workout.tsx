@@ -1,4 +1,4 @@
-import { AddIcon } from '@chakra-ui/icons'
+import { AddIcon, DeleteIcon } from '@chakra-ui/icons'
 import {
   Box,
   Button,
@@ -33,7 +33,7 @@ export function Workout() {
   >({
     name: undefined,
     type: undefined,
-    repeat: undefined,
+    repeat: false,
     goal_per_day: undefined,
     interval: undefined,
     rest: undefined,
@@ -41,38 +41,30 @@ export function Workout() {
     stop_after: undefined,
   })
   const toast = useToast()
-  const { user } = useIdentityContext()
+  const { authedFetch } = useIdentityContext()
+
   const [workouts, setWorkouts] = useState<IWorkout[]>([])
 
-  const fetchData = useCallback(() => {
+  const getWorkouts = useCallback(() => {
     const _fetchData = async () => {
       try {
-        if (!user?.token) {
-          throw new Error('You should be authenticated')
-        }
+        const response = (await authedFetch.get(
+          '/.netlify/functions/listUserWorkouts',
+        )) as IWorkout[]
 
-        const response = await fetch('/.netlify/functions/listUserWorkouts', {
-          headers: { Authorization: `Bearer ${user.token.access_token}` },
-        })
-
-        const data = (await response.json()) as IWorkout[]
-
-        setWorkouts(data)
-        return Promise.resolve(true)
+        setWorkouts(response)
       } catch (error) {
-        console.log('error', error)
         toast({
           status: 'error',
           title: (error as Error).message,
         })
-
-        return Promise.reject()
       }
     }
 
     _fetchData()
-  }, [toast, user?.token])
+  }, [authedFetch, toast])
 
+  // create workout
   const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
@@ -82,29 +74,58 @@ export function Workout() {
 
     const _fetchData = async () => {
       try {
-        if (!user?.token) {
-          throw new Error('You should be authenticated')
-        }
         if (isInvalidForm) {
           throw new Error('All fields should be filled')
         }
 
-        console.log('veio', user)
-        const response = await fetch('/.netlify/functions/addWorkoutByUser', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${user.token.access_token}` },
-          body: JSON.stringify(addWorkoutFormData),
+        const response = (await authedFetch.post(
+          '/.netlify/functions/addWorkoutByUser',
+          {
+            body: JSON.stringify(addWorkoutFormData),
+          },
+        )) as IWorkout
+
+        setWorkouts((prev) => [...prev, response])
+        toast({
+          status: 'success',
+          title: `Added workout: ${addWorkoutFormData.name}`,
         })
-
-        const data = (await response.json()) as IWorkout
-
-        setWorkouts((prev) => [...prev, data])
       } catch (error) {
-        console.log('error', (error as Error).message)
+        toast({
+          status: 'error',
+          title: (error as Error).message,
+        })
       }
     }
 
     _fetchData()
+  }
+
+  // delete workout
+  const handleDelete = async (id: string) => {
+    try {
+      const response = (await authedFetch.delete(
+        '/.netlify/functions/deleteWorkoutById',
+        {
+          body: JSON.stringify({
+            id,
+          }),
+        },
+      )) as IWorkout
+
+      setWorkouts((prev) => {
+        return prev.filter((_workout) => _workout.id !== id)
+      })
+      toast({
+        status: 'success',
+        title: `Delete workout: ${response.name}`,
+      })
+    } catch (error) {
+      toast({
+        status: 'error',
+        title: (error as Error).message,
+      })
+    }
   }
 
   const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -117,12 +138,8 @@ export function Workout() {
   }
 
   useEffect(() => {
-    console.log('addWorkoutFormData', addWorkoutFormData)
-  }, [addWorkoutFormData])
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
+    getWorkouts()
+  }, [getWorkouts])
 
   return (
     <Box as="ul">
@@ -161,12 +178,28 @@ export function Workout() {
               colorScheme="purple"
             />
 
-            <Button size="sm" colorScheme="pink" width="max-content">
-              Start workout!
-            </Button>
+            <div>
+              <Button size="sm" colorScheme="pink" width="max-content">
+                Start workout!
+              </Button>
+
+              <IconButton
+                size="sm"
+                colorScheme="pink"
+                width="max-content"
+                variant="outline"
+                aria-label="Add new workout"
+                icon={<DeleteIcon />}
+                onClick={(event) => {
+                  console.log('delete this workout', workout.id, event)
+                  handleDelete(workout.id)
+                }}
+              />
+            </div>
           </Box>
         )
       })}
+
       <Box as="li">
         <Box gridTemplateColumns="repeat(9, 1fr)" display="grid">
           <span>name</span>
