@@ -1,8 +1,9 @@
-import { useIdentityContext } from 'react-netlify-identity'
 import { Navigate, Outlet } from 'react-router-dom'
 
+import { useAuth } from './hooks'
+
 export function ProtectedRoute() {
-  const { isLoggedIn } = useIdentityContext()
+  const { isLoggedIn } = useAuth()
 
   if (!isLoggedIn) {
     return <Navigate to="/login" />
