@@ -17,16 +17,15 @@
     "jsx": "react-jsx",
     "types": ["vitest/globals"],
     "paths": {
-      "@utils/test": ["./src/utils/testWrapper.tsx"]
+      "@utils/test": ["./client/src/utils/testWrapper.tsx"]
     }
   },
   "include": [
     "vite.config.ts",
     ".eslintrc.cjs",
-    "src",
+    "client",
     "serverless",
     "codegen.ts",
-    "generated",
     "types/globals.d.ts"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]
