@@ -1,48 +1,52 @@
 import type { Handler, HandlerEvent, HandlerContext } from '@netlify/functions'
+import { gql, request } from 'graphql-request'
 
-import { query } from './utils/hasura'
+import { graphQLClientConfig } from './utils/graphqlClient'
 
 interface IWorkoutsByUserId {
-  response: { workouts: IWorkout[] }
-  hasVariables: true
-  variables: {
-    user_id: string
-  }
+  workouts: IWorkout[]
 }
+
+const QueryWorkoutsByUserIdDocument = gql`
+  query QueryWorkoutsByUserId($user_id: String) {
+    workouts(where: { user_id: { _eq: $user_id } }) {
+      created_at
+      goal_per_day
+      id
+      interval
+      name
+      repeat
+      rest
+      squeeze
+      stop_after
+      type
+      updated_at
+      user_id
+    }
+  }
+`
 
 const listUserWorkouts: Handler = async (
   _event: HandlerEvent,
   context: HandlerContext,
 ) => {
+  const config = graphQLClientConfig()
+
   try {
+    if (!config.url || !config.requestHeaders) {
+      throw new Error(`should have ${process.env.HASURA_API_URL}`)
+    }
+
     if (!context.clientContext) {
       throw new Error('Should be authenticated')
     }
 
-    const {
-      response: { workouts },
-    } = await query<IWorkoutsByUserId>({
-      query: `
-      query WorkoutsByUserId($user_id: String,) {
-        workouts(where: {user_id: {_eq: $user_id}}) {
-          created_at
-          goal_per_day
-          id
-          interval
-          name
-          repeat
-          rest
-          squeeze
-          stop_after
-          type
-          updated_at
-          user_id
-        }
-      }
-      `,
+    const { workouts } = await request<IWorkoutsByUserId>({
       variables: {
         user_id: context.clientContext.user.email,
       },
+      document: QueryWorkoutsByUserIdDocument,
+      ...config,
     })
 
     return {
