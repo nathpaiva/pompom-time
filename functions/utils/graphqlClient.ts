@@ -1,8 +1,14 @@
-export const graphQLClientConfig = () => {
+interface IGraphQLClientConfig {
+  url: string
+  requestHeaders: {
+    'Content-Type': string
+    'X-Hasura-Admin-Secret': string
+  }
+}
+
+export const graphQLClientConfig = (): IGraphQLClientConfig => {
   if (!process.env.HASURA_API_URL || !process.env.HASURA_GRAPHQL_ADMIN_SECRET) {
-    return {
-      error: 'please provide env',
-    }
+    throw new Error('Error, you should provide ENV.')
   }
 
   return {

@@ -1,29 +1,32 @@
-import type { Handler, HandlerEvent, HandlerContext } from '@netlify/functions'
+import type { HandlerEvent, HandlerContext } from '@netlify/functions'
 import { request } from 'graphql-request'
 
 import { graphQLClientConfig } from '../utils/graphqlClient'
-import { DeleteWorkoutById__Document } from './__generated__/delete-workout-by-id.graphql.generated'
+import {
+  DeleteWorkoutByIdDocument,
+  Workouts,
+} from './__generated__/delete-workout-by-id.graphql.generated'
 
-const deleteWorkoutById: Handler = async (
-  event: HandlerEvent,
+type THandlerEvent = HandlerEvent & {
+  body: Stringified<Workouts> | null
+}
+
+const deleteWorkoutById = async (
+  event: THandlerEvent,
   context: HandlerContext,
 ) => {
   const config = graphQLClientConfig()
   try {
-    if (!config.url || !config.requestHeaders) {
-      throw new Error(`should have ${process.env.HASURA_API_URL}`)
-    }
-
     if (!event.body) {
       throw new Error('You should provide the values')
     }
-    const { id } = JSON.parse(event.body) as IWorkoutDb
+    const { id } = JSON.parse(event.body)
 
     if (!context.clientContext) {
       throw new Error('Should be authenticated')
     }
     const { delete_workouts } = await request({
-      document: DeleteWorkoutById__Document,
+      document: DeleteWorkoutByIdDocument,
       variables: {
         id,
       },

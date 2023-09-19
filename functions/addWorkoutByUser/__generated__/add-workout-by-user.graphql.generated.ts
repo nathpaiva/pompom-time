@@ -1,10 +1,10 @@
-import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core'
-
+/* eslint-disable */
 import * as Types from '../../../generated/graphql/GraphQLSchema'
 
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
-export type Exact<T extends Record<string, unknown>> = {
+export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K]
 }
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
@@ -13,16 +13,17 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>
 }
-export type MakeEmpty<T extends Record<string, unknown>, K extends keyof T> = {
-  [_ in K]?: never
-}
+export type MakeEmpty<
+  T extends { [key: string]: unknown },
+  K extends keyof T,
+> = { [_ in K]?: never }
 export type Incremental<T> =
   | T
   | {
       [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never
     }
 /** All built-in and custom scalars, mapped to their actual values */
-export interface Scalars {
+export type Scalars = {
   ID: { input: string; output: string }
   String: { input: string; output: string }
   Boolean: { input: boolean; output: boolean }
@@ -34,49 +35,49 @@ export interface Scalars {
 }
 
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
-export interface Boolean_Comparison_Exp {
-  _eq?: InputMaybe<Scalars['Boolean']['input']>
-  _gt?: InputMaybe<Scalars['Boolean']['input']>
-  _gte?: InputMaybe<Scalars['Boolean']['input']>
-  _in?: InputMaybe<Scalars['Boolean']['input'][]>
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>
-  _lt?: InputMaybe<Scalars['Boolean']['input']>
-  _lte?: InputMaybe<Scalars['Boolean']['input']>
-  _neq?: InputMaybe<Scalars['Boolean']['input']>
-  _nin?: InputMaybe<Scalars['Boolean']['input'][]>
+export type Boolean_Comparison_Exp = {
+  _eq: InputMaybe<Scalars['Boolean']['input']>
+  _gt: InputMaybe<Scalars['Boolean']['input']>
+  _gte: InputMaybe<Scalars['Boolean']['input']>
+  _in: InputMaybe<Array<Scalars['Boolean']['input']>>
+  _is_null: InputMaybe<Scalars['Boolean']['input']>
+  _lt: InputMaybe<Scalars['Boolean']['input']>
+  _lte: InputMaybe<Scalars['Boolean']['input']>
+  _neq: InputMaybe<Scalars['Boolean']['input']>
+  _nin: InputMaybe<Array<Scalars['Boolean']['input']>>
 }
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
-export interface String_Comparison_Exp {
-  _eq?: InputMaybe<Scalars['String']['input']>
-  _gt?: InputMaybe<Scalars['String']['input']>
-  _gte?: InputMaybe<Scalars['String']['input']>
+export type String_Comparison_Exp = {
+  _eq: InputMaybe<Scalars['String']['input']>
+  _gt: InputMaybe<Scalars['String']['input']>
+  _gte: InputMaybe<Scalars['String']['input']>
   /** does the column match the given case-insensitive pattern */
-  _ilike?: InputMaybe<Scalars['String']['input']>
-  _in?: InputMaybe<Scalars['String']['input'][]>
+  _ilike: InputMaybe<Scalars['String']['input']>
+  _in: InputMaybe<Array<Scalars['String']['input']>>
   /** does the column match the given POSIX regular expression, case insensitive */
-  _iregex?: InputMaybe<Scalars['String']['input']>
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>
+  _iregex: InputMaybe<Scalars['String']['input']>
+  _is_null: InputMaybe<Scalars['Boolean']['input']>
   /** does the column match the given pattern */
-  _like?: InputMaybe<Scalars['String']['input']>
-  _lt?: InputMaybe<Scalars['String']['input']>
-  _lte?: InputMaybe<Scalars['String']['input']>
-  _neq?: InputMaybe<Scalars['String']['input']>
+  _like: InputMaybe<Scalars['String']['input']>
+  _lt: InputMaybe<Scalars['String']['input']>
+  _lte: InputMaybe<Scalars['String']['input']>
+  _neq: InputMaybe<Scalars['String']['input']>
   /** does the column NOT match the given case-insensitive pattern */
-  _nilike?: InputMaybe<Scalars['String']['input']>
-  _nin?: InputMaybe<Scalars['String']['input'][]>
+  _nilike: InputMaybe<Scalars['String']['input']>
+  _nin: InputMaybe<Array<Scalars['String']['input']>>
   /** does the column NOT match the given POSIX regular expression, case insensitive */
-  _niregex?: InputMaybe<Scalars['String']['input']>
+  _niregex: InputMaybe<Scalars['String']['input']>
   /** does the column NOT match the given pattern */
-  _nlike?: InputMaybe<Scalars['String']['input']>
+  _nlike: InputMaybe<Scalars['String']['input']>
   /** does the column NOT match the given POSIX regular expression, case sensitive */
-  _nregex?: InputMaybe<Scalars['String']['input']>
+  _nregex: InputMaybe<Scalars['String']['input']>
   /** does the column NOT match the given SQL regular expression */
-  _nsimilar?: InputMaybe<Scalars['String']['input']>
+  _nsimilar: InputMaybe<Scalars['String']['input']>
   /** does the column match the given POSIX regular expression, case sensitive */
-  _regex?: InputMaybe<Scalars['String']['input']>
+  _regex: InputMaybe<Scalars['String']['input']>
   /** does the column match the given SQL regular expression */
-  _similar?: InputMaybe<Scalars['String']['input']>
+  _similar: InputMaybe<Scalars['String']['input']>
 }
 
 /** ordering argument of a cursor */
@@ -88,76 +89,76 @@ export enum Cursor_Ordering {
 }
 
 /** mutation root */
-export interface Mutation_Root {
+export type Mutation_Root = {
   __typename?: 'mutation_root'
   /** delete data from the table: "workouts" */
-  delete_workouts?: Maybe<Workouts_Mutation_Response>
+  delete_workouts: Maybe<Workouts_Mutation_Response>
   /** delete single row from the table: "workouts" */
-  delete_workouts_by_pk?: Maybe<Workouts>
+  delete_workouts_by_pk: Maybe<Workouts>
   /** insert data into the table: "workouts" */
-  insert_workouts?: Maybe<Workouts_Mutation_Response>
+  insert_workouts: Maybe<Workouts_Mutation_Response>
   /** insert a single row into the table: "workouts" */
-  insert_workouts_one?: Maybe<Workouts>
+  insert_workouts_one: Maybe<Workouts>
   /** update data of the table: "workouts" */
-  update_workouts?: Maybe<Workouts_Mutation_Response>
+  update_workouts: Maybe<Workouts_Mutation_Response>
   /** update single row of the table: "workouts" */
-  update_workouts_by_pk?: Maybe<Workouts>
+  update_workouts_by_pk: Maybe<Workouts>
   /** update multiples rows of table: "workouts" */
-  update_workouts_many?: Maybe<Maybe<Workouts_Mutation_Response>[]>
+  update_workouts_many: Maybe<Array<Maybe<Workouts_Mutation_Response>>>
 }
 
 /** mutation root */
-export interface Mutation_RootDelete_WorkoutsArgs {
+export type Mutation_RootDelete_WorkoutsArgs = {
   where: Workouts_Bool_Exp
 }
 
 /** mutation root */
-export interface Mutation_RootDelete_Workouts_By_PkArgs {
+export type Mutation_RootDelete_Workouts_By_PkArgs = {
   id: Scalars['uuid']['input']
 }
 
 /** mutation root */
-export interface Mutation_RootInsert_WorkoutsArgs {
-  objects: Workouts_Insert_Input[]
-  on_conflict?: InputMaybe<Workouts_On_Conflict>
+export type Mutation_RootInsert_WorkoutsArgs = {
+  objects: Array<Workouts_Insert_Input>
+  on_conflict: InputMaybe<Workouts_On_Conflict>
 }
 
 /** mutation root */
-export interface Mutation_RootInsert_Workouts_OneArgs {
+export type Mutation_RootInsert_Workouts_OneArgs = {
   object: Workouts_Insert_Input
-  on_conflict?: InputMaybe<Workouts_On_Conflict>
+  on_conflict: InputMaybe<Workouts_On_Conflict>
 }
 
 /** mutation root */
-export interface Mutation_RootUpdate_WorkoutsArgs {
-  _inc?: InputMaybe<Workouts_Inc_Input>
-  _set?: InputMaybe<Workouts_Set_Input>
+export type Mutation_RootUpdate_WorkoutsArgs = {
+  _inc: InputMaybe<Workouts_Inc_Input>
+  _set: InputMaybe<Workouts_Set_Input>
   where: Workouts_Bool_Exp
 }
 
 /** mutation root */
-export interface Mutation_RootUpdate_Workouts_By_PkArgs {
-  _inc?: InputMaybe<Workouts_Inc_Input>
-  _set?: InputMaybe<Workouts_Set_Input>
+export type Mutation_RootUpdate_Workouts_By_PkArgs = {
+  _inc: InputMaybe<Workouts_Inc_Input>
+  _set: InputMaybe<Workouts_Set_Input>
   pk_columns: Workouts_Pk_Columns_Input
 }
 
 /** mutation root */
-export interface Mutation_RootUpdate_Workouts_ManyArgs {
-  updates: Workouts_Updates[]
+export type Mutation_RootUpdate_Workouts_ManyArgs = {
+  updates: Array<Workouts_Updates>
 }
 
 /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
-export interface Numeric_Comparison_Exp {
-  _eq?: InputMaybe<Scalars['numeric']['input']>
-  _gt?: InputMaybe<Scalars['numeric']['input']>
-  _gte?: InputMaybe<Scalars['numeric']['input']>
-  _in?: InputMaybe<Scalars['numeric']['input'][]>
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>
-  _lt?: InputMaybe<Scalars['numeric']['input']>
-  _lte?: InputMaybe<Scalars['numeric']['input']>
-  _neq?: InputMaybe<Scalars['numeric']['input']>
-  _nin?: InputMaybe<Scalars['numeric']['input'][]>
+export type Numeric_Comparison_Exp = {
+  _eq: InputMaybe<Scalars['numeric']['input']>
+  _gt: InputMaybe<Scalars['numeric']['input']>
+  _gte: InputMaybe<Scalars['numeric']['input']>
+  _in: InputMaybe<Array<Scalars['numeric']['input']>>
+  _is_null: InputMaybe<Scalars['Boolean']['input']>
+  _lt: InputMaybe<Scalars['numeric']['input']>
+  _lte: InputMaybe<Scalars['numeric']['input']>
+  _neq: InputMaybe<Scalars['numeric']['input']>
+  _nin: InputMaybe<Array<Scalars['numeric']['input']>>
 }
 
 /** column ordering options */
@@ -176,102 +177,102 @@ export enum Order_By {
   DescNullsLast = 'desc_nulls_last',
 }
 
-export interface Query_Root {
+export type Query_Root = {
   __typename?: 'query_root'
   /** fetch data from the table: "workouts" */
-  workouts: Workouts[]
+  workouts: Array<Workouts>
   /** fetch aggregated fields from the table: "workouts" */
   workouts_aggregate: Workouts_Aggregate
   /** fetch data from the table: "workouts" using primary key columns */
-  workouts_by_pk?: Maybe<Workouts>
+  workouts_by_pk: Maybe<Workouts>
 }
 
-export interface Query_RootWorkoutsArgs {
-  distinct_on?: InputMaybe<Workouts_Select_Column[]>
-  limit?: InputMaybe<Scalars['Int']['input']>
-  offset?: InputMaybe<Scalars['Int']['input']>
-  order_by?: InputMaybe<Workouts_Order_By[]>
-  where?: InputMaybe<Workouts_Bool_Exp>
+export type Query_RootWorkoutsArgs = {
+  distinct_on: InputMaybe<Array<Workouts_Select_Column>>
+  limit: InputMaybe<Scalars['Int']['input']>
+  offset: InputMaybe<Scalars['Int']['input']>
+  order_by: InputMaybe<Array<Workouts_Order_By>>
+  where: InputMaybe<Workouts_Bool_Exp>
 }
 
-export interface Query_RootWorkouts_AggregateArgs {
-  distinct_on?: InputMaybe<Workouts_Select_Column[]>
-  limit?: InputMaybe<Scalars['Int']['input']>
-  offset?: InputMaybe<Scalars['Int']['input']>
-  order_by?: InputMaybe<Workouts_Order_By[]>
-  where?: InputMaybe<Workouts_Bool_Exp>
+export type Query_RootWorkouts_AggregateArgs = {
+  distinct_on: InputMaybe<Array<Workouts_Select_Column>>
+  limit: InputMaybe<Scalars['Int']['input']>
+  offset: InputMaybe<Scalars['Int']['input']>
+  order_by: InputMaybe<Array<Workouts_Order_By>>
+  where: InputMaybe<Workouts_Bool_Exp>
 }
 
-export interface Query_RootWorkouts_By_PkArgs {
+export type Query_RootWorkouts_By_PkArgs = {
   id: Scalars['uuid']['input']
 }
 
-export interface Subscription_Root {
+export type Subscription_Root = {
   __typename?: 'subscription_root'
   /** fetch data from the table: "workouts" */
-  workouts: Workouts[]
+  workouts: Array<Workouts>
   /** fetch aggregated fields from the table: "workouts" */
   workouts_aggregate: Workouts_Aggregate
   /** fetch data from the table: "workouts" using primary key columns */
-  workouts_by_pk?: Maybe<Workouts>
+  workouts_by_pk: Maybe<Workouts>
   /** fetch data from the table in a streaming manner: "workouts" */
-  workouts_stream: Workouts[]
+  workouts_stream: Array<Workouts>
 }
 
-export interface Subscription_RootWorkoutsArgs {
-  distinct_on?: InputMaybe<Workouts_Select_Column[]>
-  limit?: InputMaybe<Scalars['Int']['input']>
-  offset?: InputMaybe<Scalars['Int']['input']>
-  order_by?: InputMaybe<Workouts_Order_By[]>
-  where?: InputMaybe<Workouts_Bool_Exp>
+export type Subscription_RootWorkoutsArgs = {
+  distinct_on: InputMaybe<Array<Workouts_Select_Column>>
+  limit: InputMaybe<Scalars['Int']['input']>
+  offset: InputMaybe<Scalars['Int']['input']>
+  order_by: InputMaybe<Array<Workouts_Order_By>>
+  where: InputMaybe<Workouts_Bool_Exp>
 }
 
-export interface Subscription_RootWorkouts_AggregateArgs {
-  distinct_on?: InputMaybe<Workouts_Select_Column[]>
-  limit?: InputMaybe<Scalars['Int']['input']>
-  offset?: InputMaybe<Scalars['Int']['input']>
-  order_by?: InputMaybe<Workouts_Order_By[]>
-  where?: InputMaybe<Workouts_Bool_Exp>
+export type Subscription_RootWorkouts_AggregateArgs = {
+  distinct_on: InputMaybe<Array<Workouts_Select_Column>>
+  limit: InputMaybe<Scalars['Int']['input']>
+  offset: InputMaybe<Scalars['Int']['input']>
+  order_by: InputMaybe<Array<Workouts_Order_By>>
+  where: InputMaybe<Workouts_Bool_Exp>
 }
 
-export interface Subscription_RootWorkouts_By_PkArgs {
+export type Subscription_RootWorkouts_By_PkArgs = {
   id: Scalars['uuid']['input']
 }
 
-export interface Subscription_RootWorkouts_StreamArgs {
+export type Subscription_RootWorkouts_StreamArgs = {
   batch_size: Scalars['Int']['input']
-  cursor: InputMaybe<Workouts_Stream_Cursor_Input>[]
-  where?: InputMaybe<Workouts_Bool_Exp>
+  cursor: Array<InputMaybe<Workouts_Stream_Cursor_Input>>
+  where: InputMaybe<Workouts_Bool_Exp>
 }
 
 /** Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'. */
-export interface Timestamptz_Comparison_Exp {
-  _eq?: InputMaybe<Scalars['timestamptz']['input']>
-  _gt?: InputMaybe<Scalars['timestamptz']['input']>
-  _gte?: InputMaybe<Scalars['timestamptz']['input']>
-  _in?: InputMaybe<Scalars['timestamptz']['input'][]>
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>
-  _lt?: InputMaybe<Scalars['timestamptz']['input']>
-  _lte?: InputMaybe<Scalars['timestamptz']['input']>
-  _neq?: InputMaybe<Scalars['timestamptz']['input']>
-  _nin?: InputMaybe<Scalars['timestamptz']['input'][]>
+export type Timestamptz_Comparison_Exp = {
+  _eq: InputMaybe<Scalars['timestamptz']['input']>
+  _gt: InputMaybe<Scalars['timestamptz']['input']>
+  _gte: InputMaybe<Scalars['timestamptz']['input']>
+  _in: InputMaybe<Array<Scalars['timestamptz']['input']>>
+  _is_null: InputMaybe<Scalars['Boolean']['input']>
+  _lt: InputMaybe<Scalars['timestamptz']['input']>
+  _lte: InputMaybe<Scalars['timestamptz']['input']>
+  _neq: InputMaybe<Scalars['timestamptz']['input']>
+  _nin: InputMaybe<Array<Scalars['timestamptz']['input']>>
 }
 
 /** Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'. */
-export interface Uuid_Comparison_Exp {
-  _eq?: InputMaybe<Scalars['uuid']['input']>
-  _gt?: InputMaybe<Scalars['uuid']['input']>
-  _gte?: InputMaybe<Scalars['uuid']['input']>
-  _in?: InputMaybe<Scalars['uuid']['input'][]>
-  _is_null?: InputMaybe<Scalars['Boolean']['input']>
-  _lt?: InputMaybe<Scalars['uuid']['input']>
-  _lte?: InputMaybe<Scalars['uuid']['input']>
-  _neq?: InputMaybe<Scalars['uuid']['input']>
-  _nin?: InputMaybe<Scalars['uuid']['input'][]>
+export type Uuid_Comparison_Exp = {
+  _eq: InputMaybe<Scalars['uuid']['input']>
+  _gt: InputMaybe<Scalars['uuid']['input']>
+  _gte: InputMaybe<Scalars['uuid']['input']>
+  _in: InputMaybe<Array<Scalars['uuid']['input']>>
+  _is_null: InputMaybe<Scalars['Boolean']['input']>
+  _lt: InputMaybe<Scalars['uuid']['input']>
+  _lte: InputMaybe<Scalars['uuid']['input']>
+  _neq: InputMaybe<Scalars['uuid']['input']>
+  _nin: InputMaybe<Array<Scalars['uuid']['input']>>
 }
 
 /** columns and relationships of "workouts" */
-export interface Workouts {
+export type Workouts = {
   __typename?: 'workouts'
   created_at: Scalars['timestamptz']['output']
   goal_per_day: Scalars['numeric']['output']
@@ -288,61 +289,61 @@ export interface Workouts {
 }
 
 /** aggregated selection of "workouts" */
-export interface Workouts_Aggregate {
+export type Workouts_Aggregate = {
   __typename?: 'workouts_aggregate'
-  aggregate?: Maybe<Workouts_Aggregate_Fields>
-  nodes: Workouts[]
+  aggregate: Maybe<Workouts_Aggregate_Fields>
+  nodes: Array<Workouts>
 }
 
 /** aggregate fields of "workouts" */
-export interface Workouts_Aggregate_Fields {
+export type Workouts_Aggregate_Fields = {
   __typename?: 'workouts_aggregate_fields'
-  avg?: Maybe<Workouts_Avg_Fields>
+  avg: Maybe<Workouts_Avg_Fields>
   count: Scalars['Int']['output']
-  max?: Maybe<Workouts_Max_Fields>
-  min?: Maybe<Workouts_Min_Fields>
-  stddev?: Maybe<Workouts_Stddev_Fields>
-  stddev_pop?: Maybe<Workouts_Stddev_Pop_Fields>
-  stddev_samp?: Maybe<Workouts_Stddev_Samp_Fields>
-  sum?: Maybe<Workouts_Sum_Fields>
-  var_pop?: Maybe<Workouts_Var_Pop_Fields>
-  var_samp?: Maybe<Workouts_Var_Samp_Fields>
-  variance?: Maybe<Workouts_Variance_Fields>
+  max: Maybe<Workouts_Max_Fields>
+  min: Maybe<Workouts_Min_Fields>
+  stddev: Maybe<Workouts_Stddev_Fields>
+  stddev_pop: Maybe<Workouts_Stddev_Pop_Fields>
+  stddev_samp: Maybe<Workouts_Stddev_Samp_Fields>
+  sum: Maybe<Workouts_Sum_Fields>
+  var_pop: Maybe<Workouts_Var_Pop_Fields>
+  var_samp: Maybe<Workouts_Var_Samp_Fields>
+  variance: Maybe<Workouts_Variance_Fields>
 }
 
 /** aggregate fields of "workouts" */
-export interface Workouts_Aggregate_FieldsCountArgs {
-  columns?: InputMaybe<Workouts_Select_Column[]>
-  distinct?: InputMaybe<Scalars['Boolean']['input']>
+export type Workouts_Aggregate_FieldsCountArgs = {
+  columns: InputMaybe<Array<Workouts_Select_Column>>
+  distinct: InputMaybe<Scalars['Boolean']['input']>
 }
 
 /** aggregate avg on columns */
-export interface Workouts_Avg_Fields {
+export type Workouts_Avg_Fields = {
   __typename?: 'workouts_avg_fields'
-  goal_per_day?: Maybe<Scalars['Float']['output']>
-  interval?: Maybe<Scalars['Float']['output']>
-  rest?: Maybe<Scalars['Float']['output']>
-  squeeze?: Maybe<Scalars['Float']['output']>
-  stop_after?: Maybe<Scalars['Float']['output']>
+  goal_per_day: Maybe<Scalars['Float']['output']>
+  interval: Maybe<Scalars['Float']['output']>
+  rest: Maybe<Scalars['Float']['output']>
+  squeeze: Maybe<Scalars['Float']['output']>
+  stop_after: Maybe<Scalars['Float']['output']>
 }
 
 /** Boolean expression to filter rows from the table "workouts". All fields are combined with a logical 'AND'. */
-export interface Workouts_Bool_Exp {
-  _and?: InputMaybe<Workouts_Bool_Exp[]>
-  _not?: InputMaybe<Workouts_Bool_Exp>
-  _or?: InputMaybe<Workouts_Bool_Exp[]>
-  created_at?: InputMaybe<Timestamptz_Comparison_Exp>
-  goal_per_day?: InputMaybe<Numeric_Comparison_Exp>
-  id?: InputMaybe<Uuid_Comparison_Exp>
-  interval?: InputMaybe<Numeric_Comparison_Exp>
-  name?: InputMaybe<String_Comparison_Exp>
-  repeat?: InputMaybe<Boolean_Comparison_Exp>
-  rest?: InputMaybe<Numeric_Comparison_Exp>
-  squeeze?: InputMaybe<Numeric_Comparison_Exp>
-  stop_after?: InputMaybe<Numeric_Comparison_Exp>
-  type?: InputMaybe<String_Comparison_Exp>
-  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>
-  user_id?: InputMaybe<String_Comparison_Exp>
+export type Workouts_Bool_Exp = {
+  _and: InputMaybe<Array<Workouts_Bool_Exp>>
+  _not: InputMaybe<Workouts_Bool_Exp>
+  _or: InputMaybe<Array<Workouts_Bool_Exp>>
+  created_at: InputMaybe<Timestamptz_Comparison_Exp>
+  goal_per_day: InputMaybe<Numeric_Comparison_Exp>
+  id: InputMaybe<Uuid_Comparison_Exp>
+  interval: InputMaybe<Numeric_Comparison_Exp>
+  name: InputMaybe<String_Comparison_Exp>
+  repeat: InputMaybe<Boolean_Comparison_Exp>
+  rest: InputMaybe<Numeric_Comparison_Exp>
+  squeeze: InputMaybe<Numeric_Comparison_Exp>
+  stop_after: InputMaybe<Numeric_Comparison_Exp>
+  type: InputMaybe<String_Comparison_Exp>
+  updated_at: InputMaybe<Timestamptz_Comparison_Exp>
+  user_id: InputMaybe<String_Comparison_Exp>
 }
 
 /** unique or primary key constraints on table "workouts" */
@@ -352,96 +353,96 @@ export enum Workouts_Constraint {
 }
 
 /** input type for incrementing numeric columns in table "workouts" */
-export interface Workouts_Inc_Input {
-  goal_per_day?: InputMaybe<Scalars['numeric']['input']>
-  interval?: InputMaybe<Scalars['numeric']['input']>
-  rest?: InputMaybe<Scalars['numeric']['input']>
-  squeeze?: InputMaybe<Scalars['numeric']['input']>
-  stop_after?: InputMaybe<Scalars['numeric']['input']>
+export type Workouts_Inc_Input = {
+  goal_per_day: InputMaybe<Scalars['numeric']['input']>
+  interval: InputMaybe<Scalars['numeric']['input']>
+  rest: InputMaybe<Scalars['numeric']['input']>
+  squeeze: InputMaybe<Scalars['numeric']['input']>
+  stop_after: InputMaybe<Scalars['numeric']['input']>
 }
 
 /** input type for inserting data into table "workouts" */
-export interface Workouts_Insert_Input {
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>
-  goal_per_day?: InputMaybe<Scalars['numeric']['input']>
-  id?: InputMaybe<Scalars['uuid']['input']>
-  interval?: InputMaybe<Scalars['numeric']['input']>
-  name?: InputMaybe<Scalars['String']['input']>
-  repeat?: InputMaybe<Scalars['Boolean']['input']>
-  rest?: InputMaybe<Scalars['numeric']['input']>
-  squeeze?: InputMaybe<Scalars['numeric']['input']>
-  stop_after?: InputMaybe<Scalars['numeric']['input']>
-  type?: InputMaybe<Scalars['String']['input']>
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>
-  user_id?: InputMaybe<Scalars['String']['input']>
+export type Workouts_Insert_Input = {
+  created_at: InputMaybe<Scalars['timestamptz']['input']>
+  goal_per_day: InputMaybe<Scalars['numeric']['input']>
+  id: InputMaybe<Scalars['uuid']['input']>
+  interval: InputMaybe<Scalars['numeric']['input']>
+  name: InputMaybe<Scalars['String']['input']>
+  repeat: InputMaybe<Scalars['Boolean']['input']>
+  rest: InputMaybe<Scalars['numeric']['input']>
+  squeeze: InputMaybe<Scalars['numeric']['input']>
+  stop_after: InputMaybe<Scalars['numeric']['input']>
+  type: InputMaybe<Scalars['String']['input']>
+  updated_at: InputMaybe<Scalars['timestamptz']['input']>
+  user_id: InputMaybe<Scalars['String']['input']>
 }
 
 /** aggregate max on columns */
-export interface Workouts_Max_Fields {
+export type Workouts_Max_Fields = {
   __typename?: 'workouts_max_fields'
-  created_at?: Maybe<Scalars['timestamptz']['output']>
-  goal_per_day?: Maybe<Scalars['numeric']['output']>
-  id?: Maybe<Scalars['uuid']['output']>
-  interval?: Maybe<Scalars['numeric']['output']>
-  name?: Maybe<Scalars['String']['output']>
-  rest?: Maybe<Scalars['numeric']['output']>
-  squeeze?: Maybe<Scalars['numeric']['output']>
-  stop_after?: Maybe<Scalars['numeric']['output']>
-  type?: Maybe<Scalars['String']['output']>
-  updated_at?: Maybe<Scalars['timestamptz']['output']>
-  user_id?: Maybe<Scalars['String']['output']>
+  created_at: Maybe<Scalars['timestamptz']['output']>
+  goal_per_day: Maybe<Scalars['numeric']['output']>
+  id: Maybe<Scalars['uuid']['output']>
+  interval: Maybe<Scalars['numeric']['output']>
+  name: Maybe<Scalars['String']['output']>
+  rest: Maybe<Scalars['numeric']['output']>
+  squeeze: Maybe<Scalars['numeric']['output']>
+  stop_after: Maybe<Scalars['numeric']['output']>
+  type: Maybe<Scalars['String']['output']>
+  updated_at: Maybe<Scalars['timestamptz']['output']>
+  user_id: Maybe<Scalars['String']['output']>
 }
 
 /** aggregate min on columns */
-export interface Workouts_Min_Fields {
+export type Workouts_Min_Fields = {
   __typename?: 'workouts_min_fields'
-  created_at?: Maybe<Scalars['timestamptz']['output']>
-  goal_per_day?: Maybe<Scalars['numeric']['output']>
-  id?: Maybe<Scalars['uuid']['output']>
-  interval?: Maybe<Scalars['numeric']['output']>
-  name?: Maybe<Scalars['String']['output']>
-  rest?: Maybe<Scalars['numeric']['output']>
-  squeeze?: Maybe<Scalars['numeric']['output']>
-  stop_after?: Maybe<Scalars['numeric']['output']>
-  type?: Maybe<Scalars['String']['output']>
-  updated_at?: Maybe<Scalars['timestamptz']['output']>
-  user_id?: Maybe<Scalars['String']['output']>
+  created_at: Maybe<Scalars['timestamptz']['output']>
+  goal_per_day: Maybe<Scalars['numeric']['output']>
+  id: Maybe<Scalars['uuid']['output']>
+  interval: Maybe<Scalars['numeric']['output']>
+  name: Maybe<Scalars['String']['output']>
+  rest: Maybe<Scalars['numeric']['output']>
+  squeeze: Maybe<Scalars['numeric']['output']>
+  stop_after: Maybe<Scalars['numeric']['output']>
+  type: Maybe<Scalars['String']['output']>
+  updated_at: Maybe<Scalars['timestamptz']['output']>
+  user_id: Maybe<Scalars['String']['output']>
 }
 
 /** response of any mutation on the table "workouts" */
-export interface Workouts_Mutation_Response {
+export type Workouts_Mutation_Response = {
   __typename?: 'workouts_mutation_response'
   /** number of rows affected by the mutation */
   affected_rows: Scalars['Int']['output']
   /** data from the rows affected by the mutation */
-  returning: Workouts[]
+  returning: Array<Workouts>
 }
 
 /** on_conflict condition type for table "workouts" */
-export interface Workouts_On_Conflict {
+export type Workouts_On_Conflict = {
   constraint: Workouts_Constraint
-  update_columns?: Workouts_Update_Column[]
-  where?: InputMaybe<Workouts_Bool_Exp>
+  update_columns: Array<Workouts_Update_Column>
+  where: InputMaybe<Workouts_Bool_Exp>
 }
 
 /** Ordering options when selecting data from "workouts". */
-export interface Workouts_Order_By {
-  created_at?: InputMaybe<Order_By>
-  goal_per_day?: InputMaybe<Order_By>
-  id?: InputMaybe<Order_By>
-  interval?: InputMaybe<Order_By>
-  name?: InputMaybe<Order_By>
-  repeat?: InputMaybe<Order_By>
-  rest?: InputMaybe<Order_By>
-  squeeze?: InputMaybe<Order_By>
-  stop_after?: InputMaybe<Order_By>
-  type?: InputMaybe<Order_By>
-  updated_at?: InputMaybe<Order_By>
-  user_id?: InputMaybe<Order_By>
+export type Workouts_Order_By = {
+  created_at: InputMaybe<Order_By>
+  goal_per_day: InputMaybe<Order_By>
+  id: InputMaybe<Order_By>
+  interval: InputMaybe<Order_By>
+  name: InputMaybe<Order_By>
+  repeat: InputMaybe<Order_By>
+  rest: InputMaybe<Order_By>
+  squeeze: InputMaybe<Order_By>
+  stop_after: InputMaybe<Order_By>
+  type: InputMaybe<Order_By>
+  updated_at: InputMaybe<Order_By>
+  user_id: InputMaybe<Order_By>
 }
 
 /** primary key columns input for table: workouts */
-export interface Workouts_Pk_Columns_Input {
+export type Workouts_Pk_Columns_Input = {
   id: Scalars['uuid']['input']
 }
 
@@ -474,83 +475,83 @@ export enum Workouts_Select_Column {
 }
 
 /** input type for updating data in table "workouts" */
-export interface Workouts_Set_Input {
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>
-  goal_per_day?: InputMaybe<Scalars['numeric']['input']>
-  id?: InputMaybe<Scalars['uuid']['input']>
-  interval?: InputMaybe<Scalars['numeric']['input']>
-  name?: InputMaybe<Scalars['String']['input']>
-  repeat?: InputMaybe<Scalars['Boolean']['input']>
-  rest?: InputMaybe<Scalars['numeric']['input']>
-  squeeze?: InputMaybe<Scalars['numeric']['input']>
-  stop_after?: InputMaybe<Scalars['numeric']['input']>
-  type?: InputMaybe<Scalars['String']['input']>
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>
-  user_id?: InputMaybe<Scalars['String']['input']>
+export type Workouts_Set_Input = {
+  created_at: InputMaybe<Scalars['timestamptz']['input']>
+  goal_per_day: InputMaybe<Scalars['numeric']['input']>
+  id: InputMaybe<Scalars['uuid']['input']>
+  interval: InputMaybe<Scalars['numeric']['input']>
+  name: InputMaybe<Scalars['String']['input']>
+  repeat: InputMaybe<Scalars['Boolean']['input']>
+  rest: InputMaybe<Scalars['numeric']['input']>
+  squeeze: InputMaybe<Scalars['numeric']['input']>
+  stop_after: InputMaybe<Scalars['numeric']['input']>
+  type: InputMaybe<Scalars['String']['input']>
+  updated_at: InputMaybe<Scalars['timestamptz']['input']>
+  user_id: InputMaybe<Scalars['String']['input']>
 }
 
 /** aggregate stddev on columns */
-export interface Workouts_Stddev_Fields {
+export type Workouts_Stddev_Fields = {
   __typename?: 'workouts_stddev_fields'
-  goal_per_day?: Maybe<Scalars['Float']['output']>
-  interval?: Maybe<Scalars['Float']['output']>
-  rest?: Maybe<Scalars['Float']['output']>
-  squeeze?: Maybe<Scalars['Float']['output']>
-  stop_after?: Maybe<Scalars['Float']['output']>
+  goal_per_day: Maybe<Scalars['Float']['output']>
+  interval: Maybe<Scalars['Float']['output']>
+  rest: Maybe<Scalars['Float']['output']>
+  squeeze: Maybe<Scalars['Float']['output']>
+  stop_after: Maybe<Scalars['Float']['output']>
 }
 
 /** aggregate stddev_pop on columns */
-export interface Workouts_Stddev_Pop_Fields {
+export type Workouts_Stddev_Pop_Fields = {
   __typename?: 'workouts_stddev_pop_fields'
-  goal_per_day?: Maybe<Scalars['Float']['output']>
-  interval?: Maybe<Scalars['Float']['output']>
-  rest?: Maybe<Scalars['Float']['output']>
-  squeeze?: Maybe<Scalars['Float']['output']>
-  stop_after?: Maybe<Scalars['Float']['output']>
+  goal_per_day: Maybe<Scalars['Float']['output']>
+  interval: Maybe<Scalars['Float']['output']>
+  rest: Maybe<Scalars['Float']['output']>
+  squeeze: Maybe<Scalars['Float']['output']>
+  stop_after: Maybe<Scalars['Float']['output']>
 }
 
 /** aggregate stddev_samp on columns */
-export interface Workouts_Stddev_Samp_Fields {
+export type Workouts_Stddev_Samp_Fields = {
   __typename?: 'workouts_stddev_samp_fields'
-  goal_per_day?: Maybe<Scalars['Float']['output']>
-  interval?: Maybe<Scalars['Float']['output']>
-  rest?: Maybe<Scalars['Float']['output']>
-  squeeze?: Maybe<Scalars['Float']['output']>
-  stop_after?: Maybe<Scalars['Float']['output']>
+  goal_per_day: Maybe<Scalars['Float']['output']>
+  interval: Maybe<Scalars['Float']['output']>
+  rest: Maybe<Scalars['Float']['output']>
+  squeeze: Maybe<Scalars['Float']['output']>
+  stop_after: Maybe<Scalars['Float']['output']>
 }
 
 /** Streaming cursor of the table "workouts" */
-export interface Workouts_Stream_Cursor_Input {
+export type Workouts_Stream_Cursor_Input = {
   /** Stream column input with initial value */
   initial_value: Workouts_Stream_Cursor_Value_Input
   /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>
+  ordering: InputMaybe<Cursor_Ordering>
 }
 
 /** Initial value of the column from where the streaming should start */
-export interface Workouts_Stream_Cursor_Value_Input {
-  created_at?: InputMaybe<Scalars['timestamptz']['input']>
-  goal_per_day?: InputMaybe<Scalars['numeric']['input']>
-  id?: InputMaybe<Scalars['uuid']['input']>
-  interval?: InputMaybe<Scalars['numeric']['input']>
-  name?: InputMaybe<Scalars['String']['input']>
-  repeat?: InputMaybe<Scalars['Boolean']['input']>
-  rest?: InputMaybe<Scalars['numeric']['input']>
-  squeeze?: InputMaybe<Scalars['numeric']['input']>
-  stop_after?: InputMaybe<Scalars['numeric']['input']>
-  type?: InputMaybe<Scalars['String']['input']>
-  updated_at?: InputMaybe<Scalars['timestamptz']['input']>
-  user_id?: InputMaybe<Scalars['String']['input']>
+export type Workouts_Stream_Cursor_Value_Input = {
+  created_at: InputMaybe<Scalars['timestamptz']['input']>
+  goal_per_day: InputMaybe<Scalars['numeric']['input']>
+  id: InputMaybe<Scalars['uuid']['input']>
+  interval: InputMaybe<Scalars['numeric']['input']>
+  name: InputMaybe<Scalars['String']['input']>
+  repeat: InputMaybe<Scalars['Boolean']['input']>
+  rest: InputMaybe<Scalars['numeric']['input']>
+  squeeze: InputMaybe<Scalars['numeric']['input']>
+  stop_after: InputMaybe<Scalars['numeric']['input']>
+  type: InputMaybe<Scalars['String']['input']>
+  updated_at: InputMaybe<Scalars['timestamptz']['input']>
+  user_id: InputMaybe<Scalars['String']['input']>
 }
 
 /** aggregate sum on columns */
-export interface Workouts_Sum_Fields {
+export type Workouts_Sum_Fields = {
   __typename?: 'workouts_sum_fields'
-  goal_per_day?: Maybe<Scalars['numeric']['output']>
-  interval?: Maybe<Scalars['numeric']['output']>
-  rest?: Maybe<Scalars['numeric']['output']>
-  squeeze?: Maybe<Scalars['numeric']['output']>
-  stop_after?: Maybe<Scalars['numeric']['output']>
+  goal_per_day: Maybe<Scalars['numeric']['output']>
+  interval: Maybe<Scalars['numeric']['output']>
+  rest: Maybe<Scalars['numeric']['output']>
+  squeeze: Maybe<Scalars['numeric']['output']>
+  stop_after: Maybe<Scalars['numeric']['output']>
 }
 
 /** update columns of table "workouts" */
@@ -581,62 +582,62 @@ export enum Workouts_Update_Column {
   UserId = 'user_id',
 }
 
-export interface Workouts_Updates {
+export type Workouts_Updates = {
   /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Workouts_Inc_Input>
+  _inc: InputMaybe<Workouts_Inc_Input>
   /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Workouts_Set_Input>
+  _set: InputMaybe<Workouts_Set_Input>
   /** filter the rows which have to be updated */
   where: Workouts_Bool_Exp
 }
 
 /** aggregate var_pop on columns */
-export interface Workouts_Var_Pop_Fields {
+export type Workouts_Var_Pop_Fields = {
   __typename?: 'workouts_var_pop_fields'
-  goal_per_day?: Maybe<Scalars['Float']['output']>
-  interval?: Maybe<Scalars['Float']['output']>
-  rest?: Maybe<Scalars['Float']['output']>
-  squeeze?: Maybe<Scalars['Float']['output']>
-  stop_after?: Maybe<Scalars['Float']['output']>
+  goal_per_day: Maybe<Scalars['Float']['output']>
+  interval: Maybe<Scalars['Float']['output']>
+  rest: Maybe<Scalars['Float']['output']>
+  squeeze: Maybe<Scalars['Float']['output']>
+  stop_after: Maybe<Scalars['Float']['output']>
 }
 
 /** aggregate var_samp on columns */
-export interface Workouts_Var_Samp_Fields {
+export type Workouts_Var_Samp_Fields = {
   __typename?: 'workouts_var_samp_fields'
-  goal_per_day?: Maybe<Scalars['Float']['output']>
-  interval?: Maybe<Scalars['Float']['output']>
-  rest?: Maybe<Scalars['Float']['output']>
-  squeeze?: Maybe<Scalars['Float']['output']>
-  stop_after?: Maybe<Scalars['Float']['output']>
+  goal_per_day: Maybe<Scalars['Float']['output']>
+  interval: Maybe<Scalars['Float']['output']>
+  rest: Maybe<Scalars['Float']['output']>
+  squeeze: Maybe<Scalars['Float']['output']>
+  stop_after: Maybe<Scalars['Float']['output']>
 }
 
 /** aggregate variance on columns */
-export interface Workouts_Variance_Fields {
+export type Workouts_Variance_Fields = {
   __typename?: 'workouts_variance_fields'
-  goal_per_day?: Maybe<Scalars['Float']['output']>
-  interval?: Maybe<Scalars['Float']['output']>
-  rest?: Maybe<Scalars['Float']['output']>
-  squeeze?: Maybe<Scalars['Float']['output']>
-  stop_after?: Maybe<Scalars['Float']['output']>
+  goal_per_day: Maybe<Scalars['Float']['output']>
+  interval: Maybe<Scalars['Float']['output']>
+  rest: Maybe<Scalars['Float']['output']>
+  squeeze: Maybe<Scalars['Float']['output']>
+  stop_after: Maybe<Scalars['Float']['output']>
 }
 
-export type AddWorkoutByUser__MutationVariables = Types.Exact<{
-  user_id?: Types.InputMaybe<Types.Scalars['String']['input']>
-  name?: Types.InputMaybe<Types.Scalars['String']['input']>
-  type?: Types.InputMaybe<Types.Scalars['String']['input']>
-  interval?: Types.InputMaybe<Types.Scalars['numeric']['input']>
-  repeat?: Types.InputMaybe<Types.Scalars['Boolean']['input']>
-  goal_per_day?: Types.InputMaybe<Types.Scalars['numeric']['input']>
-  stop_after?: Types.InputMaybe<Types.Scalars['numeric']['input']>
-  rest?: Types.InputMaybe<Types.Scalars['numeric']['input']>
-  squeeze?: Types.InputMaybe<Types.Scalars['numeric']['input']>
+export type AddWorkoutByUserMutationVariables = Types.Exact<{
+  user_id: Types.InputMaybe<Types.Scalars['String']['input']>
+  name: Types.InputMaybe<Types.Scalars['String']['input']>
+  type: Types.InputMaybe<Types.Scalars['String']['input']>
+  interval: Types.InputMaybe<Types.Scalars['numeric']['input']>
+  repeat: Types.InputMaybe<Types.Scalars['Boolean']['input']>
+  goal_per_day: Types.InputMaybe<Types.Scalars['numeric']['input']>
+  stop_after: Types.InputMaybe<Types.Scalars['numeric']['input']>
+  rest: Types.InputMaybe<Types.Scalars['numeric']['input']>
+  squeeze: Types.InputMaybe<Types.Scalars['numeric']['input']>
 }>
 
-export interface AddWorkoutByUser__Mutation {
+export type AddWorkoutByUserMutation = {
   __typename?: 'mutation_root'
-  insert_workouts?: {
+  insert_workouts: {
     __typename?: 'workouts_mutation_response'
-    returning: {
+    returning: Array<{
       __typename: 'workouts'
       user_id: string
       created_at: any
@@ -650,17 +651,17 @@ export interface AddWorkoutByUser__Mutation {
       stop_after: any
       rest: any
       squeeze: any
-    }[]
+    }>
   } | null
 }
 
-export const AddWorkoutByUser__Document = {
+export const AddWorkoutByUserDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'mutation',
-      name: { kind: 'Name', value: 'AddWorkoutByUser__' },
+      name: { kind: 'Name', value: 'AddWorkoutByUser' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -875,6 +876,6 @@ export const AddWorkoutByUser__Document = {
     },
   ],
 } as unknown as DocumentNode<
-  AddWorkoutByUser__Mutation,
-  AddWorkoutByUser__MutationVariables
+  AddWorkoutByUserMutation,
+  AddWorkoutByUserMutationVariables
 >

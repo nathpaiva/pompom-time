@@ -1,22 +1,27 @@
-import type { Handler, HandlerEvent, HandlerContext } from '@netlify/functions'
+import type { HandlerEvent, HandlerContext } from '@netlify/functions'
 import { request } from 'graphql-request'
 
 import { graphQLClientConfig } from '../utils/graphqlClient'
-import { AddWorkoutByUser__Document } from './__generated__/add-workout-by-user.graphql.generated'
+import {
+  AddWorkoutByUserDocument,
+  Workouts,
+} from './__generated__/add-workout-by-user.graphql.generated'
 
-const addWorkoutByUser: Handler = async (
-  event: HandlerEvent,
+type THandlerEvent = HandlerEvent & {
+  body: Stringified<Workouts> | null
+}
+
+const addWorkoutByUser = async (
+  event: THandlerEvent,
   context: HandlerContext,
 ) => {
   const config = graphQLClientConfig()
 
   try {
-    if (!config.url || !config.requestHeaders) {
-      throw new Error(`should have ${process.env.HASURA_API_URL}`)
-    }
     if (!event.body) {
       throw new Error('You should provide the values')
     }
+
     const {
       name,
       type,
@@ -26,7 +31,7 @@ const addWorkoutByUser: Handler = async (
       rest,
       squeeze,
       stop_after,
-    } = JSON.parse(event.body) as IWorkout
+    } = JSON.parse(event.body)
 
     if (!context.clientContext) {
       throw new Error('Should be authenticated')
@@ -45,7 +50,7 @@ const addWorkoutByUser: Handler = async (
     }
 
     const { insert_workouts } = await request({
-      document: AddWorkoutByUser__Document,
+      document: AddWorkoutByUserDocument,
       variables,
       ...config,
     })

@@ -1,20 +1,16 @@
-import type { Handler, HandlerEvent, HandlerContext } from '@netlify/functions'
+import type { HandlerEvent, HandlerContext } from '@netlify/functions'
 import { request } from 'graphql-request'
 
 import { graphQLClientConfig } from '../utils/graphqlClient'
-import { WorkoutsByUserId___Document } from './__generated__/get-workouts-by-user.graphql.generated'
+import { WorkoutsByUserIdDocument } from './__generated__/get-workouts-by-user.graphql.generated'
 
-const listUserWorkouts: Handler = async (
+const listUserWorkouts = async (
   _event: HandlerEvent,
   context: HandlerContext,
 ) => {
   const config = graphQLClientConfig()
 
   try {
-    if (!config.url || !config.requestHeaders) {
-      throw new Error(`should have ${process.env.HASURA_API_URL}`)
-    }
-
     if (!context.clientContext) {
       throw new Error('Should be authenticated')
     }
@@ -23,7 +19,7 @@ const listUserWorkouts: Handler = async (
       variables: {
         user_id: context.clientContext.user.email,
       },
-      document: WorkoutsByUserId___Document,
+      document: WorkoutsByUserIdDocument,
       ...config,
     })
 

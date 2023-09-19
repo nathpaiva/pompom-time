@@ -20,7 +20,14 @@ const config: CodegenConfig = {
       plugins: ['schema-ast'],
     },
     'generated/graphql/GraphQLSchema.ts': {
-      plugins: ['typescript'],
+      plugins: [
+        {
+          add: {
+            content: '/* eslint-disable */',
+          },
+        },
+        'typescript',
+      ],
       config: {
         enumAsTypes: true,
         avoidOptionals: true,
@@ -38,7 +45,26 @@ const config: CodegenConfig = {
         baseTypesPath: './generated/graphql/GraphQLSchema.graphql',
         folder: '__generated__',
       },
-      plugins: ['typescript', 'typescript-operations', 'typed-document-node'],
+      plugins: [
+        {
+          add: {
+            content: '/* eslint-disable */',
+          },
+        },
+        'typescript',
+        'typescript-operations',
+        'typed-document-node',
+      ],
+      config: {
+        enumAsTypes: true,
+        avoidOptionals: true,
+        useImplementingTypes: true,
+        skipTypename: false,
+        dedupeFragments: true,
+        exportFragmentSpreadSubTypes: true,
+        // inputMaybeValue: [undefined, null, T],
+        documentMode: 'documentNode',
+      },
     },
   },
   hooks: {

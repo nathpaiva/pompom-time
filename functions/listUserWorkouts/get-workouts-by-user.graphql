@@ -1,4 +1,4 @@
-query WorkoutsByUserId___($user_id: String) {
+query WorkoutsByUserId($user_id: String) {
   workouts(where: { user_id: { _eq: $user_id } }) {
     __typename
     created_at

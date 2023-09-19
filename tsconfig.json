@@ -26,7 +26,8 @@
     "src",
     "functions",
     "codegen.ts",
-    "generated"
+    "generated",
+    "types/globals.d.ts"
   ],
   "exclude": ["functions/graphql"],
   "references": [{ "path": "./tsconfig.node.json" }]

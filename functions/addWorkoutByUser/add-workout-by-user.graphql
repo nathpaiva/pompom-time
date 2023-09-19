@@ -1,4 +1,4 @@
-mutation AddWorkoutByUser__(
+mutation AddWorkoutByUser(
   $user_id: String
   $name: String
   $type: String

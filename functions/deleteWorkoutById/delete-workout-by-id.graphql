@@ -1,4 +1,4 @@
-mutation DeleteWorkoutById__($id: uuid) {
+mutation DeleteWorkoutById($id: uuid) {
   delete_workouts(where: { id: { _eq: $id } }) {
     returning {
       __typename
