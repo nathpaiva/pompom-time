@@ -14,12 +14,12 @@ const config: CodegenConfig = {
     },
   ],
 
-  documents: 'functions/**/*.graphql',
+  documents: 'serverless/functions/**/*.graphql',
   generates: {
-    'generated/graphql/GraphQLSchema.graphql': {
+    'serverless/generated/graphql/GraphQLSchema.graphql': {
       plugins: ['schema-ast'],
     },
-    'generated/graphql/GraphQLSchema.ts': {
+    'serverless/generated/graphql/GraphQLSchema.ts': {
       plugins: [
         {
           add: {
@@ -35,14 +35,13 @@ const config: CodegenConfig = {
         skipTypename: false,
         dedupeFragments: true,
         exportFragmentSpreadSubTypes: true,
-        // inputMaybeValue: undefined | null | T,
       },
     },
     '': {
       preset: 'near-operation-file',
       presetConfig: {
         extension: '.graphql.generated.ts',
-        baseTypesPath: './generated/graphql/GraphQLSchema.graphql',
+        baseTypesPath: './serverless/generated/graphql/GraphQLSchema.graphql',
         folder: '__generated__',
       },
       plugins: [
@@ -62,7 +61,6 @@ const config: CodegenConfig = {
         skipTypename: false,
         dedupeFragments: true,
         exportFragmentSpreadSubTypes: true,
-        // inputMaybeValue: [undefined, null, T],
         documentMode: 'documentNode',
       },
     },

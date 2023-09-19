@@ -1,7 +1,7 @@
 import type { HandlerEvent, HandlerContext } from '@netlify/functions'
 import { request } from 'graphql-request'
 
-import { graphQLClientConfig } from '../utils/graphqlClient'
+import { graphQLClientConfig } from '../../utils/graphqlClient'
 import { WorkoutsByUserIdDocument } from './__generated__/get-workouts-by-user.graphql.generated'
 
 const listUserWorkouts = async (

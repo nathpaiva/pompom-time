@@ -1,8 +1,8 @@
 [build]
   command = "yarn build"
   publish = "dist"
-  functions = "functions"
+  functions = "serverless/functions"
 
 [dev]
-  functions = "functions"
+  functions = "serverless/functions"
   targetPort = 4200

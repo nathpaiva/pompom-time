@@ -1,7 +1,7 @@
 import type { HandlerEvent, HandlerContext } from '@netlify/functions'
 import { request } from 'graphql-request'
 
-import { graphQLClientConfig } from '../utils/graphqlClient'
+import { graphQLClientConfig } from '../../utils/graphqlClient'
 import {
   DeleteWorkoutByIdDocument,
   Workouts,

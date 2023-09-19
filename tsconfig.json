@@ -24,11 +24,11 @@
     "vite.config.ts",
     ".eslintrc.cjs",
     "src",
-    "functions",
+    "serverless",
     "codegen.ts",
     "generated",
     "types/globals.d.ts"
   ],
-  "exclude": ["functions/graphql"],
+  "exclude": ["serverless/functions/graphql"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
