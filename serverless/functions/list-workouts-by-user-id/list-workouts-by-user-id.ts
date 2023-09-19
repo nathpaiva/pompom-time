@@ -4,7 +4,7 @@ import { request } from 'graphql-request'
 import { graphQLClientConfig } from '../../utils/graphqlClient'
 import { WorkoutsByUserIdDocument } from './__generated__/get-workouts-by-user.graphql.generated'
 
-const listUserWorkouts = async (
+const listWorkoutsByUserId = async (
   _event: HandlerEvent,
   context: HandlerContext,
 ) => {
@@ -35,4 +35,4 @@ const listUserWorkouts = async (
   }
 }
 
-export { listUserWorkouts as handler }
+export { listWorkoutsByUserId as handler }
