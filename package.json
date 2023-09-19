@@ -21,6 +21,9 @@
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.1",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@netlify/functions": "^2.0.2",
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "netlify-identity-widget": "^1.9.2",
@@ -30,8 +33,6 @@
     "react-router-dom": "^6.16.0"
   },
   "devDependencies": {
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
     "@graphql-codegen/cli": "5.0.0",
     "@graphql-codegen/client-preset": "4.1.0",
     "@graphql-codegen/introspection": "4.0.0",
@@ -39,7 +40,6 @@
     "@graphql-codegen/typescript-graphql-request": "^5.0.0",
     "@nathpaiva/eslint-config-react": "1.0.14",
     "@nathpaiva/prettier-config": "^1.0.2",
-    "@netlify/functions": "^2.0.2",
     "@testing-library/jest-dom": "^6.1.3",
     "@testing-library/react": "^14.0.0",
     "@types/netlify-identity-widget": "^1.9.3",
