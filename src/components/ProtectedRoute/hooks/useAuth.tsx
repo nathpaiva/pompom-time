@@ -19,7 +19,6 @@ export const useAuth = (): {
       }
 
       await getFreshJWT()
-      await Promise.resolve()
     } catch (error) {
       logoutUser()
       toast({

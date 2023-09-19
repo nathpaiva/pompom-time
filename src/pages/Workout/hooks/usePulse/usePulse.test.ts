@@ -3,7 +3,7 @@ import { act, renderHook, waitFor } from '@testing-library/react'
 import { usePulse } from './usePulse'
 
 describe('usePulse', () => {
-  it('should start and stop pulse after get the lime', async () => {
+  it('should start and stop pulse after get the limit', async () => {
     const { result } = renderHook(() =>
       usePulse({
         pulseLimit: 5,
