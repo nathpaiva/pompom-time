@@ -19,14 +19,17 @@
     "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.1.1",
+    "@chakra-ui/react": "^2.8.1",
+    "graphql": "^16.8.1",
+    "graphql-request": "^6.1.0",
+    "netlify-identity-widget": "^1.9.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-netlify-identity": "^0.2.7",
     "react-router-dom": "^6.16.0"
   },
   "devDependencies": {
-    "@chakra-ui/icons": "^2.1.1",
-    "@chakra-ui/react": "^2.8.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@graphql-codegen/cli": "5.0.0",
@@ -57,10 +60,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "framer-motion": "^10.16.4",
-    "graphql": "^16.8.1",
-    "graphql-request": "^6.1.0",
     "jsdom": "^22.1.0",
-    "netlify-identity-widget": "^1.9.2",
     "prettier": "^3.0.2",
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
