@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   title:
-    name: Pull request title
+    name: Lint PR title
     runs-on: ubuntu-latest
 
     steps:
