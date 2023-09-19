@@ -9,8 +9,9 @@ interface VitestConfigExport extends UserConfig {
 
 const testConfig = {
   globals: true,
+  clearMocks: true,
+  setupFiles: ['./client/src/setupTests.ts', 'dotenv/config'],
   environment: 'jsdom',
-  setupFiles: ['./client/src/setupTests.ts'],
   alias: {
     '@utils/test': new URL(
       './client/src/utils/testWrapper.tsx',
@@ -19,19 +20,25 @@ const testConfig = {
   },
   coverage: {
     provider: 'v8',
-    include: ['client/src/**/*'],
+    include: ['client/src/**/*', 'serverless/**/*'],
     reporter: ['text', 'json', 'html'],
     exclude: [
-      'client/src/colorPalette.ts',
       'client/src/utils/testWrapper.ts',
       'client/src/utils/noop.ts',
-      // TODO: after create the theme, remove this line
-      'client/src/utils/theme.ts',
+
       'client/src/**/index.ts',
       'client/src/**/index.tsx',
       'client/src/**/*.d.ts',
       'client/src/**/mock.ts',
       'client/src/**/main.tsx',
+
+      // TODO: after create the theme, remove this line
+      'client/src/utils/theme.ts',
+      'client/src/colorPalette.ts',
+
+      // serverless
+      'serverless/generated',
+      'serverless/**/*.generated.ts',
     ],
     all: true,
     branches: 40,

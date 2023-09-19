@@ -1,20 +1,37 @@
-import type { HandlerEvent, HandlerContext } from '@netlify/functions'
+import type {
+  HandlerEvent as NtlHandlerEvent,
+  HandlerContext,
+  HandlerResponse as NtlHandlerResponse,
+} from '@netlify/functions'
 import { request } from 'graphql-request'
 
 import { graphQLClientConfig } from '../../utils/graphqlClient'
 import {
   AddWorkoutByUserDocument,
+  AddWorkoutByUserMutationVariables,
   Workouts,
 } from './__generated__/add-workout-by-user.graphql.generated'
 
-type THandlerEvent = HandlerEvent & {
-  body: Stringified<Workouts> | null
+type HandlerEvent = NtlHandlerEvent & {
+  body: Stringified<Omit<AddWorkoutByUserMutationVariables, 'user_id'>> | null
 }
 
+type THandlerResponse = Omit<NtlHandlerResponse, 'body'> &
+  (
+    | {
+        statusCode: 200
+        body: Stringified<Workouts>
+      }
+    | {
+        statusCode: 500
+        body: Stringified<{ error: string }>
+      }
+  )
+
 const addWorkoutByUser = async (
-  event: THandlerEvent,
+  event: HandlerEvent,
   context: HandlerContext,
-) => {
+): Promise<THandlerResponse> => {
   const config = graphQLClientConfig()
 
   try {
@@ -47,26 +64,27 @@ const addWorkoutByUser = async (
       rest: +rest,
       squeeze: +squeeze,
       stop_after: +stop_after,
-    }
+    } satisfies AddWorkoutByUserMutationVariables
 
-    const { insert_workouts } = await request({
+    const data = await request({
       document: AddWorkoutByUserDocument,
       variables,
       ...config,
     })
 
-    if (!insert_workouts) {
-      throw new Error('Could not load data')
+    if (!data) {
+      throw new Error('Could not load data from workout mutation')
     }
+    const { insert_workouts } = data
 
     return {
       statusCode: 200,
-      body: JSON.stringify(insert_workouts.returning[0]),
+      body: JSON.stringify(insert_workouts?.returning[0]),
     }
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify((error as Error).message),
+      body: JSON.stringify({ error: (error as Error).message }),
     }
   }
 }

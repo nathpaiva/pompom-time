@@ -10,6 +10,9 @@ declare global {
     ): string & Stringified<T>
     parse<T>(text: Stringified<T>, reviver?: (key: any, value: any) => any): T
   }
+  interface ObjectConstructor {
+    keys<T>(value: T): (keyof T)[]
+  }
 }
 
 export {}
