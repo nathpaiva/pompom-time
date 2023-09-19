@@ -49,7 +49,7 @@ export function Workout() {
     const _fetchData = async () => {
       try {
         const response = (await authedFetch.get(
-          '/.netlify/functions/listUserWorkouts',
+          '/.netlify/functions/list-workouts-by-user-id',
         )) as IWorkout[]
 
         setWorkouts(response)
@@ -79,7 +79,7 @@ export function Workout() {
         }
 
         const response = (await authedFetch.post(
-          '/.netlify/functions/addWorkoutByUser',
+          '/.netlify/functions/add-workout-by-user',
           {
             body: JSON.stringify(addWorkoutFormData),
           },
@@ -105,7 +105,7 @@ export function Workout() {
   const handleDelete = async (id: string) => {
     try {
       const response = (await authedFetch.delete(
-        '/.netlify/functions/deleteWorkoutById',
+        '/.netlify/functions/delete-workout-by-id',
         {
           body: JSON.stringify({
             id,

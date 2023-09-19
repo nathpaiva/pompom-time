@@ -1,0 +1,24 @@
+name: Lint PR Title
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
+jobs:
+  title:
+    name: Lint PR title
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: semantic-pull-request
+        uses: amannn/action-semantic-pull-request@v5.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
