@@ -1,0 +1,41 @@
+mutation AddWorkoutByUser(
+  $user_id: String
+  $name: String
+  $type: String
+  $interval: numeric
+  $repeat: Boolean
+  $goal_per_day: numeric
+  $stop_after: numeric
+  $rest: numeric
+  $squeeze: numeric
+) {
+  insert_workouts(
+    objects: {
+      user_id: $user_id
+      name: $name
+      type: $type
+      interval: $interval
+      repeat: $repeat
+      goal_per_day: $goal_per_day
+      stop_after: $stop_after
+      rest: $rest
+      squeeze: $squeeze
+    }
+  ) {
+    returning {
+      __typename
+      user_id
+      created_at
+      updated_at
+      id
+      name
+      type
+      interval
+      repeat
+      goal_per_day
+      stop_after
+      rest
+      squeeze
+    }
+  }
+}

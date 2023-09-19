@@ -20,6 +20,15 @@
       "@utils/test": ["./src/utils/testWrapper.tsx"]
     }
   },
-  "include": ["vite.config.ts", ".eslintrc.cjs", "src", "functions"],
+  "include": [
+    "vite.config.ts",
+    ".eslintrc.cjs",
+    "src",
+    "functions",
+    "codegen.ts",
+    "generated",
+    "types/globals.d.ts"
+  ],
+  "exclude": ["functions/graphql"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

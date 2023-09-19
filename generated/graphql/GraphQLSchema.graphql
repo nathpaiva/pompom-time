@@ -1,0 +1,923 @@
+schema {
+  query: query_root
+  mutation: mutation_root
+  subscription: subscription_root
+}
+
+"""
+whether this query should be cached (Hasura Cloud only)
+"""
+directive @cached(
+  """
+  refresh the cache entry
+  """
+  refresh: Boolean! = false
+
+  """
+  measured in seconds
+  """
+  ttl: Int! = 60
+) on QUERY
+
+"""
+Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
+"""
+input Boolean_comparison_exp {
+  _eq: Boolean
+  _gt: Boolean
+  _gte: Boolean
+  _in: [Boolean!]
+  _is_null: Boolean
+  _lt: Boolean
+  _lte: Boolean
+  _neq: Boolean
+  _nin: [Boolean!]
+}
+
+"""
+Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
+"""
+input String_comparison_exp {
+  _eq: String
+  _gt: String
+  _gte: String
+
+  """
+  does the column match the given case-insensitive pattern
+  """
+  _ilike: String
+  _in: [String!]
+
+  """
+  does the column match the given POSIX regular expression, case insensitive
+  """
+  _iregex: String
+  _is_null: Boolean
+
+  """
+  does the column match the given pattern
+  """
+  _like: String
+  _lt: String
+  _lte: String
+  _neq: String
+
+  """
+  does the column NOT match the given case-insensitive pattern
+  """
+  _nilike: String
+  _nin: [String!]
+
+  """
+  does the column NOT match the given POSIX regular expression, case insensitive
+  """
+  _niregex: String
+
+  """
+  does the column NOT match the given pattern
+  """
+  _nlike: String
+
+  """
+  does the column NOT match the given POSIX regular expression, case sensitive
+  """
+  _nregex: String
+
+  """
+  does the column NOT match the given SQL regular expression
+  """
+  _nsimilar: String
+
+  """
+  does the column match the given POSIX regular expression, case sensitive
+  """
+  _regex: String
+
+  """
+  does the column match the given SQL regular expression
+  """
+  _similar: String
+}
+
+"""
+ordering argument of a cursor
+"""
+enum cursor_ordering {
+  """
+  ascending ordering of the cursor
+  """
+  ASC
+
+  """
+  descending ordering of the cursor
+  """
+  DESC
+}
+
+"""
+mutation root
+"""
+type mutation_root {
+  """
+  delete data from the table: "workouts"
+  """
+  delete_workouts(
+    """
+    filter the rows which have to be deleted
+    """
+    where: workouts_bool_exp!
+  ): workouts_mutation_response
+
+  """
+  delete single row from the table: "workouts"
+  """
+  delete_workouts_by_pk(id: uuid!): workouts
+
+  """
+  insert data into the table: "workouts"
+  """
+  insert_workouts(
+    """
+    the rows to be inserted
+    """
+    objects: [workouts_insert_input!]!
+
+    """
+    upsert condition
+    """
+    on_conflict: workouts_on_conflict
+  ): workouts_mutation_response
+
+  """
+  insert a single row into the table: "workouts"
+  """
+  insert_workouts_one(
+    """
+    the row to be inserted
+    """
+    object: workouts_insert_input!
+
+    """
+    upsert condition
+    """
+    on_conflict: workouts_on_conflict
+  ): workouts
+
+  """
+  update data of the table: "workouts"
+  """
+  update_workouts(
+    """
+    increments the numeric columns with given value of the filtered values
+    """
+    _inc: workouts_inc_input
+
+    """
+    sets the columns of the filtered rows to the given values
+    """
+    _set: workouts_set_input
+
+    """
+    filter the rows which have to be updated
+    """
+    where: workouts_bool_exp!
+  ): workouts_mutation_response
+
+  """
+  update single row of the table: "workouts"
+  """
+  update_workouts_by_pk(
+    """
+    increments the numeric columns with given value of the filtered values
+    """
+    _inc: workouts_inc_input
+
+    """
+    sets the columns of the filtered rows to the given values
+    """
+    _set: workouts_set_input
+    pk_columns: workouts_pk_columns_input!
+  ): workouts
+
+  """
+  update multiples rows of table: "workouts"
+  """
+  update_workouts_many(
+    """
+    updates to execute, in order
+    """
+    updates: [workouts_updates!]!
+  ): [workouts_mutation_response]
+}
+
+scalar numeric
+
+"""
+Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'.
+"""
+input numeric_comparison_exp {
+  _eq: numeric
+  _gt: numeric
+  _gte: numeric
+  _in: [numeric!]
+  _is_null: Boolean
+  _lt: numeric
+  _lte: numeric
+  _neq: numeric
+  _nin: [numeric!]
+}
+
+"""
+column ordering options
+"""
+enum order_by {
+  """
+  in ascending order, nulls last
+  """
+  asc
+
+  """
+  in ascending order, nulls first
+  """
+  asc_nulls_first
+
+  """
+  in ascending order, nulls last
+  """
+  asc_nulls_last
+
+  """
+  in descending order, nulls first
+  """
+  desc
+
+  """
+  in descending order, nulls first
+  """
+  desc_nulls_first
+
+  """
+  in descending order, nulls last
+  """
+  desc_nulls_last
+}
+
+type query_root {
+  """
+  fetch data from the table: "workouts"
+  """
+  workouts(
+    """
+    distinct select on columns
+    """
+    distinct_on: [workouts_select_column!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    order_by: [workouts_order_by!]
+
+    """
+    filter the rows returned
+    """
+    where: workouts_bool_exp
+  ): [workouts!]!
+
+  """
+  fetch aggregated fields from the table: "workouts"
+  """
+  workouts_aggregate(
+    """
+    distinct select on columns
+    """
+    distinct_on: [workouts_select_column!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    order_by: [workouts_order_by!]
+
+    """
+    filter the rows returned
+    """
+    where: workouts_bool_exp
+  ): workouts_aggregate!
+
+  """
+  fetch data from the table: "workouts" using primary key columns
+  """
+  workouts_by_pk(id: uuid!): workouts
+}
+
+type subscription_root {
+  """
+  fetch data from the table: "workouts"
+  """
+  workouts(
+    """
+    distinct select on columns
+    """
+    distinct_on: [workouts_select_column!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    order_by: [workouts_order_by!]
+
+    """
+    filter the rows returned
+    """
+    where: workouts_bool_exp
+  ): [workouts!]!
+
+  """
+  fetch aggregated fields from the table: "workouts"
+  """
+  workouts_aggregate(
+    """
+    distinct select on columns
+    """
+    distinct_on: [workouts_select_column!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    order_by: [workouts_order_by!]
+
+    """
+    filter the rows returned
+    """
+    where: workouts_bool_exp
+  ): workouts_aggregate!
+
+  """
+  fetch data from the table: "workouts" using primary key columns
+  """
+  workouts_by_pk(id: uuid!): workouts
+
+  """
+  fetch data from the table in a streaming manner: "workouts"
+  """
+  workouts_stream(
+    """
+    maximum number of rows returned in a single batch
+    """
+    batch_size: Int!
+
+    """
+    cursor to stream the results returned by the query
+    """
+    cursor: [workouts_stream_cursor_input]!
+
+    """
+    filter the rows returned
+    """
+    where: workouts_bool_exp
+  ): [workouts!]!
+}
+
+scalar timestamptz
+
+"""
+Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'.
+"""
+input timestamptz_comparison_exp {
+  _eq: timestamptz
+  _gt: timestamptz
+  _gte: timestamptz
+  _in: [timestamptz!]
+  _is_null: Boolean
+  _lt: timestamptz
+  _lte: timestamptz
+  _neq: timestamptz
+  _nin: [timestamptz!]
+}
+
+scalar uuid
+
+"""
+Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
+"""
+input uuid_comparison_exp {
+  _eq: uuid
+  _gt: uuid
+  _gte: uuid
+  _in: [uuid!]
+  _is_null: Boolean
+  _lt: uuid
+  _lte: uuid
+  _neq: uuid
+  _nin: [uuid!]
+}
+
+"""
+columns and relationships of "workouts"
+"""
+type workouts {
+  created_at: timestamptz!
+  goal_per_day: numeric!
+  id: uuid!
+  interval: numeric!
+  name: String!
+  repeat: Boolean!
+  rest: numeric!
+  squeeze: numeric!
+  stop_after: numeric!
+  type: String!
+  updated_at: timestamptz!
+  user_id: String!
+}
+
+"""
+aggregated selection of "workouts"
+"""
+type workouts_aggregate {
+  aggregate: workouts_aggregate_fields
+  nodes: [workouts!]!
+}
+
+"""
+aggregate fields of "workouts"
+"""
+type workouts_aggregate_fields {
+  avg: workouts_avg_fields
+  count(columns: [workouts_select_column!], distinct: Boolean): Int!
+  max: workouts_max_fields
+  min: workouts_min_fields
+  stddev: workouts_stddev_fields
+  stddev_pop: workouts_stddev_pop_fields
+  stddev_samp: workouts_stddev_samp_fields
+  sum: workouts_sum_fields
+  var_pop: workouts_var_pop_fields
+  var_samp: workouts_var_samp_fields
+  variance: workouts_variance_fields
+}
+
+"""
+aggregate avg on columns
+"""
+type workouts_avg_fields {
+  goal_per_day: Float
+  interval: Float
+  rest: Float
+  squeeze: Float
+  stop_after: Float
+}
+
+"""
+Boolean expression to filter rows from the table "workouts". All fields are combined with a logical 'AND'.
+"""
+input workouts_bool_exp {
+  _and: [workouts_bool_exp!]
+  _not: workouts_bool_exp
+  _or: [workouts_bool_exp!]
+  created_at: timestamptz_comparison_exp
+  goal_per_day: numeric_comparison_exp
+  id: uuid_comparison_exp
+  interval: numeric_comparison_exp
+  name: String_comparison_exp
+  repeat: Boolean_comparison_exp
+  rest: numeric_comparison_exp
+  squeeze: numeric_comparison_exp
+  stop_after: numeric_comparison_exp
+  type: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  user_id: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "workouts"
+"""
+enum workouts_constraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  workouts_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "workouts"
+"""
+input workouts_inc_input {
+  goal_per_day: numeric
+  interval: numeric
+  rest: numeric
+  squeeze: numeric
+  stop_after: numeric
+}
+
+"""
+input type for inserting data into table "workouts"
+"""
+input workouts_insert_input {
+  created_at: timestamptz
+  goal_per_day: numeric
+  id: uuid
+  interval: numeric
+  name: String
+  repeat: Boolean
+  rest: numeric
+  squeeze: numeric
+  stop_after: numeric
+  type: String
+  updated_at: timestamptz
+  user_id: String
+}
+
+"""
+aggregate max on columns
+"""
+type workouts_max_fields {
+  created_at: timestamptz
+  goal_per_day: numeric
+  id: uuid
+  interval: numeric
+  name: String
+  rest: numeric
+  squeeze: numeric
+  stop_after: numeric
+  type: String
+  updated_at: timestamptz
+  user_id: String
+}
+
+"""
+aggregate min on columns
+"""
+type workouts_min_fields {
+  created_at: timestamptz
+  goal_per_day: numeric
+  id: uuid
+  interval: numeric
+  name: String
+  rest: numeric
+  squeeze: numeric
+  stop_after: numeric
+  type: String
+  updated_at: timestamptz
+  user_id: String
+}
+
+"""
+response of any mutation on the table "workouts"
+"""
+type workouts_mutation_response {
+  """
+  number of rows affected by the mutation
+  """
+  affected_rows: Int!
+
+  """
+  data from the rows affected by the mutation
+  """
+  returning: [workouts!]!
+}
+
+"""
+on_conflict condition type for table "workouts"
+"""
+input workouts_on_conflict {
+  constraint: workouts_constraint!
+  update_columns: [workouts_update_column!]! = []
+  where: workouts_bool_exp
+}
+
+"""
+Ordering options when selecting data from "workouts".
+"""
+input workouts_order_by {
+  created_at: order_by
+  goal_per_day: order_by
+  id: order_by
+  interval: order_by
+  name: order_by
+  repeat: order_by
+  rest: order_by
+  squeeze: order_by
+  stop_after: order_by
+  type: order_by
+  updated_at: order_by
+  user_id: order_by
+}
+
+"""
+primary key columns input for table: workouts
+"""
+input workouts_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "workouts"
+"""
+enum workouts_select_column {
+  """
+  column name
+  """
+  created_at
+
+  """
+  column name
+  """
+  goal_per_day
+
+  """
+  column name
+  """
+  id
+
+  """
+  column name
+  """
+  interval
+
+  """
+  column name
+  """
+  name
+
+  """
+  column name
+  """
+  repeat
+
+  """
+  column name
+  """
+  rest
+
+  """
+  column name
+  """
+  squeeze
+
+  """
+  column name
+  """
+  stop_after
+
+  """
+  column name
+  """
+  type
+
+  """
+  column name
+  """
+  updated_at
+
+  """
+  column name
+  """
+  user_id
+}
+
+"""
+input type for updating data in table "workouts"
+"""
+input workouts_set_input {
+  created_at: timestamptz
+  goal_per_day: numeric
+  id: uuid
+  interval: numeric
+  name: String
+  repeat: Boolean
+  rest: numeric
+  squeeze: numeric
+  stop_after: numeric
+  type: String
+  updated_at: timestamptz
+  user_id: String
+}
+
+"""
+aggregate stddev on columns
+"""
+type workouts_stddev_fields {
+  goal_per_day: Float
+  interval: Float
+  rest: Float
+  squeeze: Float
+  stop_after: Float
+}
+
+"""
+aggregate stddev_pop on columns
+"""
+type workouts_stddev_pop_fields {
+  goal_per_day: Float
+  interval: Float
+  rest: Float
+  squeeze: Float
+  stop_after: Float
+}
+
+"""
+aggregate stddev_samp on columns
+"""
+type workouts_stddev_samp_fields {
+  goal_per_day: Float
+  interval: Float
+  rest: Float
+  squeeze: Float
+  stop_after: Float
+}
+
+"""
+Streaming cursor of the table "workouts"
+"""
+input workouts_stream_cursor_input {
+  """
+  Stream column input with initial value
+  """
+  initial_value: workouts_stream_cursor_value_input!
+
+  """
+  cursor ordering
+  """
+  ordering: cursor_ordering
+}
+
+"""
+Initial value of the column from where the streaming should start
+"""
+input workouts_stream_cursor_value_input {
+  created_at: timestamptz
+  goal_per_day: numeric
+  id: uuid
+  interval: numeric
+  name: String
+  repeat: Boolean
+  rest: numeric
+  squeeze: numeric
+  stop_after: numeric
+  type: String
+  updated_at: timestamptz
+  user_id: String
+}
+
+"""
+aggregate sum on columns
+"""
+type workouts_sum_fields {
+  goal_per_day: numeric
+  interval: numeric
+  rest: numeric
+  squeeze: numeric
+  stop_after: numeric
+}
+
+"""
+update columns of table "workouts"
+"""
+enum workouts_update_column {
+  """
+  column name
+  """
+  created_at
+
+  """
+  column name
+  """
+  goal_per_day
+
+  """
+  column name
+  """
+  id
+
+  """
+  column name
+  """
+  interval
+
+  """
+  column name
+  """
+  name
+
+  """
+  column name
+  """
+  repeat
+
+  """
+  column name
+  """
+  rest
+
+  """
+  column name
+  """
+  squeeze
+
+  """
+  column name
+  """
+  stop_after
+
+  """
+  column name
+  """
+  type
+
+  """
+  column name
+  """
+  updated_at
+
+  """
+  column name
+  """
+  user_id
+}
+
+input workouts_updates {
+  """
+  increments the numeric columns with given value of the filtered values
+  """
+  _inc: workouts_inc_input
+
+  """
+  sets the columns of the filtered rows to the given values
+  """
+  _set: workouts_set_input
+
+  """
+  filter the rows which have to be updated
+  """
+  where: workouts_bool_exp!
+}
+
+"""
+aggregate var_pop on columns
+"""
+type workouts_var_pop_fields {
+  goal_per_day: Float
+  interval: Float
+  rest: Float
+  squeeze: Float
+  stop_after: Float
+}
+
+"""
+aggregate var_samp on columns
+"""
+type workouts_var_samp_fields {
+  goal_per_day: Float
+  interval: Float
+  rest: Float
+  squeeze: Float
+  stop_after: Float
+}
+
+"""
+aggregate variance on columns
+"""
+type workouts_variance_fields {
+  goal_per_day: Float
+  interval: Float
+  rest: Float
+  squeeze: Float
+  stop_after: Float
+}

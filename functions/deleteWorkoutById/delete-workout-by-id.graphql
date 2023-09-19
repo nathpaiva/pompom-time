@@ -1,0 +1,11 @@
+mutation DeleteWorkoutById($id: uuid) {
+  delete_workouts(where: { id: { _eq: $id } }) {
+    returning {
+      __typename
+      name
+      id
+      created_at
+      updated_at
+    }
+  }
+}
