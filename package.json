@@ -23,6 +23,8 @@
     "@emotion/styled": "^11.11.0",
     "@netlify/functions": "^2.0.2",
     "framer-motion": "^10.16.4",
+    "graphql": "^16.8.0",
+    "graphql-request": "^6.1.0",
     "netlify-identity-widget": "^1.9.2",
     "node-fetch": "^3.3.2",
     "react": "^18.2.0",
