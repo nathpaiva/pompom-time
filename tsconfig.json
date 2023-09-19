@@ -29,6 +29,5 @@
     "generated",
     "types/globals.d.ts"
   ],
-  "exclude": ["serverless/functions/graphql"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
