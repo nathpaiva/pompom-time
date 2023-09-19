@@ -1,26 +1,8 @@
 import type { Handler, HandlerEvent, HandlerContext } from '@netlify/functions'
-import { gql, request } from 'graphql-request'
+import { request } from 'graphql-request'
 
-import { graphQLClientConfig } from './utils/graphqlClient'
-
-interface IMutationAddWorkoutByUser {
-  delete_workouts: {
-    returning: IWorkout[]
-  }
-}
-
-const MutationDeleteWorkoutByIdDocument = gql`
-  mutation MutationDeleteWorkoutById($id: uuid) {
-    delete_workouts(where: { id: { _eq: $id } }) {
-      returning {
-        name
-        id
-        created_at
-        updated_at
-      }
-    }
-  }
-`
+import { graphQLClientConfig } from '../utils/graphqlClient'
+import { DeleteWorkoutById__Document } from './__generated__/delete-workout-by-id.graphql.generated'
 
 const deleteWorkoutById: Handler = async (
   event: HandlerEvent,
@@ -40,19 +22,21 @@ const deleteWorkoutById: Handler = async (
     if (!context.clientContext) {
       throw new Error('Should be authenticated')
     }
-    const {
-      delete_workouts: { returning },
-    } = await request<IMutationAddWorkoutByUser>({
-      document: MutationDeleteWorkoutByIdDocument,
+    const { delete_workouts } = await request({
+      document: DeleteWorkoutById__Document,
       variables: {
         id,
       },
       ...config,
     })
 
+    if (!delete_workouts?.returning) {
+      throw new Error('Could not delete the workout')
+    }
+
     return {
       statusCode: 200,
-      body: JSON.stringify(returning[0]),
+      body: JSON.stringify(delete_workouts.returning[0]),
     }
   } catch (error) {
     return {

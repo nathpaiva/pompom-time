@@ -1,30 +1,8 @@
 import type { Handler, HandlerEvent, HandlerContext } from '@netlify/functions'
-import { gql, request } from 'graphql-request'
+import { request } from 'graphql-request'
 
-import { graphQLClientConfig } from './utils/graphqlClient'
-
-interface IWorkoutsByUserId {
-  workouts: IWorkout[]
-}
-
-const QueryWorkoutsByUserIdDocument = gql`
-  query QueryWorkoutsByUserId($user_id: String) {
-    workouts(where: { user_id: { _eq: $user_id } }) {
-      created_at
-      goal_per_day
-      id
-      interval
-      name
-      repeat
-      rest
-      squeeze
-      stop_after
-      type
-      updated_at
-      user_id
-    }
-  }
-`
+import { graphQLClientConfig } from '../utils/graphqlClient'
+import { WorkoutsByUserId___Document } from './__generated__/get-workouts-by-user.graphql.generated'
 
 const listUserWorkouts: Handler = async (
   _event: HandlerEvent,
@@ -41,11 +19,11 @@ const listUserWorkouts: Handler = async (
       throw new Error('Should be authenticated')
     }
 
-    const { workouts } = await request<IWorkoutsByUserId>({
+    const { workouts } = await request({
       variables: {
         user_id: context.clientContext.user.email,
       },
-      document: QueryWorkoutsByUserIdDocument,
+      document: WorkoutsByUserId___Document,
       ...config,
     })
 
