@@ -4,5 +4,6 @@
   functions = "serverless/functions"
 
 [dev]
+  command = "yarn start"
   functions = "serverless/functions"
   targetPort = 4200
