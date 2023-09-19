@@ -26,7 +26,6 @@
     "client",
     "serverless",
     "codegen.ts",
-    "generated",
     "types/globals.d.ts"
   ],
   "references": [{ "path": "./tsconfig.node.json" }]

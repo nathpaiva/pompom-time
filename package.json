@@ -14,8 +14,12 @@
     "test:ui": "yarn test:watch --coverage --ui",
     "test:coverage": "vitest --coverage --run",
     "test:ci": "yarn test:coverage",
-    "lint": "tsc --project tsconfig.json --noEmit && eslint src --ext .ts,.tsx",
-    "format": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
+    "lint:client": "tsc --project tsconfig.json --noEmit && eslint client --ext .ts,.tsx",
+    "lint:serverless": "tsc --project tsconfig.json --noEmit && eslint serverless --ext .ts,.tsx",
+    "lint": "yarn lint:client && yarn lint:serverless",
+    "format:client": "eslint client --ext .js,.jsx,.ts,.tsx --fix",
+    "format:serverless": "eslint serverless --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "yarn format:client && yarn format:serverless",
     "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
