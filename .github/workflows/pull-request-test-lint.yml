@@ -35,7 +35,6 @@ jobs:
 
   test-client:
     name: Test Client
-    environment: prod
     runs-on: ubuntu-latest
 
     steps:
@@ -84,4 +83,5 @@ jobs:
       - name: test
         run: |
           yarn docker
+          docker ps
           yarn test:serverless:ci
