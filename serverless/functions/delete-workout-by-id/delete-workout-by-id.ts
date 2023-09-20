@@ -1,20 +1,42 @@
-import type { HandlerEvent, HandlerContext } from '@netlify/functions'
+import type {
+  HandlerEvent as NtlHandlerEvent,
+  HandlerContext,
+  HandlerResponse as NtlHandlerResponse,
+} from '@netlify/functions'
 import { request } from 'graphql-request'
 
 import { graphQLClientConfig } from '../../utils/graphqlClient'
 import {
   DeleteWorkoutByIdDocument,
+  DeleteWorkoutByIdMutationVariables,
   Workouts,
 } from './__generated__/delete-workout-by-id.graphql.generated'
 
-type THandlerEvent = HandlerEvent & {
-  body: Stringified<Workouts> | null
+type HandlerEvent = Omit<NtlHandlerEvent, 'body'> & {
+  body: Stringified<DeleteWorkoutByIdMutationVariables>
 }
 
+type HandlerResponse = Omit<NtlHandlerResponse, 'body'> &
+  (
+    | {
+        statusCode: 200
+        body: Stringified<
+          Pick<
+            Workouts,
+            '__typename' | 'created_at' | 'updated_at' | 'id' | 'name'
+          >
+        >
+      }
+    | {
+        statusCode: 500
+        body: Stringified<{ error: string }>
+      }
+  )
+
 const deleteWorkoutById = async (
-  event: THandlerEvent,
+  event: HandlerEvent,
   context: HandlerContext,
-) => {
+): Promise<HandlerResponse> => {
   const config = graphQLClientConfig()
   try {
     if (!event.body) {
@@ -44,7 +66,7 @@ const deleteWorkoutById = async (
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify((error as Error).message),
+      body: JSON.stringify({ error: (error as Error).message }),
     }
   }
 }
