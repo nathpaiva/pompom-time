@@ -54,9 +54,9 @@ jobs:
       - name: create env file
         run: |
           touch .env
-          echo ${{secrets}}
-          echo HASURA_API_URL=${{ secrets.prod.HASURA_API_URL }} >> .env
-          echo HASURA_GRAPHQL_ADMIN_SECRET=${{ secrets.prod.HASURA_GRAPHQL_ADMIN_SECRET }} >> .env
+          echo ${{secrets.HASURA_API_URL}}
+          echo HASURA_API_URL=${{ secrets.HASURA_API_URL }} >> .env
+          echo HASURA_GRAPHQL_ADMIN_SECRET=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }} >> .env
 
       - name: test
         run: yarn test:ci
