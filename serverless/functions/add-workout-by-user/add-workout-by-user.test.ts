@@ -16,10 +16,6 @@ const keysToNotValidateWithMock = [
 ] as (keyof Workouts)[]
 
 describe('add-workout-by-user', () => {
-  // afterEach(() => {
-  //   vi.resetAllMocks()
-  // })
-
   afterEach(async () => {
     const req = toRequestFromBody<DeleteWorkoutByIdMutationVariables>({
       id: workoutsIdToCleanUp[0],
@@ -61,9 +57,9 @@ describe('add-workout-by-user', () => {
       req,
       mockContext(mockUserContext),
     )
+    // force the test break
     if (statusCode === 500) {
-      console.log(body.error)
-      expect(false).toBeTruthy()
+      expect(statusCode).toEqual(200)
       return
     }
 
