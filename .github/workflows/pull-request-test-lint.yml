@@ -57,7 +57,7 @@ jobs:
 
   test-serverless:
     name: Test Serverless
-    environment: prod
+    environment: test
     runs-on: ubuntu-latest
 
     steps:
