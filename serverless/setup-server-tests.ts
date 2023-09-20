@@ -3,8 +3,8 @@ import type {
   HandlerContext,
 } from '@netlify/functions'
 
-type HandlerEvent<T> = NtlHandlerEvent & {
-  body: Stringified<T> | null
+type HandlerEvent<T> = Omit<NtlHandlerEvent, 'body'> & {
+  body: Stringified<T>
 }
 
 export function toRequestFromBody<T>(body: T) {
@@ -18,10 +18,9 @@ export const mockContext = (clientContext?: HandlerContext['clientContext']) =>
     callbackWaitsForEmptyEventLoop: false,
     functionName: 'handler',
     functionVersion: '1.0',
-    invokedFunctionArn:
-      'arn:aws:lambda:us-east-1:871031295720:function:handler:1.0',
+    invokedFunctionArn: '',
     memoryLimitInMB: '62',
-    awsRequestId: '11dba8bd-577f-8040-0076-1607441e9f1d',
+    awsRequestId: '',
     logGroupName: 'Group name',
     logStreamName: 'Stream name',
     identity: undefined,
@@ -31,8 +30,6 @@ export const mockContext = (clientContext?: HandlerContext['clientContext']) =>
     fail: () => null,
     succeed: () => null,
   }) satisfies HandlerContext
-
-// export const mockResponseCb = () => new Response()
 
 // const { _hoisted_requestResponse } = vi.hoisted(() => {
 //   return { _hoisted_requestResponse: vi.fn() }

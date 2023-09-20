@@ -1,13 +1,36 @@
-import type { HandlerEvent, HandlerContext } from '@netlify/functions'
+import type {
+  HandlerEvent,
+  HandlerContext as NtlHandlerContext,
+  HandlerResponse as NtlHandlerResponse,
+} from '@netlify/functions'
 import { request } from 'graphql-request'
 
 import { graphQLClientConfig } from '../../utils/graphqlClient'
-import { WorkoutsByUserIdDocument } from './__generated__/get-workouts-by-user.graphql.generated'
+import {
+  Workouts,
+  WorkoutsByUserIdDocument,
+} from './__generated__/get-workouts-by-user.graphql.generated'
+
+type HandlerContext = Omit<NtlHandlerContext, 'clientContext'> & {
+  clientContext?: Stringified<{ user: { email: string } }>
+}
+
+type THandlerResponse = Omit<NtlHandlerResponse, 'body'> &
+  (
+    | {
+        statusCode: 200
+        body: Stringified<Workouts[]>
+      }
+    | {
+        statusCode: 500
+        body: Stringified<{ error: string }>
+      }
+  )
 
 const listWorkoutsByUserId = async (
   _event: HandlerEvent,
   context: HandlerContext,
-) => {
+): Promise<THandlerResponse> => {
   const config = graphQLClientConfig()
 
   try {
@@ -30,7 +53,7 @@ const listWorkoutsByUserId = async (
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify((error as Error).message),
+      body: JSON.stringify({ error: (error as Error).message }),
     }
   }
 }

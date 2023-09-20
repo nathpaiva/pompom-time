@@ -12,8 +12,8 @@ import {
   Workouts,
 } from './__generated__/add-workout-by-user.graphql.generated'
 
-type HandlerEvent = NtlHandlerEvent & {
-  body: Stringified<Omit<AddWorkoutByUserMutationVariables, 'user_id'>> | null
+type HandlerEvent = Omit<NtlHandlerEvent, 'body'> & {
+  body: Stringified<Omit<AddWorkoutByUserMutationVariables, 'user_id'>>
 }
 
 type THandlerResponse = Omit<NtlHandlerResponse, 'body'> &
