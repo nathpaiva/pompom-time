@@ -62,6 +62,7 @@ describe('add-workout-by-user', () => {
       mockContext(mockUserContext),
     )
     if (statusCode === 500) {
+      console.log(body.error)
       expect(false).toBeFalsy()
       return
     }
