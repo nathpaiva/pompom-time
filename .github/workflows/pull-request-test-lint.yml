@@ -81,5 +81,8 @@ jobs:
           echo HASURA_API_URL=${{ secrets.HASURA_API_URL }} >> .env
           echo HASURA_GRAPHQL_ADMIN_SECRET=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }} >> .env
 
+      - name: Start DB
+        run: yarn docker
+
       - name: test
         run: yarn test:serverless:ci
