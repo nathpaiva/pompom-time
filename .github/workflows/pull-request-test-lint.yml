@@ -60,6 +60,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.17.0
+          check-latest: true
+          cache: yarn
+
       - name: create env file
 
         run: |
@@ -71,16 +81,6 @@ jobs:
         run: |
           yarn docker
           docker ps
-
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.17.0
-          check-latest: true
-          cache: yarn
 
       - name: Install dependencies
         run: yarn
