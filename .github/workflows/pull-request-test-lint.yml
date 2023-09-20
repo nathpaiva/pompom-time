@@ -60,6 +60,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: create env file
+
+        run: |
+          touch .env
+          echo HASURA_API_URL=${{ secrets.HASURA_API_URL }} >> .env
+          echo HASURA_GRAPHQL_ADMIN_SECRET=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }} >> .env
+
+      - name: start docker
+        run: |
+          yarn docker
+          docker ps
+
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -73,15 +85,7 @@ jobs:
       - name: Install dependencies
         run: yarn
 
-      - name: create env file
-
-        run: |
-          touch .env
-          echo HASURA_API_URL=${{ secrets.HASURA_API_URL }} >> .env
-          echo HASURA_GRAPHQL_ADMIN_SECRET=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }} >> .env
-
       - name: test
         run: |
-          yarn docker
           docker ps
           yarn test:serverless:ci

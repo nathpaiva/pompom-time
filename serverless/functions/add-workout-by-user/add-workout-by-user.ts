@@ -66,6 +66,8 @@ const addWorkoutByUser = async (
       stop_after: +stop_after,
     } satisfies AddWorkoutByUserMutationVariables
 
+    console.log('config', config)
+
     const data = await request({
       document: AddWorkoutByUserDocument,
       variables,

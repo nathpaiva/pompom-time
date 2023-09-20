@@ -7,20 +7,15 @@ interface IGraphQLClientConfig {
 }
 
 export const graphQLClientConfig = (): IGraphQLClientConfig => {
-  console.log(
-    '🚀 ~ file: graphqlClient.ts:11 ~ graphQLClientConfig ~ process.env.HASURA_API_URL:',
-    process.env.HASURA_API_URL,
-    process.env.HASURA_GRAPHQL_ADMIN_SECRET,
-  )
   if (!process.env.HASURA_API_URL || !process.env.HASURA_GRAPHQL_ADMIN_SECRET) {
     throw new Error('Error, you must provide ENV.')
   }
 
   return {
-    url: process.env.HASURA_API_URL!,
+    url: 'http://127.0.0.1:8080/v1/graphql'!,
     requestHeaders: {
       'Content-Type': 'application/json',
-      'X-Hasura-Admin-Secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET!,
+      'X-Hasura-Admin-Secret': 'admin_secret'!,
     },
   }
 }
