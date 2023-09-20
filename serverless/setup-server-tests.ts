@@ -31,12 +31,12 @@ export const mockContext = (clientContext?: HandlerContext['clientContext']) =>
     succeed: () => null,
   }) satisfies HandlerContext
 
-// const { _hoisted_requestResponse } = vi.hoisted(() => {
-//   return { _hoisted_requestResponse: vi.fn() }
-// })
+const { _hoisted_requestResponse } = vi.hoisted(() => {
+  return { _hoisted_requestResponse: vi.fn() }
+})
 
-// vi.mock('graphql-request', () => ({
-//   request: _hoisted_requestResponse,
-// }))
+vi.mock('graphql-request', () => ({
+  request: _hoisted_requestResponse,
+}))
 
-// export { _hoisted_requestResponse }
+export { _hoisted_requestResponse }
