@@ -12,10 +12,10 @@ export const graphQLClientConfig = (): IGraphQLClientConfig => {
   }
 
   return {
-    url: 'http://127.0.0.1:8080/v1/graphql'!,
+    url: process.env.HASURA_API_URL!,
     requestHeaders: {
       'Content-Type': 'application/json',
-      'X-Hasura-Admin-Secret': 'admin_secret'!,
+      'X-Hasura-Admin-Secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET!,
     },
   }
 }
