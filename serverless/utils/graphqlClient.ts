@@ -8,7 +8,7 @@ interface IGraphQLClientConfig {
 
 export const graphQLClientConfig = (): IGraphQLClientConfig => {
   if (!process.env.HASURA_API_URL || !process.env.HASURA_GRAPHQL_ADMIN_SECRET) {
-    throw new Error('Error, you should provide ENV.')
+    throw new Error('Error, you must provide ENV.')
   }
 
   return {
