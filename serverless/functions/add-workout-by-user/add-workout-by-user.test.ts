@@ -1,6 +1,4 @@
 import { mockContext, toRequestFromBody } from '../../setup-server-tests'
-import { DeleteWorkoutByIdMutationVariables } from '../delete-workout-by-id/__generated__/delete-workout-by-id.graphql.generated'
-import { handler as _deleteWorkoutById } from '../delete-workout-by-id/delete-workout-by-id'
 import {
   AddWorkoutByUserMutationVariables,
   Workouts,
@@ -16,21 +14,11 @@ const keysToNotValidateWithMock = [
 ] as (keyof Workouts)[]
 
 describe('add-workout-by-user', () => {
-  afterEach(async () => {
-    const req = toRequestFromBody<DeleteWorkoutByIdMutationVariables>({
-      id: workoutsIdToCleanUp[0],
-    })
-
-    const result = await _deleteWorkoutById(
-      { ...req, body: req.body },
-      mockContext({
-        clientContext: {},
-      }),
-    )
-
-    console.log('db cleaned:', result.statusCode)
+  afterEach(() => {
+    vi.resetAllMocks()
   })
-  it('expect', async () => {
+
+  it('should add a new workout', async () => {
     const mockUserContext = {
       user: {
         email: 'test-user@nathpaiva.com',

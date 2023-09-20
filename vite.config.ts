@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react'
 import { defineConfig, splitVendorChunkPlugin, type UserConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import type { InlineConfig } from 'vitest'
+import { configDefaults } from 'vitest/config'
 
 interface VitestConfigExport extends UserConfig {
   test: InlineConfig
@@ -10,7 +11,7 @@ interface VitestConfigExport extends UserConfig {
 const testConfig = {
   globals: true,
   clearMocks: true,
-  setupFiles: ['./client/src/setupTests.ts', 'dotenv/config'],
+  setupFiles: ['./client/src/setupTests.ts'],
   environment: 'jsdom',
   alias: {
     '@utils/test': new URL(
@@ -18,9 +19,10 @@ const testConfig = {
       import.meta.url,
     ).pathname,
   },
+  exclude: [...configDefaults.exclude, 'serverless'],
   coverage: {
     provider: 'v8',
-    include: ['client/src/**/*', 'serverless/**/*'],
+    include: ['client/src/**/*'],
     reporter: ['text', 'json', 'html'],
     exclude: [
       'client/src/utils/testWrapper.ts',
@@ -37,14 +39,13 @@ const testConfig = {
       'client/src/colorPalette.ts',
 
       // serverless
-      'serverless/generated',
-      'serverless/**/*.generated.ts',
+      'serverless/**',
     ],
     all: true,
-    branches: 40,
-    functions: 50,
-    lines: 50,
-    statements: 50,
+    branches: 90,
+    functions: 80,
+    lines: 90,
+    statements: 90,
     cleanOnRerun: false,
   },
 } satisfies VitestConfigExport['test']

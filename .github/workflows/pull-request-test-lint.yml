@@ -1,4 +1,4 @@
-name: Test & Lint & Build
+name: Validate PR
 
 on:
   pull_request:
@@ -33,8 +33,30 @@ jobs:
       - name: lint
         run: yarn lint
 
-  test:
-    name: Test
+  test-client:
+    name: Test Client
+    environment: prod
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.17.0
+          check-latest: true
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: test
+        run: yarn test:ci
+
+  test-serverless:
+    name: Test Serverless
     environment: prod
     runs-on: ubuntu-latest
 
@@ -60,4 +82,4 @@ jobs:
           echo HASURA_GRAPHQL_ADMIN_SECRET=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }} >> .env
 
       - name: test
-        run: yarn test:ci
+        run: yarn test:serverless:ci
