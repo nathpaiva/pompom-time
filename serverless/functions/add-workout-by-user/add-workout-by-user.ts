@@ -82,6 +82,7 @@ const addWorkoutByUser = async (
       body: JSON.stringify(insert_workouts?.returning[0]),
     }
   } catch (error) {
+    console.log('🚀 ~ file: add-workout-by-user.ts:85 ~ error:', error)
     return {
       statusCode: 500,
       body: JSON.stringify({ error: (error as Error).message }),

@@ -5,7 +5,7 @@ import {
   AddWorkoutByUserMutationVariables,
   Workouts,
 } from './__generated__/add-workout-by-user.graphql.generated'
-import { handler } from './add-workout-by-user'
+import { handler as addWorkoutByUser } from './add-workout-by-user'
 
 const workoutsIdToCleanUp: unknown[] = []
 const keysToNotValidateWithMock = [
@@ -57,13 +57,13 @@ describe('add-workout-by-user', () => {
         mockWorkoutData,
       )
 
-    const { statusCode, body } = await handler(
+    const { statusCode, body } = await addWorkoutByUser(
       req,
       mockContext(mockUserContext),
     )
     if (statusCode === 500) {
       console.log(body.error)
-      expect(false).toBeFalsy()
+      expect(false).toBeTruthy()
       return
     }
 
