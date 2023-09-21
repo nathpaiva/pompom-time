@@ -8,7 +8,7 @@
     "hasura": "hasura console --project hasura-pompom",
     "docker:stop": "docker compose -f docker-compose.yml stop",
     "docker": "docker compose -f docker-compose.yml up -d",
-    "dev": "concurrently \"yarn docker\" \"ntl dev\"",
+    "dev": "yarn docker && ntl dev",
     "start": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
