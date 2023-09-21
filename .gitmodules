@@ -1,0 +1,3 @@
+[submodule "hasura-pompom"]
+	path = hasura-pompom
+	url = https://github.com/nathpaiva/pompom-time-private-db.git
