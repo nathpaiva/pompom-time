@@ -34,7 +34,7 @@ jobs:
         run: yarn lint
 
   test-client:
-    name: Test client
+    name: Test Client
     runs-on: ubuntu-latest
 
     steps:
