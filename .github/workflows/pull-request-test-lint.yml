@@ -101,7 +101,7 @@ jobs:
           echo HASURA_GRAPHQL_SEEDS_DIRECTORY=${{ secrets.HASURA_GRAPHQL_SEEDS_DIRECTORY }} >> .env
           echo HASURA_GRAPHQL_ACTIONS_HANDLER_WEBHOOK_BASEURL=${{ secrets.HASURA_GRAPHQL_ACTIONS_HANDLER_WEBHOOK_BASEURL }} >> .env
 
-      - name: Migrate - Hasura CI/CD
+      - name: Migrate db
         uses: browniefed/hasura-runner@master
         env:
           HASURA_CLI_VERSION: ${{ secrets.HASURA_CLI_VERSION }}
@@ -110,7 +110,7 @@ jobs:
         with:
           args: migrate apply --envfile .env --database-name default
 
-      - name: Metadata - Hasura CI/CD
+      - name: Metadata db
         uses: browniefed/hasura-runner@master
         env:
           HASURA_CLI_VERSION: ${{ secrets.HASURA_CLI_VERSION }}
@@ -119,7 +119,7 @@ jobs:
         with:
           args: metadata apply --envfile .env
 
-      - name: Seeds - Hasura CI/CD
+      - name: Seeds db
         uses: browniefed/hasura-runner@master
         env:
           HASURA_CLI_VERSION: ${{ secrets.HASURA_CLI_VERSION }}
@@ -131,6 +131,6 @@ jobs:
       - name: Install dependencies
         run: yarn
 
-      - name: test
+      - name: Test serverless functions
         run: |
           yarn test:serverless:ci
