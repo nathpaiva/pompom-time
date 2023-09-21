@@ -90,6 +90,11 @@ jobs:
           check-latest: true
           cache: yarn
 
+      - name: Pull & update submodules recursively
+        run: |
+          git submodule update --init --recursive
+          git submodule update --recursive --remote
+
       - name: Create env file
         run: |
           touch .env
