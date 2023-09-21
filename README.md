@@ -3,12 +3,58 @@
 
 # pompom time
 
-Pompom Time aims to help women how to contribute for open projects. Besides that, it's to encourage us to know more about our bodies.
+Pompom Time it's and app to encourage women know more about their bodies.
+
+## Project developed with:
 
 To develop this project we are using the following technologies:
 
+- [Docker](https://www.docker.com/)
+- [Netlify](https://netlify.com/)
+- [Hasura](https://hasura.io/)
 - [React](https://reactjs.org/)
-- [Jest](https://jestjs.io/)
-- [Chackra UI](https://chakra-ui.com/)
+- [Chakra UI](https://chakra-ui.com/)
 
-(TBD)
+## Test developed with:
+
+- [Vitest](https://vitest.dev/)
+
+## To run the project you need to install:
+
+- [Node](https://nodejs.org/en/download/)
+- [Yarn](https://yarnpkg.com/lang/en/docs/install/)
+- [Docker](https://www.docker.com/)
+- [Hasura CLI](https://hasura.io/docs/latest/hasura-cli/install-hasura-cli/)
+
+## Setup environment
+
+Create a `.env` file based on the contents of `.env.template`, customizing values as follows:
+
+- VITE_IDENTITY_URL: is the app URL
+- HASURA_API_GRAPHQL_ENDPOINT: is the API graphql from Hasura
+
+## Before starting the project you must install the dependencies:
+
+```bash
+yarn
+```
+
+## To start the project you have to run the commands:
+
+This command with start the docker to create the DB and Graphql environment and after it will start the `front-end`
+
+```bash
+yarn start
+```
+
+But if is the first time you are running locally, we also have to create the "workouts" table. In order to do that, you can use the `hasura cli` and execute:
+
+```bash
+hasura migrate apply --envfile .env --database-name default
+```
+
+```bash
+hasura metadata apply --envfile .env
+```
+
+✅ Done! Enjoy the app and send new ideas.
