@@ -30,12 +30,11 @@ jobs:
       - name: Install dependencies
         run: yarn
 
-      - name: lint
+      - name: Lint
         run: yarn lint
 
   test-client:
     name: Test Client
-    environment: prod
     runs-on: ubuntu-latest
 
     steps:
@@ -52,13 +51,33 @@ jobs:
       - name: Install dependencies
         run: yarn
 
-      - name: test
+      - name: Test
         run: yarn test:ci
 
   test-serverless:
     name: Test Serverless
-    environment: prod
+    environment: test
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: kartoza/postgis:12.4
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASS: ${{ secrets.POSTGRES_PASS }}
+          POSTGRES_DBNAME: ${{secrets.POSTGRES_DBNAME}}
+        ports:
+          - 5432:5432
+      hasura:
+        image: hasura/graphql-engine:v2.33.4
+        env:
+          PG_DATABASE_URL: ${{ secrets.PG_DATABASE_URL }}
+          HASURA_GRAPHQL_DATABASE_URL: ${{ secrets.HASURA_GRAPHQL_DATABASE_URL }}
+          HASURA_GRAPHQL_ENABLE_CONSOLE: ${{ secrets.HASURA_GRAPHQL_ENABLE_CONSOLE }}
+          HASURA_GRAPHQL_DEV_MODE: ${{ secrets.HASURA_GRAPHQL_DEV_MODE }}
+          HASURA_GRAPHQL_ENABLED_LOG_TYPES: ${{ secrets.HASURA_GRAPHQL_ENABLED_LOG_TYPES }}
+          HASURA_GRAPHQL_ADMIN_SECRET: ${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }}
+        ports:
+          - 8080:8080
 
     steps:
       - name: Checkout
@@ -71,15 +90,47 @@ jobs:
           check-latest: true
           cache: yarn
 
+      - name: Create env file
+        run: |
+          touch .env
+          echo HASURA_API_GRAPHQL_ENDPOINT=${{ secrets.HASURA_API_GRAPHQL_ENDPOINT }} >> .env
+          echo HASURA_GRAPHQL_ENDPOINT=${{ secrets.HASURA_GRAPHQL_ENDPOINT }} >> .env
+          echo HASURA_GRAPHQL_ADMIN_SECRET=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }} >> .env
+          echo HASURA_GRAPHQL_METADATA_DIRECTORY=${{ secrets.HASURA_GRAPHQL_METADATA_DIRECTORY }} >> .env
+          echo HASURA_GRAPHQL_MIGRATIONS_DIRECTORY=${{ secrets.HASURA_GRAPHQL_MIGRATIONS_DIRECTORY }} >> .env
+          echo HASURA_GRAPHQL_SEEDS_DIRECTORY=${{ secrets.HASURA_GRAPHQL_SEEDS_DIRECTORY }} >> .env
+          echo HASURA_GRAPHQL_ACTIONS_HANDLER_WEBHOOK_BASEURL=${{ secrets.HASURA_GRAPHQL_ACTIONS_HANDLER_WEBHOOK_BASEURL }} >> .env
+
+      - name: Migrate db
+        uses: browniefed/hasura-runner@master
+        env:
+          HASURA_CLI_VERSION: ${{ secrets.HASURA_CLI_VERSION }}
+          HASURA_ENDPOINT: ${{ secrets.HASURA_ENDPOINT }}
+          HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET }}
+        with:
+          args: migrate apply --envfile .env --database-name default
+
+      - name: Metadata db
+        uses: browniefed/hasura-runner@master
+        env:
+          HASURA_CLI_VERSION: ${{ secrets.HASURA_CLI_VERSION }}
+          HASURA_ENDPOINT: ${{ secrets.HASURA_ENDPOINT }}
+          HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET }}
+        with:
+          args: metadata apply --envfile .env
+
+      - name: Seeds db
+        uses: browniefed/hasura-runner@master
+        env:
+          HASURA_CLI_VERSION: ${{ secrets.HASURA_CLI_VERSION }}
+          HASURA_ENDPOINT: ${{ secrets.HASURA_ENDPOINT }}
+          HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET }}
+        with:
+          args: seeds apply --envfile .env --database-name default
+
       - name: Install dependencies
         run: yarn
 
-      - name: create env file
-
+      - name: Test serverless functions
         run: |
-          touch .env
-          echo HASURA_API_URL=${{ secrets.HASURA_API_URL }} >> .env
-          echo HASURA_GRAPHQL_ADMIN_SECRET=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }} >> .env
-
-      - name: test
-        run: yarn test:serverless:ci
+          yarn test:serverless:ci

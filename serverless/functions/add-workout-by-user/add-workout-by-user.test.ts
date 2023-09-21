@@ -1,9 +1,11 @@
 import { mockContext, toRequestFromBody } from '../../setup-server-tests'
+import { DeleteWorkoutByIdMutationVariables } from '../delete-workout-by-id/__generated__/delete-workout-by-id.graphql.generated'
+import { handler as _deleteWorkoutById } from '../delete-workout-by-id/delete-workout-by-id'
 import {
   AddWorkoutByUserMutationVariables,
   Workouts,
 } from './__generated__/add-workout-by-user.graphql.generated'
-import { handler } from './add-workout-by-user'
+import { handler as addWorkoutByUser } from './add-workout-by-user'
 
 const workoutsIdToCleanUp: unknown[] = []
 const keysToNotValidateWithMock = [
@@ -14,8 +16,19 @@ const keysToNotValidateWithMock = [
 ] as (keyof Workouts)[]
 
 describe('add-workout-by-user', () => {
-  afterEach(() => {
-    vi.resetAllMocks()
+  afterEach(async () => {
+    const req = toRequestFromBody<DeleteWorkoutByIdMutationVariables>({
+      id: workoutsIdToCleanUp[0],
+    })
+
+    const result = await _deleteWorkoutById(
+      { ...req, body: req.body },
+      mockContext({
+        clientContext: {},
+      }),
+    )
+
+    console.log('db cleaned:', result.statusCode)
   })
 
   it('should add a new workout', async () => {
@@ -40,12 +53,13 @@ describe('add-workout-by-user', () => {
         mockWorkoutData,
       )
 
-    const { statusCode, body } = await handler(
+    const { statusCode, body } = await addWorkoutByUser(
       req,
       mockContext(mockUserContext),
     )
+    // force the test break
     if (statusCode === 500) {
-      expect(false).toBeFalsy()
+      expect(statusCode).toEqual(200)
       return
     }
 

@@ -1,0 +1,19 @@
+version: '3.6'
+services:
+  postgres:
+    env_file:
+      - .env
+    image: kartoza/postgis:12.4
+    ports:
+      - 5432:5432
+  graphql-engine:
+    env_file:
+      - .env
+    image: hasura/graphql-engine:v2.33.4
+    ports:
+      - '8080:8080'
+    depends_on:
+      - 'postgres'
+    restart: always
+volumes:
+  db_data:

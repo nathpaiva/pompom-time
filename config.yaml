@@ -1,0 +1,3 @@
+version: 3
+actions:
+  kind: synchronous
