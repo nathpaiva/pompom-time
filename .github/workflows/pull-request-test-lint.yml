@@ -30,11 +30,11 @@ jobs:
       - name: Install dependencies
         run: yarn
 
-      - name: lint
+      - name: Lint
         run: yarn lint
 
   test-client:
-    name: Test Client
+    name: Test client
     runs-on: ubuntu-latest
 
     steps:
@@ -51,7 +51,7 @@ jobs:
       - name: Install dependencies
         run: yarn
 
-      - name: test
+      - name: Test
         run: yarn test:ci
 
   test-serverless:
