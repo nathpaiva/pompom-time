@@ -90,6 +90,11 @@ jobs:
           check-latest: true
           cache: yarn
 
+      - name: Give GitHub Actions access to db repo
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.SECRET_REPO_DEPLOY_KEY }}
+
       - name: Pull & update submodules recursively
         run: |
           git submodule update --init --recursive
