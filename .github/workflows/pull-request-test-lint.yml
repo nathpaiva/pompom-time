@@ -101,11 +101,20 @@ jobs:
           echo HASURA_GRAPHQL_SEEDS_DIRECTORY=${{ secrets.HASURA_GRAPHQL_SEEDS_DIRECTORY }} >> .env
           echo HASURA_GRAPHQL_ACTIONS_HANDLER_WEBHOOK_BASEURL=${{ secrets.HASURA_GRAPHQL_ACTIONS_HANDLER_WEBHOOK_BASEURL }} >> .env
 
-      - name: Setup hasura env
-        run: |
-          migrate apply --envfile .env --database-name default
-          metadata apply --envfile .env
-          seeds apply --envfile .env --database-name default
+      - name: Migrate - Hasura CI/CD
+        uses: browniefed/hasura-runner@master
+        with:
+          args: migrate apply --envfile .env --database-name default
+
+      - name: Metadata - Hasura CI/CD
+        uses: browniefed/hasura-runner@master
+        with:
+          args: metadata apply --envfile .env
+
+      - name: Seeds - Hasura CI/CD
+        uses: browniefed/hasura-runner@master
+        with:
+          args: seeds apply --envfile .env --database-name default
 
       - name: Install dependencies
         run: yarn
