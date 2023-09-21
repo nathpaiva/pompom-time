@@ -57,4 +57,12 @@ hasura migrate apply --envfile .env --database-name default
 hasura metadata apply --envfile .env
 ```
 
+## Graphql `query` and `mutation`
+
+In case you need to create a new `query` or `mutation` after the file creation you can run the script to generate the `types` from the `schema`:
+
+```bash
+yarn codegen
+```
+
 ✅ Done! Enjoy the app and send new ideas.
