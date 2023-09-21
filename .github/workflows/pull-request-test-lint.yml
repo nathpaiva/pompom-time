@@ -54,7 +54,26 @@ jobs:
       - name: test
         run: yarn test:ci
 
+  docker:
+    name: Docker setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.17.0
+          check-latest: true
+          cache: yarn
+
+      - name: Start docker
+        run: |
+          yarn docker
+
   test-serverless:
+    needs: [docker]
     name: Test Serverless
     environment: test
     runs-on: ubuntu-latest
@@ -76,10 +95,6 @@ jobs:
           touch .env
           echo HASURA_API_URL=${{ secrets.HASURA_API_URL }} >> .env
           echo HASURA_GRAPHQL_ADMIN_SECRET=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }} >> .env
-
-      - name: Start docker
-        run: |
-          yarn docker
 
       - name: Install dependencies
         run: yarn
