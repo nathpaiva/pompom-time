@@ -44,7 +44,7 @@ yarn
 This command with start the docker to create the DB and Graphql environment and after it will start the `front-end`
 
 ```bash
-yarn start
+yarn dev
 ```
 
 But if is the first time you are running locally, we also have to create the "workouts" table. In order to do that, you can use the `hasura cli` and execute:
