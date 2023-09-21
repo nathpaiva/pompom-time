@@ -103,16 +103,28 @@ jobs:
 
       - name: Migrate - Hasura CI/CD
         uses: browniefed/hasura-runner@master
+        env:
+          HASURA_CLI_VERSION: ${{ secrets.HASURA_CLI_VERSION }}
+          HASURA_ENDPOINT: ${{ secrets.HASURA_ENDPOINT }}
+          HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET }}
         with:
           args: migrate apply --envfile .env --database-name default
 
       - name: Metadata - Hasura CI/CD
         uses: browniefed/hasura-runner@master
+        env:
+          HASURA_CLI_VERSION: ${{ secrets.HASURA_CLI_VERSION }}
+          HASURA_ENDPOINT: ${{ secrets.HASURA_ENDPOINT }}
+          HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET }}
         with:
           args: metadata apply --envfile .env
 
       - name: Seeds - Hasura CI/CD
         uses: browniefed/hasura-runner@master
+        env:
+          HASURA_CLI_VERSION: ${{ secrets.HASURA_CLI_VERSION }}
+          HASURA_ENDPOINT: ${{ secrets.HASURA_ENDPOINT }}
+          HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET }}
         with:
           args: seeds apply --envfile .env --database-name default
 
