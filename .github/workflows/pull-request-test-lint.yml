@@ -82,8 +82,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.SECRET_REPO_DEPLOY_KEY }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -94,8 +92,15 @@ jobs:
 
       - name: Pull & update submodules recursively
         run: |
+          mkdir -p $HOME/.ssh
+          echo '${{ secrets.SECRET_REPO_DEPLOY_KEY }}' > $HOME/.ssh/ssh.key
+          chmod 600 $HOME/.ssh/ssh.key
+          export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/ssh.key"
+          git submodule set-url hasura-pompom git@github.com:nathpaiva/pompom-time-private-db.git
           git submodule update --init --recursive
           git submodule update
+          git submodule set-url hasura-pompom https://github.com/nathpaiva/pompom-time-private-db.git
+          unset GIT_SSH_COMMAND
 
       - name: Create env file
         run: |
