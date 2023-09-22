@@ -84,6 +84,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           token: ${{secrets.SECRET_REPO_DEPLOY_KEY}}
+          submodules: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
