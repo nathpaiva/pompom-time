@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -39,7 +39,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -81,7 +81,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          token: ${{secrets.SECRET_REPO_DEPLOY_KEY_CLASSIC}}
+          submodules: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -89,6 +92,11 @@ jobs:
           node-version: 18.17.0
           check-latest: true
           cache: yarn
+
+      - name: Pull & update submodules recursively
+        run: |
+          git submodule init
+          git submodule update
 
       - name: Create env file
         run: |

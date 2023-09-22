@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { type RouteObject, createBrowserRouter } from 'react-router-dom'
 
 import { App } from '../App'
 import { ProtectedRoute } from '../components'
@@ -11,30 +11,30 @@ export enum RouteEnum {
   workout = 'workout',
 }
 
+export const routeDataSource = {
+  path: '/',
+  element: <App />,
+  children: [
+    {
+      path: RouteEnum.login,
+      element: <Login />,
+    },
+    {
+      path: RouteEnum.logout,
+      element: <Logout />,
+    },
+    {
+      path: RouteEnum.admin,
+      element: <ProtectedRoute />,
+      children: [
+        {
+          path: RouteEnum.workout,
+          element: <Workout />,
+        },
+      ],
+    },
+  ],
+} satisfies RouteObject
+
 // TODO: validate if this is the best way to create the routes
-export const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <App />,
-    children: [
-      {
-        path: RouteEnum.login,
-        element: <Login />,
-      },
-      {
-        path: RouteEnum.logout,
-        element: <Logout />,
-      },
-      {
-        path: RouteEnum.admin,
-        element: <ProtectedRoute />,
-        children: [
-          {
-            path: RouteEnum.workout,
-            element: <Workout />,
-          },
-        ],
-      },
-    ],
-  },
-])
+export const router = createBrowserRouter([routeDataSource])
