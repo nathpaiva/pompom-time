@@ -90,15 +90,12 @@ jobs:
           check-latest: true
           cache: yarn
 
-      - name: Give GitHub Actions access to db repo
-        uses: webfactory/ssh-agent@v0.5.4
-        with:
-          ssh-private-key: ${{ secrets.SECRET_REPO_DEPLOY_KEY }}
-
       - name: Pull & update submodules recursively
         run: |
+          git config credential.helper store
+          echo "https://${{ secrets.SECRET_REPO_DEPLOY_KEY }}:github.com/nathpaiva/pompom-time-private-db.git" > ~/.git-credentials
           git submodule update --init --recursive
-          git submodule update --recursive --remote
+          git submodule update
 
       - name: Create env file
         run: |
