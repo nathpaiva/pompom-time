@@ -50,7 +50,6 @@ export const Login = () => {
       <Center
         // {/* info component */}
         sx={{
-          bg: 'purple.100',
           minWidth: IMAGE_CONTAINER_WIDTH_SIZE_PX,
           transition: 'transform 250ms',
           p: '2rem',
@@ -82,9 +81,6 @@ export const Login = () => {
         formIsHidden={formTypeOpened === EnumFormType.reset}
         switchToReset={() => {
           setFormTypeOpened(EnumFormType.login)
-        }}
-        sxContainer={{
-          bg: 'purple.100',
         }}
       />
 

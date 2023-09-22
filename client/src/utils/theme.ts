@@ -3,7 +3,12 @@ import { extendTheme } from '@chakra-ui/react'
 const activeLabelStyles = {
   transform: 'scale(0.85) translateY(-24px)',
 }
+
 export const customVariant = extendTheme({
+  config: {
+    initialColorMode: 'dark',
+    useSystemColorMode: false,
+  },
   components: {
     Form: {
       variants: {
@@ -23,7 +28,6 @@ export const customVariant = extendTheme({
               left: 0,
               zIndex: 2,
               position: 'absolute',
-              backgroundColor: 'white',
               pointerEvents: 'none',
               mx: 3,
               px: 1,

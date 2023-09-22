@@ -28,6 +28,10 @@ interface IWorkout {
 }
 
 export function Workout() {
+  return <div>Hello</div>
+}
+
+function _Workout() {
   const [addWorkoutFormData, setAddWorkoutFormData] = useState<
     Partial<Omit<IWorkout, 'created_at' | 'updated_at' | 'id' | 'user_id'>>
   >({
