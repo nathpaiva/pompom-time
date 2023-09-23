@@ -66,6 +66,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
           throw new Error('All fields should be filled')
         }
 
+        // TODO: resistance is not working after add the new input
         const _response = await fetch(
           '/.netlify/functions/add-workout-by-user',
           {
@@ -216,6 +217,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
                 name="rest"
                 placeholder=" "
               />
+              {/* TODO: change label to be sec */}
               <InputRightAddon>s</InputRightAddon>
               <FormLabel>Rest</FormLabel>
             </InputGroup>
