@@ -3,7 +3,7 @@ import type {
   HandlerContext,
   HandlerResponse as NtlHandlerResponse,
 } from '@netlify/functions'
-import { request } from 'graphql-request'
+import { ClientError, request } from 'graphql-request'
 
 import { graphQLClientConfig } from '../../utils/graphqlClient'
 import {
@@ -60,12 +60,12 @@ const addWorkoutByUser = async (
       type,
       repeat,
       goal_per_day: +goal_per_day,
-      interval: +interval,
+      interval: type === 'resistance' ? +interval : 0,
       rest: +rest,
       squeeze: +squeeze,
-      stop_after: +stop_after,
+      stop_after: type === 'resistance' ? +stop_after : 0,
     } satisfies AddWorkoutByUserMutationVariables
-
+    console.log('variables', variables)
     const data = await request({
       document: AddWorkoutByUserDocument,
       variables,
@@ -82,9 +82,16 @@ const addWorkoutByUser = async (
       body: JSON.stringify(insert_workouts?.returning[0]),
     }
   } catch (error) {
+    const _error = (error as ClientError).response
+    let message: string = (error as Error).message
+
+    if (_error.errors) {
+      message = _error.errors[0].message
+    }
+
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: (error as Error).message }),
+      body: JSON.stringify({ error: message }),
     }
   }
 }
