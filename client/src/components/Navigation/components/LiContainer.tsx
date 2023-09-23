@@ -17,6 +17,12 @@ type TLiContainer = {
     }
 )
 
+const highlightSx = {
+  bgColor: 'var(--chakra-colors-purple-300)',
+  color: 'purple.800',
+  fontWeight: '600',
+}
+
 export const LiContainer = ({
   isCurrent,
   isAuthItem,
@@ -36,11 +42,7 @@ export const LiContainer = ({
           ? { display: 'none' }
           : { display: 'block' }),
 
-        ...(isCurrent && {
-          bgColor: 'purple.100',
-          color: 'purple.800',
-          fontWeight: '600',
-        }),
+        ...(isCurrent && highlightSx),
 
         transition: 'background-color 0.2s ease-in-out',
 
@@ -48,9 +50,7 @@ export const LiContainer = ({
           display: 'block',
         },
 
-        ':hover': {
-          bgColor: 'purple.100',
-        },
+        ':hover': highlightSx,
       }}
     >
       <ChakraLink _hover={{ textDecor: 'none' }} as={Link} to={path}>

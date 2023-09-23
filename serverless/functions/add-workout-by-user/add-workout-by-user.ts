@@ -3,7 +3,7 @@ import type {
   HandlerContext,
   HandlerResponse as NtlHandlerResponse,
 } from '@netlify/functions'
-import { request } from 'graphql-request'
+import { ClientError, request } from 'graphql-request'
 
 import { graphQLClientConfig } from '../../utils/graphqlClient'
 import {
@@ -39,16 +39,9 @@ const addWorkoutByUser = async (
       throw new Error('You should provide the values')
     }
 
-    const {
-      name,
-      type,
-      repeat,
-      goal_per_day,
-      interval,
-      rest,
-      squeeze,
-      stop_after,
-    } = JSON.parse(event.body)
+    // TODO: creates different type if the workout type is = `resistance`
+    const { name, type, repeat, goal_per_day, interval, rest, squeeze } =
+      JSON.parse(event.body)
 
     if (!context.clientContext) {
       throw new Error('Should be authenticated')
@@ -60,10 +53,11 @@ const addWorkoutByUser = async (
       type,
       repeat,
       goal_per_day: +goal_per_day,
-      interval: +interval,
+      interval: type === 'resistance' ? +interval : 0,
       rest: +rest,
       squeeze: +squeeze,
-      stop_after: +stop_after,
+      // TODO: validate if this field is required
+      stop_after: 0,
     } satisfies AddWorkoutByUserMutationVariables
 
     const data = await request({
@@ -82,9 +76,16 @@ const addWorkoutByUser = async (
       body: JSON.stringify(insert_workouts?.returning[0]),
     }
   } catch (error) {
+    const _error = (error as ClientError).response
+    let message: string = (error as Error).message
+
+    if (_error.errors) {
+      message = _error.errors[0].message
+    }
+
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: (error as Error).message }),
+      body: JSON.stringify({ error: message }),
     }
   }
 }

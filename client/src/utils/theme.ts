@@ -3,7 +3,12 @@ import { extendTheme } from '@chakra-ui/react'
 const activeLabelStyles = {
   transform: 'scale(0.85) translateY(-24px)',
 }
+
 export const customVariant = extendTheme({
+  config: {
+    initialColorMode: 'dark',
+    useSystemColorMode: false,
+  },
   components: {
     Form: {
       variants: {
@@ -14,7 +19,7 @@ export const customVariant = extendTheme({
                 ...activeLabelStyles,
               },
             },
-            'input:not(:placeholder-shown) + label, .chakra-select__wrapper + label, textarea:not(:placeholder-shown) ~ label':
+            'input:not(:placeholder-shown) + label, .chakra-select__wrapper + label, textarea:not(:placeholder-shown) ~ label, input:not(:placeholder-shown) + div + label':
               {
                 ...activeLabelStyles,
               },
@@ -23,7 +28,7 @@ export const customVariant = extendTheme({
               left: 0,
               zIndex: 2,
               position: 'absolute',
-              backgroundColor: 'white',
+              backgroundColor: 'var(--chakra-colors-chakra-body-bg)',
               pointerEvents: 'none',
               mx: 3,
               px: 1,

@@ -44,7 +44,9 @@ describe('add-workout-by-user', () => {
       repeat: true,
       rest: 40,
       squeeze: 20,
-      stop_after: 4,
+      // TODO: remove this field
+      stop_after: 0,
+      // TODO: change the logic to know that the interval is not relevant if the type is different than `resistance`
       type: 'pulse',
     } satisfies Omit<AddWorkoutByUserMutationVariables, 'user_id'>
 

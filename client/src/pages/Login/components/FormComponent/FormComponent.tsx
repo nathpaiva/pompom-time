@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Card,
   FormControl,
@@ -63,9 +62,9 @@ export const FormComponent = ({
       : '100%'
 
   return (
-    <Box
+    <Card
       as="form"
-      onSubmit={onSubmit}
+      onSubmit={(e) => onSubmit(e as unknown as FormEvent<HTMLFormElement>)}
       sx={{
         minHeight: '500px',
         minWidth: containerSize,
@@ -92,8 +91,12 @@ export const FormComponent = ({
           mx: 'auto',
           p: '2rem',
           gap: '20px',
+          label: {
+            backgroundColor: 'var(--chakra-colors-chakra-body-bg)',
+          },
           ...sxForm,
         }}
+        variant="outline"
       >
         {/* reset form */}
         {/* if is register should add input name  */}
@@ -178,6 +181,6 @@ export const FormComponent = ({
           </Button>
         )}
       </Card>
-    </Box>
+    </Card>
   )
 }
