@@ -39,6 +39,7 @@ const addWorkoutByUser = async (
       throw new Error('You should provide the values')
     }
 
+    // TODO: creates different type if the workout type is = `resistance`
     const {
       name,
       type,
@@ -65,7 +66,7 @@ const addWorkoutByUser = async (
       squeeze: +squeeze,
       stop_after: type === 'resistance' ? +stop_after : 0,
     } satisfies AddWorkoutByUserMutationVariables
-    console.log('variables', variables)
+
     const data = await request({
       document: AddWorkoutByUserDocument,
       variables,
