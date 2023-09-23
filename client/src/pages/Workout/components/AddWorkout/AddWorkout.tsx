@@ -14,39 +14,20 @@ import {
   Select,
   Stack,
   Switch,
-  Text,
   useToast,
 } from '@chakra-ui/react'
-import { useState, type ChangeEvent, type FormEvent, useEffect } from 'react'
+import { useState, type ChangeEvent, type FormEvent, Dispatch } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 
-const workoutType = {
-  strength: 'strength',
-  pulse: 'pulse',
-  intensity: 'intensity',
-  resistance: 'resistance',
-} as const
+import { IWorkout, workoutType } from '../../types'
 
-interface IWorkout {
-  created_at: Date // no
-  updated_at: Date // no
-  id: string // no
-  user_id: string // no
-  name: string
-  type: keyof typeof workoutType
-  repeat: boolean
-  goal_per_day: number
-  interval: number
-  rest: number
-  squeeze: number
-  stop_after: number
+interface IAddWorkout {
+  setWorkouts: Dispatch<React.SetStateAction<IWorkout[]>>
 }
 
-export const AddWorkout = () => {
+export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
   const toast = useToast()
-  const { authedFetch } = useIdentityContext()
-  // Workouts should come from context or somewhere else, redux?
-  const [workouts, setWorkouts] = useState<IWorkout[]>([])
+  const { user } = useIdentityContext()
   const [addWorkoutFormData, setAddWorkoutFormData] = useState<
     Partial<
       Omit<
@@ -68,7 +49,14 @@ export const AddWorkout = () => {
   const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const isInvalidForm = Object.values(addWorkoutFormData).some(
+    const _copy = { ...addWorkoutFormData }
+
+    // delete the not required field
+    if (addWorkoutFormData.type !== 'resistance') {
+      delete _copy.interval
+    }
+
+    const isInvalidForm = Object.values(_copy).some(
       (item) => typeof item === 'undefined',
     )
 
@@ -78,12 +66,22 @@ export const AddWorkout = () => {
           throw new Error('All fields should be filled')
         }
 
-        const response = (await authedFetch.post(
+        const _response = await fetch(
           '/.netlify/functions/add-workout-by-user',
           {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${user?.token.access_token}` },
             body: JSON.stringify(addWorkoutFormData),
           },
-        )) as IWorkout
+        )
+
+        const response = (await _response.json()) as IWorkout & {
+          error?: string
+        }
+
+        if (_response.status !== 200) {
+          throw new Error(response.error)
+        }
 
         setWorkouts((prev) => [...prev, response])
         toast({
@@ -115,6 +113,7 @@ export const AddWorkout = () => {
     }))
   }
 
+  // TODO: create a form validation
   return (
     <Card
       variant="unstyled"
@@ -126,7 +125,7 @@ export const AddWorkout = () => {
         handleOnSubmit(event as unknown as FormEvent<HTMLFormElement>)
       }
     >
-      <Heading size="md">Create your new workout</Heading>
+      <Heading size="md">Create a new workout:</Heading>
 
       <CardBody>
         <Stack spacing={5}>
@@ -248,7 +247,7 @@ export const AddWorkout = () => {
       <CardFooter>
         <Button
           rightIcon={<AddIcon />}
-          colorScheme="pink"
+          colorScheme="purple"
           width="max-content"
           type="submit"
         >
