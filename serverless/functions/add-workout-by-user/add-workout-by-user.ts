@@ -40,16 +40,8 @@ const addWorkoutByUser = async (
     }
 
     // TODO: creates different type if the workout type is = `resistance`
-    const {
-      name,
-      type,
-      repeat,
-      goal_per_day,
-      interval,
-      rest,
-      squeeze,
-      stop_after,
-    } = JSON.parse(event.body)
+    const { name, type, repeat, goal_per_day, interval, rest, squeeze } =
+      JSON.parse(event.body)
 
     if (!context.clientContext) {
       throw new Error('Should be authenticated')
@@ -64,7 +56,8 @@ const addWorkoutByUser = async (
       interval: type === 'resistance' ? +interval : 0,
       rest: +rest,
       squeeze: +squeeze,
-      stop_after: type === 'resistance' ? +stop_after : 0,
+      // TODO: validate if this field is required
+      stop_after: 0,
     } satisfies AddWorkoutByUserMutationVariables
 
     const data = await request({
