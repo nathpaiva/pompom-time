@@ -19,7 +19,7 @@ export const customVariant = extendTheme({
                 ...activeLabelStyles,
               },
             },
-            'input:not(:placeholder-shown) + label, .chakra-select__wrapper + label, textarea:not(:placeholder-shown) ~ label':
+            'input:not(:placeholder-shown) + label, .chakra-select__wrapper + label, textarea:not(:placeholder-shown) ~ label, input:not(:placeholder-shown) + div + label':
               {
                 ...activeLabelStyles,
               },
@@ -28,6 +28,7 @@ export const customVariant = extendTheme({
               left: 0,
               zIndex: 2,
               position: 'absolute',
+              backgroundColor: 'var(--chakra-colors-chakra-body-bg)',
               pointerEvents: 'none',
               mx: 3,
               px: 1,
