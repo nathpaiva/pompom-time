@@ -134,7 +134,7 @@ jobs:
           HASURA_ENDPOINT: ${{ secrets.HASURA_ENDPOINT }}
           HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET }}
         with:
-          args: seeds apply --envfile .env --database-name default
+          args: seeds apply --envfile .env --database-name default --file workouts_seed.sql
 
       - name: Install dependencies
         run: yarn
