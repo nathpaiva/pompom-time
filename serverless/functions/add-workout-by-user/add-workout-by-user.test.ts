@@ -49,7 +49,6 @@ const expectWorkoutSuccessfully = (type: EnumWorkoutType) => {
 
       // if the statusCode is 500 the test should break!!!
       if (statusCode === 500) {
-        console.log(`"body", ${JSON.parse(body).error}`)
         expect(statusCode).toEqual(200)
         return
       }
