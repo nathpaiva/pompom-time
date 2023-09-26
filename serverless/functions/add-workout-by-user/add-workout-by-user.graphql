@@ -1,13 +1,12 @@
 mutation AddWorkoutByUser(
-  $user_id: String
-  $name: String
-  $type: String
-  $interval: numeric
-  $repeat: Boolean
-  $goal_per_day: numeric
-  $stop_after: numeric
-  $rest: numeric
-  $squeeze: numeric
+  $user_id: String!
+  $name: String!
+  $type: String!
+  $interval: Float!
+  $repeat: Boolean!
+  $goal_per_day: Float!
+  $rest: Float!
+  $squeeze: Float!
 ) {
   insert_workouts(
     objects: {
@@ -17,7 +16,6 @@ mutation AddWorkoutByUser(
       interval: $interval
       repeat: $repeat
       goal_per_day: $goal_per_day
-      stop_after: $stop_after
       rest: $rest
       squeeze: $squeeze
     }
@@ -33,7 +31,6 @@ mutation AddWorkoutByUser(
       interval
       repeat
       goal_per_day
-      stop_after
       rest
       squeeze
     }

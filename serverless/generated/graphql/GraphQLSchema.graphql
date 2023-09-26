@@ -35,6 +35,21 @@ input Boolean_comparison_exp {
 }
 
 """
+Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'.
+"""
+input Float_comparison_exp {
+  _eq: Float
+  _gt: Float
+  _gte: Float
+  _in: [Float!]
+  _is_null: Boolean
+  _lt: Float
+  _lte: Float
+  _neq: Float
+  _nin: [Float!]
+}
+
+"""
 Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
 """
 input String_comparison_exp {
@@ -208,23 +223,6 @@ type mutation_root {
     """
     updates: [workouts_updates!]!
   ): [workouts_mutation_response]
-}
-
-scalar numeric
-
-"""
-Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'.
-"""
-input numeric_comparison_exp {
-  _eq: numeric
-  _gt: numeric
-  _gte: numeric
-  _in: [numeric!]
-  _is_null: Boolean
-  _lt: numeric
-  _lte: numeric
-  _neq: numeric
-  _nin: [numeric!]
 }
 
 """
@@ -455,14 +453,13 @@ columns and relationships of "workouts"
 """
 type workouts {
   created_at: timestamptz!
-  goal_per_day: numeric!
+  goal_per_day: Float!
   id: uuid!
-  interval: numeric!
+  interval: Float!
   name: String!
   repeat: Boolean!
-  rest: numeric!
-  squeeze: numeric!
-  stop_after: numeric!
+  rest: Float!
+  squeeze: Float!
   type: String!
   updated_at: timestamptz!
   user_id: String!
@@ -501,7 +498,6 @@ type workouts_avg_fields {
   interval: Float
   rest: Float
   squeeze: Float
-  stop_after: Float
 }
 
 """
@@ -512,14 +508,13 @@ input workouts_bool_exp {
   _not: workouts_bool_exp
   _or: [workouts_bool_exp!]
   created_at: timestamptz_comparison_exp
-  goal_per_day: numeric_comparison_exp
+  goal_per_day: Float_comparison_exp
   id: uuid_comparison_exp
-  interval: numeric_comparison_exp
+  interval: Float_comparison_exp
   name: String_comparison_exp
   repeat: Boolean_comparison_exp
-  rest: numeric_comparison_exp
-  squeeze: numeric_comparison_exp
-  stop_after: numeric_comparison_exp
+  rest: Float_comparison_exp
+  squeeze: Float_comparison_exp
   type: String_comparison_exp
   updated_at: timestamptz_comparison_exp
   user_id: String_comparison_exp
@@ -539,11 +534,10 @@ enum workouts_constraint {
 input type for incrementing numeric columns in table "workouts"
 """
 input workouts_inc_input {
-  goal_per_day: numeric
-  interval: numeric
-  rest: numeric
-  squeeze: numeric
-  stop_after: numeric
+  goal_per_day: Float
+  interval: Float
+  rest: Float
+  squeeze: Float
 }
 
 """
@@ -551,14 +545,13 @@ input type for inserting data into table "workouts"
 """
 input workouts_insert_input {
   created_at: timestamptz
-  goal_per_day: numeric
+  goal_per_day: Float
   id: uuid
-  interval: numeric
+  interval: Float
   name: String
   repeat: Boolean
-  rest: numeric
-  squeeze: numeric
-  stop_after: numeric
+  rest: Float
+  squeeze: Float
   type: String
   updated_at: timestamptz
   user_id: String
@@ -569,13 +562,12 @@ aggregate max on columns
 """
 type workouts_max_fields {
   created_at: timestamptz
-  goal_per_day: numeric
+  goal_per_day: Float
   id: uuid
-  interval: numeric
+  interval: Float
   name: String
-  rest: numeric
-  squeeze: numeric
-  stop_after: numeric
+  rest: Float
+  squeeze: Float
   type: String
   updated_at: timestamptz
   user_id: String
@@ -586,13 +578,12 @@ aggregate min on columns
 """
 type workouts_min_fields {
   created_at: timestamptz
-  goal_per_day: numeric
+  goal_per_day: Float
   id: uuid
-  interval: numeric
+  interval: Float
   name: String
-  rest: numeric
-  squeeze: numeric
-  stop_after: numeric
+  rest: Float
+  squeeze: Float
   type: String
   updated_at: timestamptz
   user_id: String
@@ -634,7 +625,6 @@ input workouts_order_by {
   repeat: order_by
   rest: order_by
   squeeze: order_by
-  stop_after: order_by
   type: order_by
   updated_at: order_by
   user_id: order_by
@@ -694,11 +684,6 @@ enum workouts_select_column {
   """
   column name
   """
-  stop_after
-
-  """
-  column name
-  """
   type
 
   """
@@ -717,14 +702,13 @@ input type for updating data in table "workouts"
 """
 input workouts_set_input {
   created_at: timestamptz
-  goal_per_day: numeric
+  goal_per_day: Float
   id: uuid
-  interval: numeric
+  interval: Float
   name: String
   repeat: Boolean
-  rest: numeric
-  squeeze: numeric
-  stop_after: numeric
+  rest: Float
+  squeeze: Float
   type: String
   updated_at: timestamptz
   user_id: String
@@ -738,7 +722,6 @@ type workouts_stddev_fields {
   interval: Float
   rest: Float
   squeeze: Float
-  stop_after: Float
 }
 
 """
@@ -749,7 +732,6 @@ type workouts_stddev_pop_fields {
   interval: Float
   rest: Float
   squeeze: Float
-  stop_after: Float
 }
 
 """
@@ -760,7 +742,6 @@ type workouts_stddev_samp_fields {
   interval: Float
   rest: Float
   squeeze: Float
-  stop_after: Float
 }
 
 """
@@ -783,14 +764,13 @@ Initial value of the column from where the streaming should start
 """
 input workouts_stream_cursor_value_input {
   created_at: timestamptz
-  goal_per_day: numeric
+  goal_per_day: Float
   id: uuid
-  interval: numeric
+  interval: Float
   name: String
   repeat: Boolean
-  rest: numeric
-  squeeze: numeric
-  stop_after: numeric
+  rest: Float
+  squeeze: Float
   type: String
   updated_at: timestamptz
   user_id: String
@@ -800,11 +780,10 @@ input workouts_stream_cursor_value_input {
 aggregate sum on columns
 """
 type workouts_sum_fields {
-  goal_per_day: numeric
-  interval: numeric
-  rest: numeric
-  squeeze: numeric
-  stop_after: numeric
+  goal_per_day: Float
+  interval: Float
+  rest: Float
+  squeeze: Float
 }
 
 """
@@ -854,11 +833,6 @@ enum workouts_update_column {
   """
   column name
   """
-  stop_after
-
-  """
-  column name
-  """
   type
 
   """
@@ -897,7 +871,6 @@ type workouts_var_pop_fields {
   interval: Float
   rest: Float
   squeeze: Float
-  stop_after: Float
 }
 
 """
@@ -908,7 +881,6 @@ type workouts_var_samp_fields {
   interval: Float
   rest: Float
   squeeze: Float
-  stop_after: Float
 }
 
 """
@@ -919,5 +891,4 @@ type workouts_variance_fields {
   interval: Float
   rest: Float
   squeeze: Float
-  stop_after: Float
 }

@@ -12,8 +12,31 @@ import {
   Workouts,
 } from './__generated__/add-workout-by-user.graphql.generated'
 
+export enum EnumWorkoutType {
+  strength = 'strength',
+  pulse = 'pulse',
+  intensity = 'intensity',
+  resistance = 'resistance',
+}
+
+interface TAddWorkoutSPI {
+  type: Exclude<EnumWorkoutType, EnumWorkoutType.resistance>
+  interval?: never
+}
+
+interface TAddWorkoutR {
+  type: EnumWorkoutType.resistance
+  interval: number
+}
+
+export type TAddWorkoutByUserMutationVariables = Omit<
+  AddWorkoutByUserMutationVariables,
+  'user_id' | 'type' | 'stop_after' | 'interval'
+> &
+  (TAddWorkoutSPI | TAddWorkoutR)
+
 type HandlerEvent = Omit<NtlHandlerEvent, 'body'> & {
-  body: Stringified<Omit<AddWorkoutByUserMutationVariables, 'user_id'>>
+  body: Stringified<TAddWorkoutByUserMutationVariables>
 }
 
 type THandlerResponse = Omit<NtlHandlerResponse, 'body'> &
@@ -35,6 +58,10 @@ const addWorkoutByUser = async (
   const config = graphQLClientConfig()
 
   try {
+    if (!context.clientContext) {
+      throw new Error('You must be authenticated')
+    }
+
     if (!event.body) {
       throw new Error('You should provide the values')
     }
@@ -43,8 +70,20 @@ const addWorkoutByUser = async (
     const { name, type, repeat, goal_per_day, interval, rest, squeeze } =
       JSON.parse(event.body)
 
-    if (!context.clientContext) {
-      throw new Error('Should be authenticated')
+    if (
+      type === EnumWorkoutType.resistance &&
+      typeof interval === 'undefined'
+    ) {
+      throw new Error('Interval is required for resistance workout type')
+    }
+
+    if (
+      type !== EnumWorkoutType.resistance &&
+      typeof interval !== 'undefined'
+    ) {
+      throw new Error(
+        `Interval is not valid for ${type as EnumWorkoutType} workout type`,
+      )
     }
 
     const variables = {
@@ -52,13 +91,16 @@ const addWorkoutByUser = async (
       name,
       type,
       repeat,
+      interval: 0,
       goal_per_day: +goal_per_day,
-      interval: type === 'resistance' ? +interval : 0,
       rest: +rest,
       squeeze: +squeeze,
-      // TODO: validate if this field is required
-      stop_after: 0,
     } satisfies AddWorkoutByUserMutationVariables
+
+    // if resistance the interval must be provided by the user
+    if (type === EnumWorkoutType.resistance) {
+      variables.interval = +interval
+    }
 
     const data = await request({
       document: AddWorkoutByUserDocument,
@@ -66,20 +108,19 @@ const addWorkoutByUser = async (
       ...config,
     })
 
-    if (!data) {
+    if (!data?.insert_workouts?.returning) {
       throw new Error('Could not load data from workout mutation')
     }
-    const { insert_workouts } = data
 
     return {
       statusCode: 200,
-      body: JSON.stringify(insert_workouts?.returning[0]),
+      body: JSON.stringify(data.insert_workouts.returning[0]),
     }
   } catch (error) {
     const _error = (error as ClientError).response
     let message: string = (error as Error).message
 
-    if (_error.errors) {
+    if (_error?.errors) {
       message = _error.errors[0].message
     }
 

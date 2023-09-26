@@ -9,7 +9,6 @@ query WorkoutsByUserId($user_id: String) {
     repeat
     rest
     squeeze
-    stop_after
     type
     updated_at
     user_id

@@ -29,7 +29,6 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean }
   Int: { input: number; output: number }
   Float: { input: number; output: number }
-  numeric: { input: any; output: any }
   timestamptz: { input: any; output: any }
   uuid: { input: any; output: any }
 }
@@ -45,6 +44,19 @@ export type Boolean_Comparison_Exp = {
   _lte: InputMaybe<Scalars['Boolean']['input']>
   _neq: InputMaybe<Scalars['Boolean']['input']>
   _nin: InputMaybe<Array<Scalars['Boolean']['input']>>
+}
+
+/** Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'. */
+export type Float_Comparison_Exp = {
+  _eq: InputMaybe<Scalars['Float']['input']>
+  _gt: InputMaybe<Scalars['Float']['input']>
+  _gte: InputMaybe<Scalars['Float']['input']>
+  _in: InputMaybe<Array<Scalars['Float']['input']>>
+  _is_null: InputMaybe<Scalars['Boolean']['input']>
+  _lt: InputMaybe<Scalars['Float']['input']>
+  _lte: InputMaybe<Scalars['Float']['input']>
+  _neq: InputMaybe<Scalars['Float']['input']>
+  _nin: InputMaybe<Array<Scalars['Float']['input']>>
 }
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -146,19 +158,6 @@ export type Mutation_RootUpdate_Workouts_By_PkArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_Workouts_ManyArgs = {
   updates: Array<Workouts_Updates>
-}
-
-/** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
-export type Numeric_Comparison_Exp = {
-  _eq: InputMaybe<Scalars['numeric']['input']>
-  _gt: InputMaybe<Scalars['numeric']['input']>
-  _gte: InputMaybe<Scalars['numeric']['input']>
-  _in: InputMaybe<Array<Scalars['numeric']['input']>>
-  _is_null: InputMaybe<Scalars['Boolean']['input']>
-  _lt: InputMaybe<Scalars['numeric']['input']>
-  _lte: InputMaybe<Scalars['numeric']['input']>
-  _neq: InputMaybe<Scalars['numeric']['input']>
-  _nin: InputMaybe<Array<Scalars['numeric']['input']>>
 }
 
 /** column ordering options */
@@ -275,14 +274,13 @@ export type Uuid_Comparison_Exp = {
 export type Workouts = {
   __typename?: 'workouts'
   created_at: Scalars['timestamptz']['output']
-  goal_per_day: Scalars['numeric']['output']
+  goal_per_day: Scalars['Float']['output']
   id: Scalars['uuid']['output']
-  interval: Scalars['numeric']['output']
+  interval: Scalars['Float']['output']
   name: Scalars['String']['output']
   repeat: Scalars['Boolean']['output']
-  rest: Scalars['numeric']['output']
-  squeeze: Scalars['numeric']['output']
-  stop_after: Scalars['numeric']['output']
+  rest: Scalars['Float']['output']
+  squeeze: Scalars['Float']['output']
   type: Scalars['String']['output']
   updated_at: Scalars['timestamptz']['output']
   user_id: Scalars['String']['output']
@@ -324,7 +322,6 @@ export type Workouts_Avg_Fields = {
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
-  stop_after: Maybe<Scalars['Float']['output']>
 }
 
 /** Boolean expression to filter rows from the table "workouts". All fields are combined with a logical 'AND'. */
@@ -333,14 +330,13 @@ export type Workouts_Bool_Exp = {
   _not: InputMaybe<Workouts_Bool_Exp>
   _or: InputMaybe<Array<Workouts_Bool_Exp>>
   created_at: InputMaybe<Timestamptz_Comparison_Exp>
-  goal_per_day: InputMaybe<Numeric_Comparison_Exp>
+  goal_per_day: InputMaybe<Float_Comparison_Exp>
   id: InputMaybe<Uuid_Comparison_Exp>
-  interval: InputMaybe<Numeric_Comparison_Exp>
+  interval: InputMaybe<Float_Comparison_Exp>
   name: InputMaybe<String_Comparison_Exp>
   repeat: InputMaybe<Boolean_Comparison_Exp>
-  rest: InputMaybe<Numeric_Comparison_Exp>
-  squeeze: InputMaybe<Numeric_Comparison_Exp>
-  stop_after: InputMaybe<Numeric_Comparison_Exp>
+  rest: InputMaybe<Float_Comparison_Exp>
+  squeeze: InputMaybe<Float_Comparison_Exp>
   type: InputMaybe<String_Comparison_Exp>
   updated_at: InputMaybe<Timestamptz_Comparison_Exp>
   user_id: InputMaybe<String_Comparison_Exp>
@@ -354,24 +350,22 @@ export enum Workouts_Constraint {
 
 /** input type for incrementing numeric columns in table "workouts" */
 export type Workouts_Inc_Input = {
-  goal_per_day: InputMaybe<Scalars['numeric']['input']>
-  interval: InputMaybe<Scalars['numeric']['input']>
-  rest: InputMaybe<Scalars['numeric']['input']>
-  squeeze: InputMaybe<Scalars['numeric']['input']>
-  stop_after: InputMaybe<Scalars['numeric']['input']>
+  goal_per_day: InputMaybe<Scalars['Float']['input']>
+  interval: InputMaybe<Scalars['Float']['input']>
+  rest: InputMaybe<Scalars['Float']['input']>
+  squeeze: InputMaybe<Scalars['Float']['input']>
 }
 
 /** input type for inserting data into table "workouts" */
 export type Workouts_Insert_Input = {
   created_at: InputMaybe<Scalars['timestamptz']['input']>
-  goal_per_day: InputMaybe<Scalars['numeric']['input']>
+  goal_per_day: InputMaybe<Scalars['Float']['input']>
   id: InputMaybe<Scalars['uuid']['input']>
-  interval: InputMaybe<Scalars['numeric']['input']>
+  interval: InputMaybe<Scalars['Float']['input']>
   name: InputMaybe<Scalars['String']['input']>
   repeat: InputMaybe<Scalars['Boolean']['input']>
-  rest: InputMaybe<Scalars['numeric']['input']>
-  squeeze: InputMaybe<Scalars['numeric']['input']>
-  stop_after: InputMaybe<Scalars['numeric']['input']>
+  rest: InputMaybe<Scalars['Float']['input']>
+  squeeze: InputMaybe<Scalars['Float']['input']>
   type: InputMaybe<Scalars['String']['input']>
   updated_at: InputMaybe<Scalars['timestamptz']['input']>
   user_id: InputMaybe<Scalars['String']['input']>
@@ -381,13 +375,12 @@ export type Workouts_Insert_Input = {
 export type Workouts_Max_Fields = {
   __typename?: 'workouts_max_fields'
   created_at: Maybe<Scalars['timestamptz']['output']>
-  goal_per_day: Maybe<Scalars['numeric']['output']>
+  goal_per_day: Maybe<Scalars['Float']['output']>
   id: Maybe<Scalars['uuid']['output']>
-  interval: Maybe<Scalars['numeric']['output']>
+  interval: Maybe<Scalars['Float']['output']>
   name: Maybe<Scalars['String']['output']>
-  rest: Maybe<Scalars['numeric']['output']>
-  squeeze: Maybe<Scalars['numeric']['output']>
-  stop_after: Maybe<Scalars['numeric']['output']>
+  rest: Maybe<Scalars['Float']['output']>
+  squeeze: Maybe<Scalars['Float']['output']>
   type: Maybe<Scalars['String']['output']>
   updated_at: Maybe<Scalars['timestamptz']['output']>
   user_id: Maybe<Scalars['String']['output']>
@@ -397,13 +390,12 @@ export type Workouts_Max_Fields = {
 export type Workouts_Min_Fields = {
   __typename?: 'workouts_min_fields'
   created_at: Maybe<Scalars['timestamptz']['output']>
-  goal_per_day: Maybe<Scalars['numeric']['output']>
+  goal_per_day: Maybe<Scalars['Float']['output']>
   id: Maybe<Scalars['uuid']['output']>
-  interval: Maybe<Scalars['numeric']['output']>
+  interval: Maybe<Scalars['Float']['output']>
   name: Maybe<Scalars['String']['output']>
-  rest: Maybe<Scalars['numeric']['output']>
-  squeeze: Maybe<Scalars['numeric']['output']>
-  stop_after: Maybe<Scalars['numeric']['output']>
+  rest: Maybe<Scalars['Float']['output']>
+  squeeze: Maybe<Scalars['Float']['output']>
   type: Maybe<Scalars['String']['output']>
   updated_at: Maybe<Scalars['timestamptz']['output']>
   user_id: Maybe<Scalars['String']['output']>
@@ -435,7 +427,6 @@ export type Workouts_Order_By = {
   repeat: InputMaybe<Order_By>
   rest: InputMaybe<Order_By>
   squeeze: InputMaybe<Order_By>
-  stop_after: InputMaybe<Order_By>
   type: InputMaybe<Order_By>
   updated_at: InputMaybe<Order_By>
   user_id: InputMaybe<Order_By>
@@ -465,8 +456,6 @@ export enum Workouts_Select_Column {
   /** column name */
   Squeeze = 'squeeze',
   /** column name */
-  StopAfter = 'stop_after',
-  /** column name */
   Type = 'type',
   /** column name */
   UpdatedAt = 'updated_at',
@@ -477,14 +466,13 @@ export enum Workouts_Select_Column {
 /** input type for updating data in table "workouts" */
 export type Workouts_Set_Input = {
   created_at: InputMaybe<Scalars['timestamptz']['input']>
-  goal_per_day: InputMaybe<Scalars['numeric']['input']>
+  goal_per_day: InputMaybe<Scalars['Float']['input']>
   id: InputMaybe<Scalars['uuid']['input']>
-  interval: InputMaybe<Scalars['numeric']['input']>
+  interval: InputMaybe<Scalars['Float']['input']>
   name: InputMaybe<Scalars['String']['input']>
   repeat: InputMaybe<Scalars['Boolean']['input']>
-  rest: InputMaybe<Scalars['numeric']['input']>
-  squeeze: InputMaybe<Scalars['numeric']['input']>
-  stop_after: InputMaybe<Scalars['numeric']['input']>
+  rest: InputMaybe<Scalars['Float']['input']>
+  squeeze: InputMaybe<Scalars['Float']['input']>
   type: InputMaybe<Scalars['String']['input']>
   updated_at: InputMaybe<Scalars['timestamptz']['input']>
   user_id: InputMaybe<Scalars['String']['input']>
@@ -497,7 +485,6 @@ export type Workouts_Stddev_Fields = {
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
-  stop_after: Maybe<Scalars['Float']['output']>
 }
 
 /** aggregate stddev_pop on columns */
@@ -507,7 +494,6 @@ export type Workouts_Stddev_Pop_Fields = {
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
-  stop_after: Maybe<Scalars['Float']['output']>
 }
 
 /** aggregate stddev_samp on columns */
@@ -517,7 +503,6 @@ export type Workouts_Stddev_Samp_Fields = {
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
-  stop_after: Maybe<Scalars['Float']['output']>
 }
 
 /** Streaming cursor of the table "workouts" */
@@ -531,14 +516,13 @@ export type Workouts_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Workouts_Stream_Cursor_Value_Input = {
   created_at: InputMaybe<Scalars['timestamptz']['input']>
-  goal_per_day: InputMaybe<Scalars['numeric']['input']>
+  goal_per_day: InputMaybe<Scalars['Float']['input']>
   id: InputMaybe<Scalars['uuid']['input']>
-  interval: InputMaybe<Scalars['numeric']['input']>
+  interval: InputMaybe<Scalars['Float']['input']>
   name: InputMaybe<Scalars['String']['input']>
   repeat: InputMaybe<Scalars['Boolean']['input']>
-  rest: InputMaybe<Scalars['numeric']['input']>
-  squeeze: InputMaybe<Scalars['numeric']['input']>
-  stop_after: InputMaybe<Scalars['numeric']['input']>
+  rest: InputMaybe<Scalars['Float']['input']>
+  squeeze: InputMaybe<Scalars['Float']['input']>
   type: InputMaybe<Scalars['String']['input']>
   updated_at: InputMaybe<Scalars['timestamptz']['input']>
   user_id: InputMaybe<Scalars['String']['input']>
@@ -547,11 +531,10 @@ export type Workouts_Stream_Cursor_Value_Input = {
 /** aggregate sum on columns */
 export type Workouts_Sum_Fields = {
   __typename?: 'workouts_sum_fields'
-  goal_per_day: Maybe<Scalars['numeric']['output']>
-  interval: Maybe<Scalars['numeric']['output']>
-  rest: Maybe<Scalars['numeric']['output']>
-  squeeze: Maybe<Scalars['numeric']['output']>
-  stop_after: Maybe<Scalars['numeric']['output']>
+  goal_per_day: Maybe<Scalars['Float']['output']>
+  interval: Maybe<Scalars['Float']['output']>
+  rest: Maybe<Scalars['Float']['output']>
+  squeeze: Maybe<Scalars['Float']['output']>
 }
 
 /** update columns of table "workouts" */
@@ -572,8 +555,6 @@ export enum Workouts_Update_Column {
   Rest = 'rest',
   /** column name */
   Squeeze = 'squeeze',
-  /** column name */
-  StopAfter = 'stop_after',
   /** column name */
   Type = 'type',
   /** column name */
@@ -598,7 +579,6 @@ export type Workouts_Var_Pop_Fields = {
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
-  stop_after: Maybe<Scalars['Float']['output']>
 }
 
 /** aggregate var_samp on columns */
@@ -608,7 +588,6 @@ export type Workouts_Var_Samp_Fields = {
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
-  stop_after: Maybe<Scalars['Float']['output']>
 }
 
 /** aggregate variance on columns */
@@ -618,7 +597,6 @@ export type Workouts_Variance_Fields = {
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
-  stop_after: Maybe<Scalars['Float']['output']>
 }
 
 export type DeleteWorkoutByIdMutationVariables = Types.Exact<{
