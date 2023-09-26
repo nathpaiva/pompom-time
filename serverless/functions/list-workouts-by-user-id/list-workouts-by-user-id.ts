@@ -9,7 +9,7 @@ import { graphQLClientConfig } from '../../utils/graphqlClient'
 import {
   Workouts,
   WorkoutsByUserIdDocument,
-} from './__generated__/get-workouts-by-user.graphql.generated'
+} from './__generated__/list-workouts-by-user-id.graphql.generated'
 
 type HandlerContext = Omit<NtlHandlerContext, 'clientContext'> & {
   clientContext?: Stringified<{ user: { email: string } }>
