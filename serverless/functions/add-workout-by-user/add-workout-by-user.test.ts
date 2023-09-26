@@ -49,6 +49,7 @@ const expectWorkoutSuccessfully = (type: EnumWorkoutType) => {
 
       // if the statusCode is 500 the test should break!!!
       if (statusCode === 500) {
+        console.log(`"body", ${JSON.parse(body).error}`)
         expect(statusCode).toEqual(200)
         return
       }
@@ -166,8 +167,10 @@ describe('add-workout-by-user', () => {
     it('should add a workout type as resistance and interval is 10', async () => {
       const { globalMockData, expectsSuccessToAddWorkout } =
         expectWorkoutSuccessfully(EnumWorkoutType.resistance)
+
+      const _copy = { ...globalMockData }
       const _mockWorkoutData = {
-        ...globalMockData,
+        ..._copy,
         interval: 10,
         type: EnumWorkoutType.resistance,
       } satisfies TAddWorkoutByUserMutationVariables
@@ -180,10 +183,11 @@ describe('add-workout-by-user', () => {
         EnumWorkoutType.resistance,
       )
 
-      delete globalMockData.interval
+      const _copy = { ...globalMockData }
+      delete _copy.interval
 
       const _mockWorkoutData = {
-        ...globalMockData,
+        ..._copy,
         type: EnumWorkoutType.resistance,
       } as TAddWorkoutByUserMutationVariables
 
