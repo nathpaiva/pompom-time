@@ -1,4 +1,7 @@
-import { mockContext, toRequestFromBody } from '../../setup-server-tests'
+import {
+  createMockContext,
+  createMockHandlerEventBody,
+} from '../../setup-server-tests'
 import { DeleteWorkoutByIdMutationVariables } from '../delete-workout-by-id/__generated__/delete-workout-by-id.graphql.generated'
 import { handler as _deleteWorkoutById } from '../delete-workout-by-id/delete-workout-by-id'
 import { Workouts } from './__generated__/add-workout-by-user.graphql.generated'
@@ -40,15 +43,17 @@ const expectWorkoutSuccessfully = (type: EnumWorkoutType) => {
       _mockWorkoutData: TAddWorkoutByUserMutationVariables,
     ) => {
       const req =
-        toRequestFromBody<TAddWorkoutByUserMutationVariables>(_mockWorkoutData)
+        createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>(
+          _mockWorkoutData,
+        )
 
       const { statusCode, body } = await addWorkoutByUser(
         req,
-        mockContext(_mockUserContext),
+        createMockContext(_mockUserContext),
       )
 
-      // if the statusCode is 500 the test should break!!!
-      if (statusCode === 500) {
+      // if the statusCode is 500 | 400 the test should break!!!
+      if (statusCode === 500 || statusCode === 400) {
         expect(statusCode).toEqual(200)
         return
       }
@@ -83,11 +88,13 @@ const expectWorkoutSuccessfully = (type: EnumWorkoutType) => {
       errorMessage: string,
     ) => {
       const req =
-        toRequestFromBody<TAddWorkoutByUserMutationVariables>(_mockWorkoutData)
+        createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>(
+          _mockWorkoutData,
+        )
 
       const { statusCode, body } = await addWorkoutByUser(
         req,
-        mockContext(_globalMockData),
+        createMockContext(_mockUserContext),
       )
 
       // if the statusCode is 200 the test should break!!!
@@ -104,14 +111,14 @@ const expectWorkoutSuccessfully = (type: EnumWorkoutType) => {
 
 describe('add-workout-by-user', () => {
   afterEach(async () => {
-    const req = toRequestFromBody<DeleteWorkoutByIdMutationVariables>({
+    const req = createMockHandlerEventBody<DeleteWorkoutByIdMutationVariables>({
       id: workoutsIdToCleanUp[0],
     })
 
     const result = await _deleteWorkoutById(
       { ...req, body: req.body },
-      mockContext({
-        clientContext: {},
+      createMockContext({
+        user: { email: '' },
       }),
     )
 

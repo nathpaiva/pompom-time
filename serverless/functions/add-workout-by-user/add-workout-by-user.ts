@@ -1,60 +1,20 @@
-import type {
-  HandlerEvent as NtlHandlerEvent,
-  HandlerContext,
-  HandlerResponse as NtlHandlerResponse,
-} from '@netlify/functions'
 import { ClientError, request } from 'graphql-request'
 
-import { graphQLClientConfig } from '../../utils/graphqlClient'
+import { errorResolver, graphQLClientConfig } from '../../utils'
 import {
   AddWorkoutByUserDocument,
   AddWorkoutByUserMutationVariables,
-  Workouts,
 } from './__generated__/add-workout-by-user.graphql.generated'
-
-export enum EnumWorkoutType {
-  strength = 'strength',
-  pulse = 'pulse',
-  intensity = 'intensity',
-  resistance = 'resistance',
-}
-
-interface TAddWorkoutSPI {
-  type: Exclude<EnumWorkoutType, EnumWorkoutType.resistance>
-  interval?: never
-}
-
-interface TAddWorkoutR {
-  type: EnumWorkoutType.resistance
-  interval: number
-}
-
-export type TAddWorkoutByUserMutationVariables = Omit<
-  AddWorkoutByUserMutationVariables,
-  'user_id' | 'type' | 'stop_after' | 'interval'
-> &
-  (TAddWorkoutSPI | TAddWorkoutR)
-
-type HandlerEvent = Omit<NtlHandlerEvent, 'body'> & {
-  body: Stringified<TAddWorkoutByUserMutationVariables>
-}
-
-type THandlerResponse = Omit<NtlHandlerResponse, 'body'> &
-  (
-    | {
-        statusCode: 200
-        body: Stringified<Workouts>
-      }
-    | {
-        statusCode: 500
-        body: Stringified<{ error: string }>
-      }
-  )
+import {
+  EnumWorkoutType,
+  PromiseResponseAddWorkoutByUserId,
+  type TAddWorkoutByUserMutationVariables,
+} from './types'
 
 const addWorkoutByUser = async (
-  event: HandlerEvent,
+  event: HandlerEvent<TAddWorkoutByUserMutationVariables>,
   context: HandlerContext,
-): Promise<THandlerResponse> => {
+): PromiseResponseAddWorkoutByUserId => {
   const config = graphQLClientConfig()
 
   try {
@@ -117,12 +77,7 @@ const addWorkoutByUser = async (
       body: JSON.stringify(data.insert_workouts.returning[0]),
     }
   } catch (error) {
-    const _error = (error as ClientError).response
-    let message: string = (error as Error).message
-
-    if (_error?.errors) {
-      message = _error.errors[0].message
-    }
+    const message = errorResolver(error as ClientError | Error)
 
     return {
       statusCode: 500,
@@ -131,4 +86,9 @@ const addWorkoutByUser = async (
   }
 }
 
-export { addWorkoutByUser as handler }
+export {
+  addWorkoutByUser as handler,
+  EnumWorkoutType,
+  type PromiseResponseAddWorkoutByUserId,
+  type TAddWorkoutByUserMutationVariables,
+}
