@@ -7,25 +7,56 @@ import {
 import { handler as listWorkoutsByUserId } from './list-workouts-by-user-id'
 
 describe('list-workouts-by-user-id', () => {
-  it('should be true', async () => {
-    const _mockUserContext = {
-      user: {
-        email: 'hello@nathpaiva.com.br',
-      },
+  const _req = createMockHandlerEventBody<HandlerEvent['body']>(null)
+  it('should return an error if the user is not authenticated', async () => {
+    const { statusCode, body } = await listWorkoutsByUserId(
+      _req,
+      createMockContext(),
+    )
+
+    if (statusCode === 200) {
+      expect(statusCode).toEqual(500)
+      return
     }
-    const _req = createMockHandlerEventBody<HandlerEvent['body']>(null)
-    console.log(
-      '🚀 ~ file: list-workouts-by-user-id.test.ts:14 ~ it ~ _req:',
+
+    expect(statusCode).toEqual(500)
+    expect(JSON.parse(body).error).toEqual('You must be authenticated')
+  })
+  it('should return a list for active user', async () => {
+    const { statusCode, body } = await listWorkoutsByUserId(
       _req,
+      createMockContext({
+        user: {
+          email: 'test-user-do-not-delete@nathpaiva.com',
+        },
+      }),
     )
-    const response = await listWorkoutsByUserId(
+
+    if (statusCode === 500 || statusCode === 400) {
+      expect(statusCode).toEqual(200)
+      return
+    }
+
+    expect(statusCode).toEqual(200)
+    expect(JSON.parse(body).length).toEqual(4)
+  })
+
+  it('should return an empty list for active user', async () => {
+    const { statusCode, body } = await listWorkoutsByUserId(
       _req,
-      createMockContext(_mockUserContext),
+      createMockContext({
+        user: {
+          email: 'test-empty@nathpaiva.com',
+        },
+      }),
     )
-    console.log(
-      '🚀 ~ file: list-workouts-by-user-id.test.ts:12 ~ it ~ response:',
-      response,
-    )
-    expect(true).toBeTruthy()
+
+    if (statusCode === 500 || statusCode === 400) {
+      expect(statusCode).toEqual(200)
+      return
+    }
+
+    expect(statusCode).toEqual(200)
+    expect(JSON.parse(body).length).toEqual(0)
   })
 })

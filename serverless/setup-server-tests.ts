@@ -5,7 +5,7 @@ export function createMockHandlerEventBody<T>(body: T) {
 }
 
 export function createMockContext(
-  clientContext: HandlerContext['clientContext'],
+  clientContext?: HandlerContext['clientContext'],
 ) {
   return {
     callbackWaitsForEmptyEventLoop: false,

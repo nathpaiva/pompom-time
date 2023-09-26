@@ -12,7 +12,7 @@ const listWorkoutsByUserId = async (
 
   try {
     if (!context.clientContext) {
-      throw new Error('Should be authenticated')
+      throw new Error('You must be authenticated')
     }
 
     const { workouts } = await request({
