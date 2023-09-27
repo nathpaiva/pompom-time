@@ -2,8 +2,7 @@ import {
   createMockContext,
   createMockHandlerEventBody,
 } from '../../setup-server-tests'
-import { DeleteWorkoutByIdMutationVariables } from '../delete-workout-by-id/__generated__/delete-workout-by-id.graphql.generated'
-import { handler as _deleteWorkoutById } from '../delete-workout-by-id/delete-workout-by-id'
+import { cleanupDbAfterTest } from '../../utils/cleanupDbAfterTest'
 import { Workouts } from './__generated__/add-workout-by-user.graphql.generated'
 import {
   EnumWorkoutType,
@@ -19,110 +18,11 @@ const keysToNotValidateWithMock = [
   'id',
 ] as (keyof Workouts)[]
 
-const expectWorkoutSuccessfully = (type: EnumWorkoutType) => {
-  const _mockUserContext = {
-    user: {
-      email: 'test-user@nathpaiva.com',
-    },
-  }
-
-  const _globalMockData = {
-    goal_per_day: 5,
-    name: 'First Workout',
-    repeat: true,
-    rest: 40,
-    squeeze: 20,
-    interval: 10,
-    type,
-  } as unknown as TAddWorkoutByUserMutationVariables
-
-  return {
-    globalMockData: _globalMockData,
-    mockUserContext: _mockUserContext,
-    expectsSuccessToAddWorkout: async (
-      _mockWorkoutData: TAddWorkoutByUserMutationVariables,
-    ) => {
-      const req =
-        createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>(
-          _mockWorkoutData,
-        )
-
-      const { statusCode, body } = await addWorkoutByUser(
-        req,
-        createMockContext(_mockUserContext),
-      )
-
-      // if the statusCode is 500 | 400 the test should break!!!
-      if (statusCode === 500 || statusCode === 400) {
-        expect(statusCode).toEqual(200)
-        return
-      }
-
-      const workout = JSON.parse(body)
-      workoutsIdToCleanUp.push(workout.id)
-
-      Object.keys(workout).forEach((key) => {
-        if (keysToNotValidateWithMock.includes(key)) {
-          expect(key).toBeTruthy()
-          return
-        }
-
-        if (key === 'user_id') {
-          expect(_mockUserContext.user.email).toEqual(workout[key])
-          return
-        }
-
-        if (key === 'interval' && type !== EnumWorkoutType.resistance) {
-          expect(typeof (_mockWorkoutData as Workouts)[key]).toEqual(
-            'undefined',
-          )
-          expect(0).toEqual(workout[key])
-          return
-        }
-
-        expect((_mockWorkoutData as Workouts)[key]).toEqual(workout[key])
-      })
-    },
-    expectsErrorToAdd: async (
-      _mockWorkoutData: TAddWorkoutByUserMutationVariables,
-      errorMessage: string,
-    ) => {
-      const req =
-        createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>(
-          _mockWorkoutData,
-        )
-
-      const { statusCode, body } = await addWorkoutByUser(
-        req,
-        createMockContext(_mockUserContext),
-      )
-
-      // if the statusCode is 200 the test should break!!!
-      if (statusCode === 200) {
-        expect(statusCode).toEqual(500)
-        return
-      }
-
-      expect(statusCode).toEqual(500)
-      expect(JSON.parse(body).error).toEqual(errorMessage)
-    },
-  }
-}
-
 describe('add-workout-by-user', () => {
   afterEach(async () => {
-    const req = createMockHandlerEventBody<DeleteWorkoutByIdMutationVariables>({
-      id: workoutsIdToCleanUp[0],
-    })
+    const response = await cleanupDbAfterTest(workoutsIdToCleanUp)
 
-    const result = await _deleteWorkoutById(
-      { ...req, body: req.body },
-      createMockContext({
-        user: { email: '' },
-      }),
-    )
-
-    console.log('db cleaned:', result.statusCode)
+    console.log('db cleaned:', response)
   })
 
   describe('workout type: strength | pulse | intensity', () => {
@@ -204,3 +104,92 @@ describe('add-workout-by-user', () => {
     })
   })
 })
+
+function expectWorkoutSuccessfully(type: EnumWorkoutType) {
+  const _mockUserContext = {
+    user: {
+      email: 'test-user@nathpaiva.com',
+    },
+  }
+
+  const _globalMockData = {
+    goal_per_day: 5,
+    name: 'First Workout',
+    repeat: true,
+    rest: 40,
+    squeeze: 20,
+    interval: 10,
+    type,
+  } as unknown as TAddWorkoutByUserMutationVariables
+
+  return {
+    globalMockData: _globalMockData,
+    expectsSuccessToAddWorkout: async (
+      _mockWorkoutData: TAddWorkoutByUserMutationVariables,
+    ) => {
+      const req =
+        createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>(
+          _mockWorkoutData,
+        )
+
+      const { statusCode, body } = await addWorkoutByUser(
+        req,
+        createMockContext(_mockUserContext),
+      )
+
+      // if the statusCode is 500 | 400 the test should break!!!
+      if (statusCode === 500 || statusCode === 400) {
+        expect(statusCode).toEqual(200)
+        return
+      }
+
+      const workout = JSON.parse(body)
+      workoutsIdToCleanUp.push(workout.id)
+
+      Object.keys(workout).forEach((key) => {
+        if (keysToNotValidateWithMock.includes(key)) {
+          expect(key).toBeTruthy()
+          return
+        }
+
+        if (key === 'user_id') {
+          expect(_mockUserContext.user.email).toEqual(workout[key])
+          return
+        }
+
+        if (key === 'interval' && type !== EnumWorkoutType.resistance) {
+          expect(typeof (_mockWorkoutData as Workouts)[key]).toEqual(
+            'undefined',
+          )
+          expect(0).toEqual(workout[key])
+          return
+        }
+
+        expect((_mockWorkoutData as Workouts)[key]).toEqual(workout[key])
+      })
+    },
+    expectsErrorToAdd: async (
+      _mockWorkoutData: TAddWorkoutByUserMutationVariables,
+      errorMessage: string,
+    ) => {
+      const req =
+        createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>(
+          _mockWorkoutData,
+        )
+
+      const { statusCode, body } = await addWorkoutByUser(
+        req,
+        createMockContext(_mockUserContext),
+      )
+
+      // if the statusCode is 200 the test should break!!!
+      if (statusCode === 200) {
+        expect(statusCode).toEqual(500)
+        return
+      }
+
+      expect(statusCode).toEqual(500)
+      expect(JSON.parse(body).error).toEqual(errorMessage)
+    },
+  }
+}
