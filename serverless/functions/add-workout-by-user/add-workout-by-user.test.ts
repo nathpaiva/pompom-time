@@ -25,6 +25,62 @@ describe('add-workout-by-user', () => {
     console.log('db cleaned:', response)
   })
 
+  describe('context and event', () => {
+    it('should return and error if the use is not authenticated', async () => {
+      const req =
+        createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>({
+          goal_per_day: 5,
+          name: 'First Workout',
+          repeat: true,
+          rest: 40,
+          squeeze: 20,
+          interval: 10,
+          type: EnumWorkoutType.resistance,
+        })
+
+      const { statusCode, body } = await addWorkoutByUser(
+        req,
+        createMockContext(undefined),
+      )
+
+      // if the statusCode is 200 the test should break!!!
+      if (statusCode === 200) {
+        expect(statusCode).toEqual(500)
+        return
+      }
+
+      expect(statusCode).toEqual(500)
+      expect(JSON.parse(body).error).toEqual('You must be authenticated')
+    })
+
+    it('should return and error if event is inconsistent', async () => {
+      const req =
+        createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>(
+          {} as any,
+        )
+
+      const { statusCode, body } = await addWorkoutByUser(
+        req,
+        createMockContext({
+          user: {
+            email: 'test-user@nathpaiva.com',
+          },
+        }),
+      )
+
+      // if the statusCode is 200 the test should break!!!
+      if (statusCode === 200) {
+        expect(statusCode).toEqual(500)
+        return
+      }
+
+      expect(statusCode).toEqual(500)
+      expect(JSON.parse(body).error).toEqual(
+        'You should provide the workout data',
+      )
+    })
+  })
+
   describe('workout type: strength | pulse | intensity', () => {
     Object.keys(EnumWorkoutType).forEach((item) => {
       it(`should add a workout ${item} successfully without interval`, async () => {

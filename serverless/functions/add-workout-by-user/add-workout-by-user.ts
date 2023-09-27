@@ -22,8 +22,8 @@ const addWorkoutByUser = async (
       throw new Error('You must be authenticated')
     }
 
-    if (!event.body) {
-      throw new Error('You should provide the values')
+    if (!event.body || !Object.keys(JSON.parse(event.body)).length) {
+      throw new Error('You should provide the workout data')
     }
 
     // TODO: creates different type if the workout type is = `resistance`
@@ -62,19 +62,19 @@ const addWorkoutByUser = async (
       variables.interval = +interval
     }
 
-    const data = await request({
+    const { insert_workouts } = await request({
       document: AddWorkoutByUserDocument,
       variables,
       ...config,
     })
 
-    if (!data?.insert_workouts?.returning) {
+    if (!insert_workouts) {
       throw new Error('Could not load data from workout mutation')
     }
 
     return {
       statusCode: 200,
-      body: JSON.stringify(data.insert_workouts.returning[0]),
+      body: JSON.stringify(insert_workouts.returning[0]),
     }
   } catch (error) {
     const message = errorResolver(error as ClientError | Error)
