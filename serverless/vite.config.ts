@@ -22,6 +22,8 @@ const viteConfig = {
         'serverless/**/*.generated.ts',
         'serverless/**/*.d.ts',
         'serverless/**/types.ts',
+        'serverless/utils/cleanupDbAfterTest.ts',
+        'serverless/**/index.ts',
         'serverless/setup-server-tests.ts',
       ],
       all: true,
