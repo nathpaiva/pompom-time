@@ -17,7 +17,13 @@ const viteConfig = {
       provider: 'v8',
       include: ['serverless/**/*'],
       reporter: ['text', 'json', 'html'],
-      exclude: ['serverless/generated', 'serverless/**/*.generated.ts'],
+      exclude: [
+        'serverless/generated',
+        'serverless/**/*.generated.ts',
+        'serverless/**/*.d.ts',
+        'serverless/**/types.ts',
+        'serverless/setup-server-tests.ts',
+      ],
       all: true,
       branches: 30, // 40
       functions: 40, // 50
