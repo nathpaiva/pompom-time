@@ -3,12 +3,20 @@ declare type NtlHandlerEvent = import('@netlify/functions').HandlerEvent
 declare type NtlHandlerResponse =
   import('@netlify/functions').NtlHandlerResponse
 
+interface IUserContext {
+  user?: { email: string }
+}
+
 type HandlerContext = Omit<NtlHandlerContext, 'clientContext'> & {
-  clientContext?: { user: { email: string } }
+  clientContext?: IUserContext & NtlHandlerContext['clientContext']
 }
 
 type HandlerEvent<T> = Omit<NtlHandlerEvent, 'body'> & {
   body: Stringified<T>
+}
+
+type HandlerEventJsonParsed<T> = Omit<NtlHandlerEvent, 'body'> & {
+  body: T
 }
 
 interface TErrorBodyResponse {

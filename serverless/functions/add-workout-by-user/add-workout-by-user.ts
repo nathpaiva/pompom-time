@@ -13,12 +13,12 @@ import {
 
 const addWorkoutByUser = async (
   event: HandlerEvent<TAddWorkoutByUserMutationVariables>,
-  context: HandlerContext,
+  { clientContext }: HandlerContext,
 ): PromiseResponseAddWorkoutByUserId => {
   const config = graphQLClientConfig()
 
   try {
-    if (!context.clientContext) {
+    if (!clientContext?.user) {
       throw new Error('You must be authenticated')
     }
 
@@ -47,7 +47,7 @@ const addWorkoutByUser = async (
     }
 
     const variables = {
-      user_id: context.clientContext.user.email,
+      user_id: clientContext.user.email,
       name,
       type,
       repeat,
