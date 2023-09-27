@@ -13,14 +13,16 @@ const deleteWorkoutById = async (
 ): PromiseResponseDeleteWorkoutById => {
   const config = graphQLClientConfig()
   try {
-    if (!event.body) {
-      throw new Error('You must provide the workout id')
+    if (!context.clientContext) {
+      throw new Error('You must be authenticated')
     }
+
+    if (!event.body || !Object.keys(JSON.parse(event.body)).length) {
+      throw new Error('You should provide the workout id')
+    }
+
     const { id } = JSON.parse(event.body)
 
-    if (!context.clientContext) {
-      throw new Error('Should be authenticated')
-    }
     const { delete_workouts } = await request({
       document: DeleteWorkoutByIdDocument,
       variables: {
@@ -29,7 +31,7 @@ const deleteWorkoutById = async (
       ...config,
     })
 
-    if (!delete_workouts?.returning) {
+    if (!delete_workouts) {
       throw new Error('Could not delete the workout')
     }
 
