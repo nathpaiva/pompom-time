@@ -1,46 +1,20 @@
-import type {
-  HandlerEvent as NtlHandlerEvent,
-  HandlerContext,
-  HandlerResponse as NtlHandlerResponse,
-} from '@netlify/functions'
-import { request } from 'graphql-request'
+import { ClientError, request } from 'graphql-request'
 
-import { graphQLClientConfig } from '../../utils/graphqlClient'
+import { errorResolver, graphQLClientConfig } from '../../utils'
 import {
   DeleteWorkoutByIdDocument,
   DeleteWorkoutByIdMutationVariables,
-  Workouts,
 } from './__generated__/delete-workout-by-id.graphql.generated'
-
-type HandlerEvent = Omit<NtlHandlerEvent, 'body'> & {
-  body: Stringified<DeleteWorkoutByIdMutationVariables>
-}
-
-type HandlerResponse = Omit<NtlHandlerResponse, 'body'> &
-  (
-    | {
-        statusCode: 200
-        body: Stringified<
-          Pick<
-            Workouts,
-            '__typename' | 'created_at' | 'updated_at' | 'id' | 'name'
-          >
-        >
-      }
-    | {
-        statusCode: 500
-        body: Stringified<{ error: string }>
-      }
-  )
+import type { IWorkouts, PromiseResponseDeleteWorkoutById } from './types'
 
 const deleteWorkoutById = async (
-  event: HandlerEvent,
+  event: HandlerEvent<DeleteWorkoutByIdMutationVariables>,
   context: HandlerContext,
-): Promise<HandlerResponse> => {
+): PromiseResponseDeleteWorkoutById => {
   const config = graphQLClientConfig()
   try {
     if (!event.body) {
-      throw new Error('You should provide the values')
+      throw new Error('You must provide the workout id')
     }
     const { id } = JSON.parse(event.body)
 
@@ -64,11 +38,18 @@ const deleteWorkoutById = async (
       body: JSON.stringify(delete_workouts.returning[0]),
     }
   } catch (error) {
+    const message = errorResolver(error as ClientError | Error)
+
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: (error as Error).message }),
+      body: JSON.stringify({ error: message }),
     }
   }
 }
 
-export { deleteWorkoutById as handler }
+export {
+  deleteWorkoutById as handler,
+  type PromiseResponseDeleteWorkoutById,
+  type DeleteWorkoutByIdMutationVariables as DeleteWorkoutByIdVariables,
+  type IWorkouts,
+}

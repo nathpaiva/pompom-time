@@ -1,41 +1,18 @@
-import type {
-  HandlerEvent,
-  HandlerContext as NtlHandlerContext,
-  HandlerResponse as NtlHandlerResponse,
-} from '@netlify/functions'
-import { request } from 'graphql-request'
+import { ClientError, request } from 'graphql-request'
 
-import { graphQLClientConfig } from '../../utils/graphqlClient'
-import {
-  Workouts,
-  WorkoutsByUserIdDocument,
-} from './__generated__/list-workouts-by-user-id.graphql.generated'
-
-type HandlerContext = Omit<NtlHandlerContext, 'clientContext'> & {
-  clientContext?: Stringified<{ user: { email: string } }>
-}
-
-type THandlerResponse = Omit<NtlHandlerResponse, 'body'> &
-  (
-    | {
-        statusCode: 200
-        body: Stringified<Workouts[]>
-      }
-    | {
-        statusCode: 500
-        body: Stringified<{ error: string }>
-      }
-  )
+import { errorResolver, graphQLClientConfig } from '../../utils'
+import { WorkoutsByUserIdDocument } from './__generated__/list-workouts-by-user-id.graphql.generated'
+import type { PromiseResponseListWorkoutsByUserId } from './types'
 
 const listWorkoutsByUserId = async (
-  _event: HandlerEvent,
+  _event: HandlerEvent<unknown>,
   context: HandlerContext,
-): Promise<THandlerResponse> => {
+): PromiseResponseListWorkoutsByUserId => {
   const config = graphQLClientConfig()
 
   try {
     if (!context.clientContext) {
-      throw new Error('Should be authenticated')
+      throw new Error('You must be authenticated')
     }
 
     const { workouts } = await request({
@@ -51,11 +28,16 @@ const listWorkoutsByUserId = async (
       body: JSON.stringify(workouts),
     }
   } catch (error) {
+    const message = errorResolver(error as ClientError | Error)
+
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: (error as Error).message }),
+      body: JSON.stringify({ error: message }),
     }
   }
 }
 
-export { listWorkoutsByUserId as handler }
+export {
+  listWorkoutsByUserId as handler,
+  type PromiseResponseListWorkoutsByUserId,
+}
