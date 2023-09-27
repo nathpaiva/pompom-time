@@ -27,10 +27,10 @@ const viteConfig = {
         'serverless/setup-server-tests.ts',
       ],
       all: true,
-      branches: 30, // 40
-      functions: 40, // 50
-      lines: 50,
-      statements: 50,
+      branches: 85, // TODO: next PR add tests and back to 90
+      functions: 80,
+      lines: 80, // TODO: next PR add tests and back to 90
+      statements: 80, // TODO: next PR add tests and back to 90
       cleanOnRerun: false,
     },
   },
