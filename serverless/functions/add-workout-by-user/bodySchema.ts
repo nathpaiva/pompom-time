@@ -43,6 +43,7 @@ export const bodySchema = {
       required: ['name', 'type', 'repeat', 'goal_per_day', 'rest', 'squeeze'],
     },
   },
+  required: ['body'],
   errorMessage: {
     _: 'You should provide the workout data',
   },
