@@ -59,10 +59,13 @@ describe('delete-workout-by-id', () => {
   })
 
   it('should not delete workout if the use is not authenticated', async () => {
+    const reqDelete =
+      createMockHandlerEventBody<DeleteWorkoutByIdMutationVariables>({
+        id: Date.now(),
+      })
     const requestContext = createMockContext()
-
     const { statusCode, body } = await deleteWorkoutById(
-      {} as any,
+      reqDelete,
       requestContext,
     )
     if (statusCode === 200) {
@@ -89,6 +92,6 @@ describe('delete-workout-by-id', () => {
       expect(statusCode).toEqual(500)
     }
 
-    expect(JSON.parse(body).error).toEqual('You should provide the workout id')
+    expect(JSON.parse(body).error).toEqual('You should provide the workout id.')
   })
 })
