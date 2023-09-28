@@ -49,7 +49,11 @@ interface ICause {
   instancePath: string
   schemaPath: string
   keyword: string
-  params: { missingProperty?: string; failingKeyword?: string }
+  params: {
+    missingProperty?: string
+    failingKeyword?: string
+    errors?: unknown[]
+  }
   schema?: string[]
   message?: string
 }

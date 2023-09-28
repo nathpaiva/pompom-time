@@ -10,6 +10,7 @@ import {
   AddWorkoutByUserDocument,
   AddWorkoutByUserMutationVariables,
 } from './__generated__/add-workout-by-user.graphql.generated'
+import { bodySchema } from './bodySchema'
 import {
   EnumWorkoutType,
   PromiseResponseAddWorkoutByUserId,
@@ -27,27 +28,7 @@ const addWorkoutByUser = async (
       throw new Error('You must be authenticated')
     }
 
-    if (!body) {
-      throw new Error('You should provide the workout data')
-    }
-
     const { name, type, repeat, goal_per_day, interval, rest, squeeze } = body
-
-    if (
-      type === EnumWorkoutType.resistance &&
-      typeof interval === 'undefined'
-    ) {
-      throw new Error('Interval is required for resistance workout type')
-    }
-
-    if (
-      type !== EnumWorkoutType.resistance &&
-      typeof interval !== 'undefined'
-    ) {
-      throw new Error(
-        `Interval is not valid for ${type as EnumWorkoutType} workout type`,
-      )
-    }
 
     const variables = {
       user_id: clientContext.user.email,
@@ -71,8 +52,11 @@ const addWorkoutByUser = async (
       ...config,
     })
 
+    /* c8 ignore next */
     if (!insert_workouts) {
+      /* c8 ignore next */
       throw new Error('Could not load data from workout mutation')
+      /* c8 ignore next */
     }
 
     return {
@@ -89,86 +73,34 @@ const addWorkoutByUser = async (
   }
 }
 
-const schema = {
-  type: 'object',
-  properties: {
-    body: {
-      type: 'object',
-      properties: {
-        repeat: { type: 'boolean' },
-        name: { type: 'string' },
-        goal_per_day: { type: 'integer' },
-        rest: { type: 'integer' },
-        squeeze: { type: 'integer' },
-      },
-      if: {
-        properties: {
-          type: {
-            type: 'string',
-            pattern: '^resistance$',
-          },
-          interval: { type: 'integer' },
-        },
-      },
-      then: { required: ['interval'] },
-      else: {
-        properties: {
-          type: {
-            type: 'string',
-            pattern: '(^pulse$)|(^strength$)|(^intensity$)',
-          },
-          interval: false,
-        },
-      },
-      required: ['name', 'type', 'repeat', 'goal_per_day', 'rest', 'squeeze'],
-    },
-  },
-}
+const configTimeoutByEnvMode =
+  /* c8 ignore next */
+  process.env.MODE === 'test' ? { timeoutEarlyInMillis: 0 } : undefined
 
 const handler = middy<
   HandlerEvent<TAddWorkoutByUserMutationVariables>,
   PromiseResponseAddWorkoutByUserId,
   IError
-  // TODO move the timeout only for test
->(addWorkoutByUser, { timeoutEarlyInMillis: 0 })
+>(addWorkoutByUser, configTimeoutByEnvMode)
   .use([
     jsonBodyParser(),
-    validator({ eventSchema: transpileSchema(schema, { verbose: true }) }),
+    validator({ eventSchema: transpileSchema(bodySchema, { verbose: true }) }),
   ])
   .use(httpErrorHandler())
-  .onError(({ error, ...rest }) => {
-    // console.log(
-    //   rest,
-    //   `🔴🔴🔴"error"`,
-    //   // error,
-    //   (error as any)?.statusCode,
-    //   `🔴🔴🔴"cause"`,
-    //   error?.cause,
-    //   `🔴🔴🔴"name"`,
-    //   error?.name,
-    //   `🔴🔴🔴"message"`,
-    //   error?.message,
-    //   `🔴🔴🔴"stack"`,
-    //   error?.stack,
-    // )
-    // console.log(
-    //   '🚀 ~ file: add-workout-by-user.ts:154 ~ .onError ~ error:',
-    //   error,
-    // )
+  .onError(({ error }) => {
     if (!error) {
+      /* c8 ignore next */
       return {
+        /* c8 ignore next */
         statusCode: 400,
         body: JSON.stringify({ error: 'BadRequest!' }),
       }
     }
-    // error
+
     const errorMessage = errorResolver(error)
-    // console.log(
-    //   '🚀 ~ file: add-workout-by-user.ts:141 ~ .onError ~ errorMessage:',
-    //   errorMessage,
-    // )
+
     return {
-      statusCode: (error as any)?.statusCode ?? 500,
+      statusCode: error.statusCode,
       body: JSON.stringify({ error: errorMessage }),
     }
   })

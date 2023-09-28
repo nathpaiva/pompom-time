@@ -20,6 +20,7 @@ const keysToNotValidateWithMock = [
 
 describe('add-workout-by-user', () => {
   afterEach(async () => {
+    if (!workoutsIdToCleanUp.length) return
     const response = await cleanupDbAfterTest(workoutsIdToCleanUp)
 
     console.log('db cleaned:', response)
@@ -37,50 +38,37 @@ describe('add-workout-by-user', () => {
           interval: 10,
           type: EnumWorkoutType.resistance,
         })
-
       const { statusCode, body } = await addWorkoutByUser(
-        {
-          ...req,
-          headers: {
-            'Content-Type': 'application/json',
-          } as any,
-        },
+        req,
         createMockContext(undefined),
       )
-
       // if the statusCode is 200 the test should break!!!
       if (statusCode === 200 || statusCode === 400) {
         expect(statusCode).toEqual(500)
         return
       }
-
       expect(statusCode).toEqual(500)
       expect(JSON.parse(body).error).toEqual('You must be authenticated')
     })
-
     it('should return and error if event is inconsistent', async () => {
       const _invalidRequest =
         createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>(
           {} as TAddWorkoutByUserMutationVariables,
         )
-
       const _context = createMockContext({
         user: {
           email: 'test-user@nathpaiva.com',
         },
       })
-
       const { statusCode, body } = await addWorkoutByUser(
         _invalidRequest,
         _context,
       )
-
       // if the statusCode is 200 the test should break!!!
       if (statusCode === 200 || statusCode === 500) {
         expect(statusCode).toEqual(400)
         return
       }
-
       expect(statusCode).toEqual(400)
       expect(JSON.parse(body).error).toEqual(
         'You should provide the workout data',
@@ -109,26 +97,24 @@ describe('add-workout-by-user', () => {
         await expectsSuccessToAddWorkout(_mockWorkoutData)
       })
 
-      Object.keys(EnumWorkoutType).forEach((item) => {
-        it(`should not add a workout ${item} if interval is in the body`, async () => {
-          const { globalMockData, expectsErrorToAdd } =
-            expectWorkoutSuccessfully(EnumWorkoutType[item])
+      it(`should not add a workout "${item}" if has interval`, async () => {
+        const { globalMockData, expectsErrorToAdd } = expectWorkoutSuccessfully(
+          EnumWorkoutType[item],
+        )
 
-          // should not create workout for this type
-          if (item === 'resistance') {
-            return
-          }
-          const _mockWorkoutData = {
-            ...globalMockData,
-            type: EnumWorkoutType[item],
-          } as TAddWorkoutByUserMutationVariables
+        // should not create workout for this type
+        if (item === 'resistance') {
+          return
+        }
+        const _mockWorkoutData = {
+          ...globalMockData,
+          type: EnumWorkoutType[item],
+        } as TAddWorkoutByUserMutationVariables
 
-          await expectsErrorToAdd(
-            _mockWorkoutData,
-            'You should provide ',
-            // `Interval is not valid for ${item} workout type`,
-          )
-        })
+        await expectsErrorToAdd(
+          _mockWorkoutData,
+          `Interval is not valid for "${item}" workout type.`,
+        )
       })
     })
   })
@@ -148,7 +134,7 @@ describe('add-workout-by-user', () => {
       await expectsSuccessToAddWorkout(_mockWorkoutData)
     })
 
-    it('should not add a workout if type is resistance and interval is undefined', async () => {
+    it('should not add a workout if resistance type and interval is undefined', async () => {
       const { globalMockData, expectsErrorToAdd } = expectWorkoutSuccessfully(
         EnumWorkoutType.resistance,
       )
@@ -163,8 +149,7 @@ describe('add-workout-by-user', () => {
 
       await expectsErrorToAdd(
         _mockWorkoutData,
-        'You should provide interval',
-        // 'Interval is required for resistance workout type',
+        'Interval is required for "resistance" workout type.',
       )
     })
   })

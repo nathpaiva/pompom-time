@@ -31,8 +31,11 @@ const deleteWorkoutById = async (
       ...config,
     })
 
+    /* c8 ignore next */
     if (!delete_workouts) {
+      /* c8 ignore next */
       throw new Error('Could not delete the workout')
+      /* c8 ignore next */
     }
 
     return {

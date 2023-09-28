@@ -9,33 +9,20 @@ function isIErrorType<T>(data: T | IError['cause']): data is IError['cause'] {
 
 export const errorResolver = (error: IError | Error | ClientError) => {
   if (error.cause && isIErrorType(error.cause) && Array.isArray(error.cause)) {
-    const { failingKeyword, missingProperty } = error.cause.reduce(
-      (acc, { params, ...cause }) => {
-        // console.log(`"cause"`, cause)
-        if (params.missingProperty) {
-          acc.missingProperty.push(params.missingProperty)
-        }
+    let count = 0
+    let message = ''
+    while (count < error.cause.length) {
+      const _cause = error.cause[count]
+      // check if the message from interval has undefined, if so the entire body is invalid, so the code goes to the next message and show it
+      if (_cause.message && !_cause.message.split(' ').includes('undefined')) {
+        message = _cause.message
+        break
+      }
 
-        if (params.failingKeyword) {
-          acc.failingKeyword.push(params.failingKeyword)
-        }
-        // return cause.params.missingProperty
-        return acc
-      },
-      {
-        failingKeyword: [],
-        missingProperty: [],
-      } as {
-        failingKeyword: string[]
-        missingProperty: string[]
-      },
-    )
-
-    if (missingProperty.length > 3) {
-      return 'You should provide the workout data'
+      count++
     }
 
-    return `You should provide ${missingProperty.join(' ')}`
+    return message
   }
 
   const _error = (error as ClientError).response
