@@ -18,6 +18,7 @@ import {
 import { Dispatch, useCallback, useEffect, useRef, useState } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 
+import { headersCommonSetup } from '../../../../utils'
 import { IWorkout } from '../../types'
 
 interface IListWorkouts {
@@ -39,14 +40,13 @@ export const ListWorkouts = ({ workouts, setWorkouts }: IListWorkouts) => {
   const getWorkouts = useCallback(() => {
     const _fetchData = async () => {
       try {
+        if (!user?.token) {
+          throw new Error('You are not authenticated')
+        }
+
         const _response = await fetch(
           '/.netlify/functions/list-workouts-by-user-id',
-          {
-            headers: {
-              Authorization: `Bearer ${user?.token.access_token}`,
-              'Content-Type': 'application/json',
-            },
-          },
+          headersCommonSetup(user.token.access_token),
         )
 
         if (_response.status !== 200) {
@@ -65,19 +65,19 @@ export const ListWorkouts = ({ workouts, setWorkouts }: IListWorkouts) => {
     }
 
     _fetchData()
-  }, [setWorkouts, toast, user?.token.access_token])
+  }, [setWorkouts, toast, user?.token])
 
   const handleDelete = async (id: string) => {
-    console.log('id', id)
     try {
+      if (!user?.token) {
+        throw new Error('You are not authenticated')
+      }
+
       const _response = await fetch(
         '/.netlify/functions/delete-workout-by-id',
         {
           method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${user?.token.access_token}`,
-            'Content-Type': 'application/json',
-          },
+          ...headersCommonSetup(user.token.access_token),
           body: JSON.stringify({
             id,
           }),
@@ -85,7 +85,7 @@ export const ListWorkouts = ({ workouts, setWorkouts }: IListWorkouts) => {
       )
 
       if (_response.status !== 200) {
-        throw new Error('erro')
+        throw new Error('Error')
       }
 
       const response = (await _response.json()) as IWorkout
