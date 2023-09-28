@@ -1,4 +1,5 @@
 import {
+  FetchApi,
   _hoisted_useIdentityContext,
   act,
   render,
@@ -7,6 +8,8 @@ import {
 } from '@utils/test'
 
 import { Workout } from './Workout'
+
+const { mockedFetch } = FetchApi()
 
 describe('Workout', () => {
   afterEach(() => {
@@ -58,19 +61,16 @@ describe('Workout', () => {
         user_id: 'hello@nathpaiva.com.br',
       },
     ]
-    const mockFunc = {
-      get: vi.fn().mockResolvedValue(act(() => mockDataResponse)),
-    }
+
+    mockedFetch(mockDataResponse)
+
     vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
       isLoggedIn: true,
-      authedFetch: {
-        get: mockFunc.get,
-        delete: vi.fn(),
-      },
     })
+
     render(<Workout />)
 
-    expect(mockFunc.get).toHaveBeenCalled()
+    act(() => expect(global.fetch).toHaveBeenCalled())
 
     await waitFor(() =>
       mockDataResponse.forEach((workout) =>
