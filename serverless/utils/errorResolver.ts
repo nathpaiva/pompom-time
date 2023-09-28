@@ -9,65 +9,20 @@ function isIErrorType<T>(data: T | IError['cause']): data is IError['cause'] {
 
 export const errorResolver = (error: IError | Error | ClientError) => {
   if (error.cause && isIErrorType(error.cause) && Array.isArray(error.cause)) {
-    const { messages, failingKeyword, missingProperty } = error.cause.reduce(
-      (acc, { params, keyword, message, ...cause }) => {
-        console.log(`"cause"`, cause, params)
+    let count = 0
+    let message = ''
+    while (count < error.cause.length) {
+      const _cause = error.cause[count]
+      // check if the message from interval has undefined, if so the entire body is invalid, so the code goes to the next message and show it
+      if (_cause.message && !_cause.message.split(' ').includes('undefined')) {
+        message = _cause.message
+        break
+      }
 
-        if (
-          keyword === 'errorMessage' &&
-          message &&
-          !message.split(' ').includes('undefined')
-        ) {
-          console.log(`"message"`, message)
-          acc.messages.push(message)
-        }
-
-        if (params.missingProperty) {
-          acc.missingProperty.push(params.missingProperty)
-        }
-
-        if (params.failingKeyword) {
-          acc.failingKeyword.push(params.failingKeyword)
-        }
-        console.log(`"acc"`, acc)
-
-        return acc
-      },
-      {
-        messages: [],
-        failingKeyword: [],
-        missingProperty: [],
-      } as {
-        messages: string[]
-        failingKeyword: string[]
-        missingProperty: string[]
-      },
-    )
-
-    console.log(
-      '🚀 ~ file: errorResolver.ts:35 ~ errorResolver ~ missingProperty:',
-      missingProperty,
-      failingKeyword,
-      messages,
-    )
-
-    if (messages.length) {
-      return messages[0]
+      count++
     }
-    // // TODO: are you sure?
-    // if (messages.length === 2) {
-    //   return messages[1]
-    // }
 
-    // if (missingProperty.length > 3) {
-    //   return 'You should provide the workout data'
-    // }
-
-    // if (missingProperty.length === 1 && missingProperty[0] === 'interval') {
-    //   console.log(`veio???`, error)
-    // }
-
-    return `You should provide ${missingProperty.join(' ')}`
+    return message
   }
 
   const _error = (error as ClientError).response
