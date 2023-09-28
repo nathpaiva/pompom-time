@@ -20,6 +20,7 @@ const keysToNotValidateWithMock = [
 
 describe('add-workout-by-user', () => {
   afterEach(async () => {
+    if (!workoutsIdToCleanUp.length) return
     const response = await cleanupDbAfterTest(workoutsIdToCleanUp)
 
     console.log('db cleaned:', response)
@@ -38,12 +39,7 @@ describe('add-workout-by-user', () => {
           type: EnumWorkoutType.resistance,
         })
       const { statusCode, body } = await addWorkoutByUser(
-        {
-          ...req,
-          headers: {
-            'Content-Type': 'application/json',
-          } as any,
-        },
+        req,
         createMockContext(undefined),
       )
       // if the statusCode is 200 the test should break!!!
@@ -231,7 +227,6 @@ function expectWorkoutSuccessfully(type: EnumWorkoutType) {
           _mockWorkoutData,
         )
 
-      console.log(`"contextMocked"`, req)
       const { statusCode, body } = await addWorkoutByUser(
         req,
         createMockContext(_mockUserContext),
