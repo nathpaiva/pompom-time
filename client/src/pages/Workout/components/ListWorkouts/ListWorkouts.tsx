@@ -50,7 +50,7 @@ export const ListWorkouts = ({ workouts, setWorkouts }: IListWorkouts) => {
         )
 
         if (_response.status !== 200) {
-          throw new Error('erro')
+          throw new Error('Error')
         }
 
         const response = (await _response.json()) as IWorkout[]
