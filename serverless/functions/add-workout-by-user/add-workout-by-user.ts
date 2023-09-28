@@ -110,7 +110,10 @@ const schema = {
           interval: { type: 'integer' },
         },
       },
-      then: { required: ['interval'] },
+      then: {
+        required: ['interval'],
+        errorMessage: 'Interval is required for ${/body/type} workout type.',
+      },
       else: {
         properties: {
           type: {
@@ -119,9 +122,17 @@ const schema = {
           },
           interval: false,
         },
+        errorMessage: {
+          properties: {
+            interval: 'Interval is not valid for ${/body/type} workout type.',
+          },
+        },
       },
       required: ['name', 'type', 'repeat', 'goal_per_day', 'rest', 'squeeze'],
     },
+  },
+  errorMessage: {
+    _: 'You should provide the workout data',
   },
 }
 
@@ -140,7 +151,7 @@ const handler = middy<
     // console.log(
     //   rest,
     //   `🔴🔴🔴"error"`,
-    //   // error,
+    //   error,
     //   (error as any)?.statusCode,
     //   `🔴🔴🔴"cause"`,
     //   error?.cause,
