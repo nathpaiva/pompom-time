@@ -49,11 +49,6 @@ export const ListWorkouts = ({ workouts, setWorkouts }: IListWorkouts) => {
           },
         )
 
-        console.log(
-          '🚀 ~ file: ListWorkouts.tsx:53 ~ const_fetchData= ~ _response:',
-          _response,
-        )
-
         if (_response.status !== 200) {
           throw new Error('erro')
         }
