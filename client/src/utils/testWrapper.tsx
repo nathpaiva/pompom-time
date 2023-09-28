@@ -34,6 +34,23 @@ const customRender = (
     ...options,
   })
 
+function createFetchResponse<T>(data: T, status = 200) {
+  return {
+    status,
+    json: () => new Promise((resolve) => resolve(data)),
+  }
+}
+
+export function FetchApi() {
+  return {
+    mockedFetch: (data: any, status = 200) => {
+      global.fetch = vi
+        .fn()
+        .mockResolvedValue(createFetchResponse(data, status))
+    },
+  }
+}
+
 const { _hoisted_useIdentityContext } = vi.hoisted(() => {
   return { _hoisted_useIdentityContext: vi.fn() }
 })

@@ -31,7 +31,7 @@ export const ListWorkouts = ({ workouts, setWorkouts }: IListWorkouts) => {
 
   const cancelRef = useRef(null)
   const toast = useToast()
-  const { authedFetch } = useIdentityContext()
+  const { user } = useIdentityContext()
   const title = workouts.length
     ? 'Select workout:'
     : `Oh no! You don't have  any workout yet :(`
@@ -39,9 +39,21 @@ export const ListWorkouts = ({ workouts, setWorkouts }: IListWorkouts) => {
   const getWorkouts = useCallback(() => {
     const _fetchData = async () => {
       try {
-        const response = (await authedFetch.get(
+        const _response = await fetch(
           '/.netlify/functions/list-workouts-by-user-id',
-        )) as IWorkout[]
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token.access_token}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+
+        if (_response.status !== 200) {
+          throw new Error('Error')
+        }
+
+        const response = (await _response.json()) as IWorkout[]
 
         setWorkouts(response)
       } catch (error) {
@@ -53,18 +65,30 @@ export const ListWorkouts = ({ workouts, setWorkouts }: IListWorkouts) => {
     }
 
     _fetchData()
-  }, [authedFetch, setWorkouts, toast])
+  }, [setWorkouts, toast, user?.token.access_token])
 
   const handleDelete = async (id: string) => {
+    console.log('id', id)
     try {
-      const response = (await authedFetch.delete(
+      const _response = await fetch(
         '/.netlify/functions/delete-workout-by-id',
         {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${user?.token.access_token}`,
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({
             id,
           }),
         },
-      )) as IWorkout
+      )
+
+      if (_response.status !== 200) {
+        throw new Error('erro')
+      }
+
+      const response = (await _response.json()) as IWorkout
 
       setWorkouts((prev) => {
         return prev.filter((_workout) => _workout.id !== id)

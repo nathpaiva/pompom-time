@@ -71,7 +71,10 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
           '/.netlify/functions/add-workout-by-user',
           {
             method: 'POST',
-            headers: { Authorization: `Bearer ${user?.token.access_token}` },
+            headers: {
+              Authorization: `Bearer ${user?.token.access_token}`,
+              'Content-Type': 'application/json',
+            },
             body: JSON.stringify(addWorkoutFormData),
           },
         )

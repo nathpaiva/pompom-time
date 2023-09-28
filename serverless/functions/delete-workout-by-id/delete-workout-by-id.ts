@@ -9,11 +9,11 @@ import type { IWorkouts, PromiseResponseDeleteWorkoutById } from './types'
 
 const deleteWorkoutById = async (
   event: HandlerEvent<DeleteWorkoutByIdMutationVariables>,
-  context: HandlerContext,
+  context: Context,
 ): PromiseResponseDeleteWorkoutById => {
   const config = graphQLClientConfig()
   try {
-    if (!context.clientContext) {
+    if (!context.clientContext?.user) {
       throw new Error('You must be authenticated')
     }
 

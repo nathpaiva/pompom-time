@@ -6,18 +6,18 @@ import type { PromiseResponseListWorkoutsByUserId } from './types'
 
 const listWorkoutsByUserId = async (
   _event: HandlerEvent<unknown>,
-  context: HandlerContext,
+  { clientContext }: Context,
 ): PromiseResponseListWorkoutsByUserId => {
   const config = graphQLClientConfig()
 
   try {
-    if (!context.clientContext) {
+    if (!clientContext?.user) {
       throw new Error('You must be authenticated')
     }
 
     const { workouts } = await request({
       variables: {
-        user_id: context.clientContext.user.email,
+        user_id: clientContext.user.email,
       },
       document: WorkoutsByUserIdDocument,
       ...config,
