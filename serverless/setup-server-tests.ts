@@ -1,12 +1,13 @@
 export function createMockHandlerEventBody<T>(body: T) {
   return {
-    body: JSON.stringify(body) as HandlerEvent<T>['body'],
+    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+    } as any,
   } as HandlerEvent<T>
 }
 
-export function createMockContext(
-  clientContext?: HandlerContext['clientContext'],
-) {
+export function createMockContext(clientContext?: IUserContext) {
   return {
     callbackWaitsForEmptyEventLoop: false,
     functionName: 'handler',
@@ -17,10 +18,15 @@ export function createMockContext(
     logGroupName: 'Group name',
     logStreamName: 'Stream name',
     identity: undefined,
-    clientContext,
+    clientContext: {
+      ...clientContext,
+      // TODO: change this to remove the any
+      env: {} as any,
+      client: {} as any,
+    },
     getRemainingTimeInMillis: () => 0,
     done: () => null,
     fail: () => null,
     succeed: () => null,
-  } satisfies HandlerContext
+  } satisfies Context
 }

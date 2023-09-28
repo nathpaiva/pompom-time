@@ -39,12 +39,17 @@ describe('add-workout-by-user', () => {
         })
 
       const { statusCode, body } = await addWorkoutByUser(
-        req,
+        {
+          ...req,
+          headers: {
+            'Content-Type': 'application/json',
+          } as any,
+        },
         createMockContext(undefined),
       )
 
       // if the statusCode is 200 the test should break!!!
-      if (statusCode === 200) {
+      if (statusCode === 200 || statusCode === 400) {
         expect(statusCode).toEqual(500)
         return
       }
@@ -54,27 +59,29 @@ describe('add-workout-by-user', () => {
     })
 
     it('should return and error if event is inconsistent', async () => {
-      const req =
+      const _invalidRequest =
         createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>(
-          {} as any,
+          {} as TAddWorkoutByUserMutationVariables,
         )
 
+      const _context = createMockContext({
+        user: {
+          email: 'test-user@nathpaiva.com',
+        },
+      })
+
       const { statusCode, body } = await addWorkoutByUser(
-        req,
-        createMockContext({
-          user: {
-            email: 'test-user@nathpaiva.com',
-          },
-        }),
+        _invalidRequest,
+        _context,
       )
 
       // if the statusCode is 200 the test should break!!!
-      if (statusCode === 200) {
-        expect(statusCode).toEqual(500)
+      if (statusCode === 200 || statusCode === 500) {
+        expect(statusCode).toEqual(400)
         return
       }
 
-      expect(statusCode).toEqual(500)
+      expect(statusCode).toEqual(400)
       expect(JSON.parse(body).error).toEqual(
         'You should provide the workout data',
       )
@@ -90,7 +97,7 @@ describe('add-workout-by-user', () => {
         const _copy = { ...globalMockData }
         delete _copy.interval
 
-        if (item === 'resistance') {
+        if (item === EnumWorkoutType.resistance) {
           return
         }
 
@@ -118,7 +125,8 @@ describe('add-workout-by-user', () => {
 
           await expectsErrorToAdd(
             _mockWorkoutData,
-            `Interval is not valid for ${item} workout type`,
+            'You should provide ',
+            // `Interval is not valid for ${item} workout type`,
           )
         })
       })
@@ -155,7 +163,8 @@ describe('add-workout-by-user', () => {
 
       await expectsErrorToAdd(
         _mockWorkoutData,
-        'Interval is required for resistance workout type',
+        'You should provide interval',
+        // 'Interval is required for resistance workout type',
       )
     })
   })
@@ -240,11 +249,11 @@ function expectWorkoutSuccessfully(type: EnumWorkoutType) {
 
       // if the statusCode is 200 the test should break!!!
       if (statusCode === 200) {
-        expect(statusCode).toEqual(500)
+        expect(statusCode).toEqual(400)
         return
       }
 
-      expect(statusCode).toEqual(500)
+      expect(statusCode).toEqual(400)
       expect(JSON.parse(body).error).toEqual(errorMessage)
     },
   }

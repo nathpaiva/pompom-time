@@ -6,7 +6,7 @@ import type { PromiseResponseListWorkoutsByUserId } from './types'
 
 const listWorkoutsByUserId = async (
   _event: HandlerEvent<unknown>,
-  { clientContext }: HandlerContext,
+  { clientContext }: Context,
 ): PromiseResponseListWorkoutsByUserId => {
   const config = graphQLClientConfig()
 

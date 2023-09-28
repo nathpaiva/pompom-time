@@ -1,4 +1,9 @@
-import { ClientError, request } from 'graphql-request'
+import middy from '@middy/core'
+import httpErrorHandler from '@middy/http-error-handler'
+import jsonBodyParser from '@middy/http-json-body-parser'
+import validator from '@middy/validator'
+import { transpileSchema } from '@middy/validator/transpile'
+import { request } from 'graphql-request'
 
 import { errorResolver, graphQLClientConfig } from '../../utils'
 import {
@@ -12,8 +17,8 @@ import {
 } from './types'
 
 const addWorkoutByUser = async (
-  event: HandlerEvent<TAddWorkoutByUserMutationVariables>,
-  { clientContext }: HandlerContext,
+  { body }: HandlerEventJsonParsed<TAddWorkoutByUserMutationVariables>,
+  { clientContext }: Context,
 ): PromiseResponseAddWorkoutByUserId => {
   const config = graphQLClientConfig()
 
@@ -22,13 +27,11 @@ const addWorkoutByUser = async (
       throw new Error('You must be authenticated')
     }
 
-    if (!event.body || !Object.keys(JSON.parse(event.body)).length) {
+    if (!body) {
       throw new Error('You should provide the workout data')
     }
 
-    // TODO: creates different type if the workout type is = `resistance`
-    const { name, type, repeat, goal_per_day, interval, rest, squeeze } =
-      JSON.parse(event.body)
+    const { name, type, repeat, goal_per_day, interval, rest, squeeze } = body
 
     if (
       type === EnumWorkoutType.resistance &&
@@ -52,9 +55,9 @@ const addWorkoutByUser = async (
       type,
       repeat,
       interval: 0,
-      goal_per_day: +goal_per_day,
-      rest: +rest,
-      squeeze: +squeeze,
+      goal_per_day,
+      rest,
+      squeeze,
     } satisfies AddWorkoutByUserMutationVariables
 
     // if resistance the interval must be provided by the user
@@ -77,7 +80,7 @@ const addWorkoutByUser = async (
       body: JSON.stringify(insert_workouts.returning[0]),
     }
   } catch (error) {
-    const message = errorResolver(error as ClientError | Error)
+    const message = errorResolver(error as Error)
 
     return {
       statusCode: 500,
@@ -86,8 +89,92 @@ const addWorkoutByUser = async (
   }
 }
 
+const schema = {
+  type: 'object',
+  properties: {
+    body: {
+      type: 'object',
+      properties: {
+        repeat: { type: 'boolean' },
+        name: { type: 'string' },
+        goal_per_day: { type: 'integer' },
+        rest: { type: 'integer' },
+        squeeze: { type: 'integer' },
+      },
+      if: {
+        properties: {
+          type: {
+            type: 'string',
+            pattern: '^resistance$',
+          },
+          interval: { type: 'integer' },
+        },
+      },
+      then: { required: ['interval'] },
+      else: {
+        properties: {
+          type: {
+            type: 'string',
+            pattern: '(^pulse$)|(^strength$)|(^intensity$)',
+          },
+          interval: false,
+        },
+      },
+      required: ['name', 'type', 'repeat', 'goal_per_day', 'rest', 'squeeze'],
+    },
+  },
+}
+
+const handler = middy<
+  HandlerEvent<TAddWorkoutByUserMutationVariables>,
+  PromiseResponseAddWorkoutByUserId,
+  IError
+  // TODO move the timeout only for test
+>(addWorkoutByUser, { timeoutEarlyInMillis: 0 })
+  .use([
+    jsonBodyParser(),
+    validator({ eventSchema: transpileSchema(schema, { verbose: true }) }),
+  ])
+  .use(httpErrorHandler())
+  .onError(({ error, ...rest }) => {
+    // console.log(
+    //   rest,
+    //   `🔴🔴🔴"error"`,
+    //   // error,
+    //   (error as any)?.statusCode,
+    //   `🔴🔴🔴"cause"`,
+    //   error?.cause,
+    //   `🔴🔴🔴"name"`,
+    //   error?.name,
+    //   `🔴🔴🔴"message"`,
+    //   error?.message,
+    //   `🔴🔴🔴"stack"`,
+    //   error?.stack,
+    // )
+    // console.log(
+    //   '🚀 ~ file: add-workout-by-user.ts:154 ~ .onError ~ error:',
+    //   error,
+    // )
+    if (!error) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'BadRequest!' }),
+      }
+    }
+    // error
+    const errorMessage = errorResolver(error)
+    // console.log(
+    //   '🚀 ~ file: add-workout-by-user.ts:141 ~ .onError ~ errorMessage:',
+    //   errorMessage,
+    // )
+    return {
+      statusCode: (error as any)?.statusCode ?? 500,
+      body: JSON.stringify({ error: errorMessage }),
+    }
+  })
+
 export {
-  addWorkoutByUser as handler,
+  handler,
   EnumWorkoutType,
   type PromiseResponseAddWorkoutByUserId,
   type TAddWorkoutByUserMutationVariables,
