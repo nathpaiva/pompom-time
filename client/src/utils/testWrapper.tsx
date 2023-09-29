@@ -5,6 +5,10 @@ import React, { ReactElement } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import createFetchMock from 'vitest-fetch-mock'
 
+/**
+ * set queries retry to false to test easily errors
+ * we can change it to be dynamically
+ */
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -13,7 +17,7 @@ const queryClient = new QueryClient({
   },
 })
 
-const AllTheProviders = ({
+const WrapTestWithProviders = ({
   children,
   initialEntries = '/',
 }: {
@@ -31,17 +35,17 @@ const AllTheProviders = ({
   )
 }
 
-const customRender = (
+const _render = (
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'> & { initialEntries?: string },
 ) =>
   render(ui, {
     wrapper: ({ children }) => (
-      <AllTheProviders
+      <WrapTestWithProviders
         initialEntries={options ? options.initialEntries : undefined}
       >
         {children}
-      </AllTheProviders>
+      </WrapTestWithProviders>
     ),
     ...options,
   })
@@ -73,4 +77,4 @@ vi.mock('react-netlify-identity', () => ({
 }))
 
 export * from '@testing-library/react'
-export { customRender as render, _hoisted_useIdentityContext, fetchMocker }
+export { _render as render, _hoisted_useIdentityContext, fetchMocker }
