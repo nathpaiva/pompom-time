@@ -1,5 +1,13 @@
 module.exports = {
-  extends: ['@nathpaiva/eslint-config-react'],
+  extends: [
+    'plugin:@tanstack/eslint-plugin-query/recommended',
+    '@nathpaiva/eslint-config-react',
+  ],
+  plugins: ['@tanstack/query'],
+  rules: {
+    '@tanstack/query/exhaustive-deps': 'error',
+    '@tanstack/query/prefer-query-object-syntax': 'error',
+  },
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
