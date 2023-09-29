@@ -19,8 +19,7 @@ import {
 import { Dispatch, useEffect, useRef, useState } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 
-import { useListByUserId } from '../../../../hooks'
-import { headersCommonSetup } from '../../../../utils'
+import { useDeleteWorkoutById, useListByUserId } from '../../../../hooks'
 import { IWorkout } from '../../types'
 
 interface IListWorkouts {
@@ -45,49 +44,28 @@ export const ListWorkouts = ({
     setWorkouts,
     user?.token.access_token,
   )
+  const { mutate } = useDeleteWorkoutById<IWorkout, { id: IWorkout['id'] }>({
+    access_token: user?.token.access_token,
+    onSettled(_, __, { id }) {
+      onClose()
+      setWorkouts((prev) => {
+        return prev.filter((_workout) => _workout.id !== id)
+      })
+    },
+    onSuccess(response) {
+      toast({
+        status: 'success',
+        title: `Delete workout: ${response.name}`,
+      })
+    },
+  })
 
   const title = _workouts?.length
     ? 'Select workout:'
     : `Oh no! You don't have any workout yet :(`
 
-  const handleDelete = async (id: string) => {
-    try {
-      if (!user?.token) {
-        throw new Error('You are not authenticated')
-      }
-
-      const _response = await fetch(
-        '/.netlify/functions/delete-workout-by-id',
-        {
-          method: 'DELETE',
-          ...headersCommonSetup(user.token.access_token),
-          body: JSON.stringify({
-            id,
-          }),
-        },
-      )
-
-      if (_response.status !== 200) {
-        throw new Error('Error')
-      }
-
-      const response = (await _response.json()) as IWorkout
-
-      setWorkouts((prev) => {
-        return prev.filter((_workout) => _workout.id !== id)
-      })
-      toast({
-        status: 'success',
-        title: `Delete workout: ${response.name}`,
-      })
-    } catch (error) {
-      toast({
-        status: 'error',
-        title: (error as Error).message,
-      })
-    } finally {
-      onClose()
-    }
+  const handleDelete = (id: string) => {
+    mutate({ id })
   }
 
   useEffect(() => {
