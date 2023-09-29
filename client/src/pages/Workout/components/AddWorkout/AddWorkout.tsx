@@ -79,13 +79,11 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
           },
         )
 
-        const response = (await _response.json()) as IWorkout & {
-          error?: string
+        if (_response.status !== 200) {
+          throw new Error('Unexpected error on add workout')
         }
 
-        if (_response.status !== 200) {
-          throw new Error(response.error)
-        }
+        const response = (await _response.json()) as IWorkout
 
         setWorkouts((prev) => [...prev, response])
         toast({
