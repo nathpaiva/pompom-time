@@ -46,9 +46,13 @@ function createFetchResponse<T>(data: T, status = 200) {
   }
 }
 
-export function FetchApi() {
+interface IFetchApi<T> {
+  mockedFetch: (data: T, status?: number) => void
+}
+
+export function FetchApi<T>(): IFetchApi<T> {
   return {
-    mockedFetch: (data: any, status = 200) => {
+    mockedFetch: (data, status = 200) => {
       global.fetch = vi
         .fn()
         .mockResolvedValue(createFetchResponse(data, status))
