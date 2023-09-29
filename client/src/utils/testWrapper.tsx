@@ -1,7 +1,10 @@
 import { ChakraProvider } from '@chakra-ui/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, RenderOptions } from '@testing-library/react'
 import React, { ReactElement } from 'react'
 import { BrowserRouter } from 'react-router-dom'
+
+const queryClient = new QueryClient()
 
 const AllTheProviders = ({
   children,
@@ -14,7 +17,9 @@ const AllTheProviders = ({
 
   return (
     <BrowserRouter>
-      <ChakraProvider>{children}</ChakraProvider>
+      <QueryClientProvider client={queryClient}>
+        <ChakraProvider>{children}</ChakraProvider>
+      </QueryClientProvider>
     </BrowserRouter>
   )
 }
