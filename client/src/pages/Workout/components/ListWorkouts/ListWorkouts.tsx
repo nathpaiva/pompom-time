@@ -11,13 +11,15 @@ import {
   Card,
   Heading,
   IconButton,
+  Skeleton,
   Stack,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
-import { Dispatch, useCallback, useEffect, useRef, useState } from 'react'
+import { Dispatch, useEffect, useRef, useState } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 
+import { useListByUserId } from '../../../../hooks'
 import { headersCommonSetup } from '../../../../utils'
 import { IWorkout } from '../../types'
 
@@ -26,46 +28,27 @@ interface IListWorkouts {
   setWorkouts: Dispatch<React.SetStateAction<IWorkout[]>>
 }
 
-export const ListWorkouts = ({ workouts, setWorkouts }: IListWorkouts) => {
+// TODO: change those components are using workouts in the state to use redux or context
+export const ListWorkouts = ({
+  workouts: _workouts,
+  setWorkouts,
+}: IListWorkouts) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [workoutOnFocus, setWorkoutOnFocus] = useState<IWorkout | null>(null)
 
   const cancelRef = useRef(null)
   const toast = useToast()
   const { user } = useIdentityContext()
-  const title = workouts.length
+
+  const { isLoading, error } = useListByUserId(
+    _workouts,
+    setWorkouts,
+    user?.token.access_token,
+  )
+
+  const title = _workouts?.length
     ? 'Select workout:'
     : `Oh no! You don't have  any workout yet :(`
-
-  const getWorkouts = useCallback(() => {
-    const _fetchData = async () => {
-      try {
-        if (!user?.token) {
-          throw new Error('You are not authenticated')
-        }
-
-        const _response = await fetch(
-          '/.netlify/functions/list-workouts-by-user-id',
-          headersCommonSetup(user.token.access_token),
-        )
-
-        if (_response.status !== 200) {
-          throw new Error('Error')
-        }
-
-        const response = (await _response.json()) as IWorkout[]
-
-        setWorkouts(response)
-      } catch (error) {
-        toast({
-          status: 'error',
-          title: (error as Error).message,
-        })
-      }
-    }
-
-    _fetchData()
-  }, [setWorkouts, toast, user?.token])
 
   const handleDelete = async (id: string) => {
     try {
@@ -113,55 +96,55 @@ export const ListWorkouts = ({ workouts, setWorkouts }: IListWorkouts) => {
     }
   }, [isOpen])
 
-  useEffect(() => {
-    getWorkouts()
-  }, [getWorkouts])
-
   return (
     <Card variant="unstyled" p="1rem" minHeight="500px" rowGap="15px">
-      <Heading size="md">{title}</Heading>
+      <Skeleton isLoaded={!isLoading}>
+        <Heading size="md">
+          {!error ? title : "Sorry we could't load your workouts"}
+        </Heading>
+      </Skeleton>
       <Stack spacing={5}>
         {/* TODO: add the input search */}
         {/* If the list is bigger then 5 */}
-        {workouts.map((workout) => {
-          return (
-            <Card
-              key={workout.id}
-              display="grid"
-              p="2"
-              gridTemplateColumns="50% 1fr 90px"
-              // justifyContent="center"
-              alignItems="center"
-              alignContent="center"
-            >
-              <span>{workout.name}</span>
+        {!isLoading &&
+          _workouts?.map((workout) => {
+            return (
+              <Card
+                key={workout.id}
+                display="grid"
+                p="2"
+                gridTemplateColumns="50% 1fr 90px"
+                alignItems="center"
+                alignContent="center"
+              >
+                <span>{workout.name}</span>
 
-              {/* TODO: change text to use icon */}
-              <span>{workout.type}</span>
+                {/* TODO: change text to use icon */}
+                <span>{workout.type}</span>
 
-              <ButtonGroup>
-                <Button size="sm" colorScheme="purple" width="max-content">
-                  Start
-                </Button>
+                <ButtonGroup>
+                  <Button size="sm" colorScheme="purple" width="max-content">
+                    Start
+                  </Button>
 
-                <IconButton
-                  size="sm"
-                  colorScheme="red"
-                  width="max-content"
-                  variant="outline"
-                  aria-label="Add new workout"
-                  icon={<DeleteIcon />}
-                  data-workout={JSON.stringify(workout)}
-                  onClick={() => {
-                    // TODO: change this to open de modal and send the workout info
-                    onOpen()
-                    setWorkoutOnFocus(workout)
-                  }}
-                />
-              </ButtonGroup>
-            </Card>
-          )
-        })}
+                  <IconButton
+                    size="sm"
+                    colorScheme="red"
+                    width="max-content"
+                    variant="outline"
+                    aria-label="Add new workout"
+                    icon={<DeleteIcon />}
+                    data-workout={JSON.stringify(workout)}
+                    onClick={() => {
+                      // TODO: change this to open de modal and send the workout info
+                      onOpen()
+                      setWorkoutOnFocus(workout)
+                    }}
+                  />
+                </ButtonGroup>
+              </Card>
+            )
+          })}
       </Stack>
 
       {/* TODO: change this dialog to get the workout info */}
@@ -178,7 +161,8 @@ export const ListWorkouts = ({ workouts, setWorkouts }: IListWorkouts) => {
               </AlertDialogHeader>
 
               <AlertDialogBody>
-                Are you sure you want to delete {workoutOnFocus.name}?
+                Are you sure you want to delete{' '}
+                <strong>{workoutOnFocus.name}</strong>?
               </AlertDialogBody>
 
               <AlertDialogFooter>
@@ -186,6 +170,7 @@ export const ListWorkouts = ({ workouts, setWorkouts }: IListWorkouts) => {
                   Cancel
                 </Button>
                 <Button
+                  rightIcon={<DeleteIcon />}
                   colorScheme="red"
                   onClick={() => {
                     const { id } = workoutOnFocus

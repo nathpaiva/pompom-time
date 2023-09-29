@@ -11,7 +11,7 @@ export function useListByUserId<T>(
 ) {
   const toast = useToast()
   const { isLoading, error, data } = useQuery<T[], Error, T[]>({
-    queryKey: ['list-workouts-by-user-id'],
+    queryKey: ['list-workouts-by-user-id', access_token],
     queryFn: async () => {
       try {
         if (!access_token) {
@@ -42,6 +42,7 @@ export function useListByUserId<T>(
         title: error.message,
       })
     },
+    enabled: !!access_token,
   })
 
   return {
