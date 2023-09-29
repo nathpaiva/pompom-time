@@ -48,7 +48,7 @@ export const ListWorkouts = ({
 
   const title = _workouts?.length
     ? 'Select workout:'
-    : `Oh no! You don't have  any workout yet :(`
+    : `Oh no! You don't have any workout yet :(`
 
   const handleDelete = async (id: string) => {
     try {
