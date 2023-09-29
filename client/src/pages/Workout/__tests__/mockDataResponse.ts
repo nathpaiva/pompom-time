@@ -1,5 +1,3 @@
-import { FetchApi } from '@utils/test'
-
 import { IWorkout } from '../types'
 
 export const mockDataResponse = [
@@ -48,9 +46,6 @@ export const mockDataResponse = [
   // TODO: change the IWorkout to use the type generated for serverless
 ] satisfies IWorkout[]
 
-// TODO: change the IWorkout to use the type generated for serverless
-const { mockedFetch } = FetchApi<IWorkout[]>()
-
 const mockUser = () => {
   return {
     validUserMocked: {
@@ -67,4 +62,4 @@ const mockUser = () => {
   }
 }
 
-export { mockedFetch, mockUser }
+export { mockUser }

@@ -3,8 +3,15 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, RenderOptions } from '@testing-library/react'
 import React, { ReactElement } from 'react'
 import { BrowserRouter } from 'react-router-dom'
+import createFetchMock from 'vitest-fetch-mock'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+})
 
 const AllTheProviders = ({
   children,
@@ -39,26 +46,23 @@ const customRender = (
     ...options,
   })
 
-function createFetchResponse<T>(data: T, status = 200) {
+export function createFetchResponse<T>(data: T, status = 200) {
   return {
     status,
-    json: () => new Promise((resolve) => resolve(data)),
+    statusText: status === 200 ? 'Success' : 'Error on request',
+    json: () =>
+      new Promise((resolve, reject) => {
+        if (status !== 200) {
+          return reject(data)
+        }
+
+        return resolve(data)
+      }),
   }
 }
 
-interface IFetchApi<T> {
-  mockedFetch: (data: T, status?: number) => void
-}
-
-export function FetchApi<T>(): IFetchApi<T> {
-  return {
-    mockedFetch: (data, status = 200) => {
-      global.fetch = vi
-        .fn()
-        .mockResolvedValue(createFetchResponse(data, status))
-    },
-  }
-}
+const fetchMocker = createFetchMock(vi)
+fetchMocker.enableMocks()
 
 const { _hoisted_useIdentityContext } = vi.hoisted(() => {
   return { _hoisted_useIdentityContext: vi.fn() }
@@ -69,4 +73,4 @@ vi.mock('react-netlify-identity', () => ({
 }))
 
 export * from '@testing-library/react'
-export { customRender as render, _hoisted_useIdentityContext }
+export { customRender as render, _hoisted_useIdentityContext, fetchMocker }
