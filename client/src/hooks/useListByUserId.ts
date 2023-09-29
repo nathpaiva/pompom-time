@@ -37,7 +37,7 @@ export function useListByUserId<T>(
     queryKey: ['list-workouts-by-user-id', access_token],
     queryFn: async ({ queryKey }) => {
       try {
-        const _token = queryKey[1]
+        const [_queryName, _token] = queryKey
 
         if (!_token) {
           throw new Error('You are not authenticated')
