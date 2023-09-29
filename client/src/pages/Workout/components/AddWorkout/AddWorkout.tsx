@@ -16,6 +16,7 @@ import {
   Switch,
   useToast,
 } from '@chakra-ui/react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useState, type ChangeEvent, type FormEvent, Dispatch } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 
@@ -26,6 +27,8 @@ interface IAddWorkout {
 }
 
 export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
+  const queryClient = useQueryClient()
+
   const toast = useToast()
   const { user } = useIdentityContext()
   const [addWorkoutFormData, setAddWorkoutFormData] = useState<
@@ -44,6 +47,13 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
     rest: undefined,
     squeeze: undefined,
   })
+
+  const _responseQuery = queryClient.getQueryState<IWorkout[]>([
+    'list-workouts-by-user-id',
+    user?.token.access_token,
+  ])
+
+  const __workouts = _responseQuery?.data ?? []
 
   // create workout
   const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
