@@ -4,11 +4,28 @@ import { Dispatch, useEffect } from 'react'
 
 import { headersCommonSetup } from '../utils'
 
+interface IUseListByUserId<T> {
+  isLoading: boolean
+  error: Error | null
+  data: T[]
+  isError: boolean
+  isSuccess: boolean
+}
+
+/**
+ *
+ * @param initialWorkoutData  initial of T[]
+ * @param callback  function to update the T[]
+ * @param access_token  string with access token
+ * @returns
+ *  isLoading: boolean, error: Error | null, data: T[], isError: boolean, isSuccess: boolean
+ * }
+ */
 export function useListByUserId<T>(
   initialWorkoutData: T[],
   callback: Dispatch<React.SetStateAction<T[]>>,
   access_token?: string,
-) {
+): IUseListByUserId<T> {
   const toast = useToast()
   const { isLoading, error, data, isError, isSuccess } = useQuery<
     T[],
