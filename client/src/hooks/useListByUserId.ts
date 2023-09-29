@@ -10,17 +10,24 @@ export function useListByUserId<T>(
   access_token?: string,
 ) {
   const toast = useToast()
-  const { isLoading, error, data } = useQuery<T[], Error, T[]>({
+  const { isLoading, error, data } = useQuery<
+    T[],
+    Error,
+    T[],
+    (string | undefined)[]
+  >({
+    enabled: !!access_token,
     queryKey: ['list-workouts-by-user-id', access_token],
-    queryFn: async () => {
+    queryFn: async ({ queryKey }) => {
       try {
-        if (!access_token) {
+        const _token = queryKey[1]
+        if (!_token) {
           throw new Error('You are not authenticated')
         }
 
         const _response = await fetch(
           '/.netlify/functions/list-workouts-by-user-id',
-          headersCommonSetup(access_token),
+          headersCommonSetup(_token),
         )
 
         if (_response.status !== 200) {
@@ -42,7 +49,6 @@ export function useListByUserId<T>(
         title: error.message,
       })
     },
-    enabled: !!access_token,
   })
 
   return {
