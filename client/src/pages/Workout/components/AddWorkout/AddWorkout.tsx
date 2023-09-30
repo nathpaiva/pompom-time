@@ -258,6 +258,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
       <Divider />
 
       <CardFooter>
+        {/* TODO: disable button if is adding a new data */}
         <Button
           rightIcon={<AddIcon />}
           colorScheme="purple"
