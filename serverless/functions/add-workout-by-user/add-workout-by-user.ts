@@ -64,7 +64,8 @@ const addWorkoutByUser = async (
       body: JSON.stringify(insert_workouts.returning[0]),
     }
   } catch (error) {
-    const message = errorResolver(error as Error)
+    // TODO: review this Error type (before Error)
+    const message = errorResolver(error as IError)
 
     return {
       statusCode: 500,

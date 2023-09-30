@@ -1,9 +1,23 @@
 import { ChakraProvider } from '@chakra-ui/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, RenderOptions } from '@testing-library/react'
 import React, { ReactElement } from 'react'
 import { BrowserRouter } from 'react-router-dom'
+import createFetchMock from 'vitest-fetch-mock'
 
-const AllTheProviders = ({
+/**
+ * set queries retry to false to test easily errors
+ * we can change it to be dynamically
+ */
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+})
+
+const WrapTestWithProviders = ({
   children,
   initialEntries = '/',
 }: {
@@ -14,42 +28,45 @@ const AllTheProviders = ({
 
   return (
     <BrowserRouter>
-      <ChakraProvider>{children}</ChakraProvider>
+      <QueryClientProvider client={queryClient}>
+        <ChakraProvider>{children}</ChakraProvider>
+      </QueryClientProvider>
     </BrowserRouter>
   )
 }
 
-const customRender = (
+const _render = (
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'> & { initialEntries?: string },
 ) =>
   render(ui, {
     wrapper: ({ children }) => (
-      <AllTheProviders
+      <WrapTestWithProviders
         initialEntries={options ? options.initialEntries : undefined}
       >
         {children}
-      </AllTheProviders>
+      </WrapTestWithProviders>
     ),
     ...options,
   })
 
-function createFetchResponse<T>(data: T, status = 200) {
+export function createFetchResponse<T>(data: T, status = 200) {
   return {
     status,
-    json: () => new Promise((resolve) => resolve(data)),
+    statusText: status === 200 ? 'Success' : 'Error on request',
+    json: () =>
+      new Promise((resolve, reject) => {
+        if (status !== 200) {
+          return reject(data)
+        }
+
+        return resolve(data)
+      }),
   }
 }
 
-export function FetchApi() {
-  return {
-    mockedFetch: (data: any, status = 200) => {
-      global.fetch = vi
-        .fn()
-        .mockResolvedValue(createFetchResponse(data, status))
-    },
-  }
-}
+const fetchMocker = createFetchMock(vi)
+fetchMocker.enableMocks()
 
 const { _hoisted_useIdentityContext } = vi.hoisted(() => {
   return { _hoisted_useIdentityContext: vi.fn() }
@@ -60,4 +77,4 @@ vi.mock('react-netlify-identity', () => ({
 }))
 
 export * from '@testing-library/react'
-export { customRender as render, _hoisted_useIdentityContext }
+export { _render as render, _hoisted_useIdentityContext, fetchMocker }
