@@ -28,7 +28,8 @@ const listWorkoutsByUserId = async (
       body: JSON.stringify(workouts),
     }
   } catch (error) {
-    const message = errorResolver(error as ClientError | Error)
+    // TODO: review this Error type (before ClientError | Error)
+    const message = errorResolver(error as ClientError | IError)
 
     return {
       statusCode: 500,
