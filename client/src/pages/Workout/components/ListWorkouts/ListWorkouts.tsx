@@ -1,11 +1,5 @@
 import { DeleteIcon } from '@chakra-ui/icons'
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Button,
   ButtonGroup,
   Card,
@@ -13,14 +7,14 @@ import {
   IconButton,
   Skeleton,
   Stack,
-  useDisclosure,
   useToast,
 } from '@chakra-ui/react'
-import { Dispatch, useEffect, useRef, useState } from 'react'
+import { Dispatch } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 
 import { useDeleteWorkoutById, useListByUserId } from '../../../../hooks'
 import { IWorkout } from '../../types'
+import { Dialog, useDialog } from './components/Dialog'
 
 interface IListWorkouts {
   workouts: IWorkout[]
@@ -32,10 +26,9 @@ export const ListWorkouts = ({
   workouts: _workouts,
   setWorkouts,
 }: IListWorkouts) => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [workoutOnFocus, setWorkoutOnFocus] = useState<IWorkout | null>(null)
+  const { isOpen, onClose, onOpen, dataOnFocus, setDataOnFocus } =
+    useDialog<IWorkout>()
 
-  const cancelRef = useRef(null)
   const toast = useToast()
   const { user } = useIdentityContext()
 
@@ -44,7 +37,10 @@ export const ListWorkouts = ({
     setWorkouts,
     user?.token.access_token,
   )
-  const { mutate } = useDeleteWorkoutById<IWorkout, { id: IWorkout['id'] }>({
+  const { mutate, isLoading: isDeleting } = useDeleteWorkoutById<
+    IWorkout,
+    { id: IWorkout['id'] }
+  >({
     access_token: user?.token.access_token,
     onSettled(_, __, { id }) {
       onClose()
@@ -64,106 +60,86 @@ export const ListWorkouts = ({
     ? 'Select workout:'
     : `Oh no! You don't have any workout yet :(`
 
-  const handleDelete = (id: string) => {
-    mutate({ id })
+  const handleDeleteOpenModal = (workout: IWorkout) => {
+    setDataOnFocus(workout)
+    onOpen()
   }
 
-  useEffect(() => {
-    if (!isOpen) {
-      setWorkoutOnFocus(null)
+  const dialogHandleActions = (hasDelete: boolean) => {
+    if (!dataOnFocus) return
+
+    if (hasDelete) {
+      mutate({ id: dataOnFocus.id })
     }
-  }, [isOpen])
+
+    setDataOnFocus(null)
+    onClose()
+  }
 
   return (
-    <Card variant="unstyled" p="1rem" minHeight="500px" rowGap="15px">
-      <Skeleton isLoaded={!isLoading}>
-        <Heading size="md">
-          {!error ? title : "Sorry we could't load your workouts"}
-        </Heading>
-      </Skeleton>
-      <Stack spacing={5}>
-        {/* TODO: add the input search */}
-        {/* If the list is bigger then 5 */}
-        {!isLoading &&
-          _workouts?.map((workout) => {
-            return (
-              <Card
-                key={workout.id}
-                display="grid"
-                p="2"
-                gridTemplateColumns="50% 1fr 90px"
-                alignItems="center"
-                alignContent="center"
-              >
-                <span>{workout.name}</span>
+    <>
+      <Dialog
+        title="Delete workout"
+        description={`Are you sure you want to delete ${dataOnFocus?.name}?`}
+        labels={{ confirmAction: 'Delete', cancelAction: 'Cancel' }}
+        dialogAction={{
+          isOpen,
+          onClose: dialogHandleActions,
+        }}
+        dataOnFocus={dataOnFocus}
+      />
 
-                {/* TODO: change text to use icon */}
-                <span>{workout.type}</span>
+      <Card variant="unstyled" p="1rem" minHeight="500px" rowGap="15px">
+        <Skeleton isLoaded={!isLoading}>
+          <Heading size="md">
+            {!error ? title : "Sorry we could't load your workouts"}
+          </Heading>
+        </Skeleton>
+        <Stack spacing={5}>
+          {/* TODO: add the input search */}
+          {/* If the list is bigger then 5 */}
+          {!isLoading &&
+            _workouts?.map((workout) => {
+              return (
+                <Skeleton isLoaded={!isDeleting} key={workout.id}>
+                  <Card
+                    display="grid"
+                    p="2"
+                    gridTemplateColumns="50% 1fr 90px"
+                    alignItems="center"
+                    alignContent="center"
+                  >
+                    <span>{workout.name}</span>
 
-                <ButtonGroup>
-                  <Button size="sm" colorScheme="purple" width="max-content">
-                    Start
-                  </Button>
+                    {/* TODO: change text to use icon */}
+                    <span>{workout.type}</span>
 
-                  <IconButton
-                    size="sm"
-                    colorScheme="red"
-                    width="max-content"
-                    variant="outline"
-                    aria-label="Add new workout"
-                    icon={<DeleteIcon />}
-                    data-workout={JSON.stringify(workout)}
-                    onClick={() => {
-                      // TODO: change this to open de modal and send the workout info
-                      onOpen()
-                      setWorkoutOnFocus(workout)
-                    }}
-                  />
-                </ButtonGroup>
-              </Card>
-            )
-          })}
-      </Stack>
+                    <ButtonGroup>
+                      <Button
+                        size="sm"
+                        colorScheme="purple"
+                        width="max-content"
+                      >
+                        Start
+                      </Button>
 
-      {/* TODO: change this dialog to get the workout info */}
-      {workoutOnFocus && (
-        <AlertDialog
-          isOpen={isOpen}
-          leastDestructiveRef={cancelRef as any}
-          onClose={onClose}
-        >
-          <AlertDialogOverlay>
-            <AlertDialogContent>
-              <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                Delete workout
-              </AlertDialogHeader>
-
-              <AlertDialogBody>
-                Are you sure you want to delete{' '}
-                <strong>{workoutOnFocus.name}</strong>?
-              </AlertDialogBody>
-
-              <AlertDialogFooter>
-                <Button ref={cancelRef as any} onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button
-                  rightIcon={<DeleteIcon />}
-                  colorScheme="red"
-                  onClick={() => {
-                    const { id } = workoutOnFocus
-
-                    handleDelete(id)
-                  }}
-                  ml={3}
-                >
-                  Delete
-                </Button>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialogOverlay>
-        </AlertDialog>
-      )}
-    </Card>
+                      <IconButton
+                        size="sm"
+                        colorScheme="red"
+                        width="max-content"
+                        variant="outline"
+                        aria-label="Add new workout"
+                        icon={<DeleteIcon />}
+                        data-workout={JSON.stringify(workout)}
+                        onClick={() => handleDeleteOpenModal(workout)}
+                      />
+                    </ButtonGroup>
+                  </Card>
+                </Skeleton>
+              )
+            })}
+        </Stack>
+      </Card>
+    </>
   )
 }
