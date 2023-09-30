@@ -7,7 +7,7 @@ import { headersCommonSetup } from '../utils'
 interface IUseListByUserId<T> {
   isLoading: boolean
   error: Error | null
-  data: T[]
+  data?: T[]
   isError: boolean
   isSuccess: boolean
 }
@@ -22,7 +22,6 @@ interface IUseListByUserId<T> {
  * }
  */
 export function useListByUserId<T>(
-  initialWorkoutData: T[],
   callback: Dispatch<React.SetStateAction<T[]>>,
   access_token?: string,
 ): IUseListByUserId<T> {
@@ -63,7 +62,6 @@ export function useListByUserId<T>(
         return Promise.reject(new Error(message))
       }
     },
-    initialData: initialWorkoutData,
   })
 
   useEffect(() => {

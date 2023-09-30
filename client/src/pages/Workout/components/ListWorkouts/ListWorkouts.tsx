@@ -33,7 +33,6 @@ export const ListWorkouts = ({
   const { user } = useIdentityContext()
 
   const { isLoading, error } = useListByUserId(
-    _workouts,
     setWorkouts,
     user?.token.access_token,
   )
@@ -43,10 +42,10 @@ export const ListWorkouts = ({
   >({
     access_token: user?.token.access_token,
     onSettled(_, __, { id }) {
-      onClose()
       setWorkouts((prev) => {
         return prev.filter((_workout) => _workout.id !== id)
       })
+      setDataOnFocus(null)
     },
     onSuccess(response) {
       toast({
@@ -68,12 +67,14 @@ export const ListWorkouts = ({
   const dialogHandleActions = (hasDelete: boolean) => {
     if (!dataOnFocus) return
 
-    if (hasDelete) {
-      mutate({ id: dataOnFocus.id })
+    onClose()
+
+    if (!hasDelete) {
+      setDataOnFocus(null)
+      return
     }
 
-    setDataOnFocus(null)
-    onClose()
+    mutate({ id: dataOnFocus.id })
   }
 
   return (
@@ -100,8 +101,10 @@ export const ListWorkouts = ({
           {/* If the list is bigger then 5 */}
           {!isLoading &&
             _workouts?.map((workout) => {
+              const _isDeleting = workout.id === dataOnFocus?.id && isDeleting
+
               return (
-                <Skeleton isLoaded={!isDeleting} key={workout.id}>
+                <Skeleton isLoaded={!_isDeleting} key={workout.id}>
                   <Card
                     display="grid"
                     p="2"
