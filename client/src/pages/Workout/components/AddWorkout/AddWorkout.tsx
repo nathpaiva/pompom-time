@@ -16,47 +16,51 @@ import {
   Switch,
   useToast,
 } from '@chakra-ui/react'
-import { useQueryClient } from '@tanstack/react-query'
 import { useState, type ChangeEvent, type FormEvent, Dispatch } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 
+import { TAddWorkoutVariable, useAddWorkoutByUserId } from '../../../../hooks'
 import { IWorkout, workoutType } from '../../types'
 
 interface IAddWorkout {
   setWorkouts: Dispatch<React.SetStateAction<IWorkout[]>>
 }
 
-export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
-  const queryClient = useQueryClient()
+const formInitialData = {
+  name: undefined,
+  type: workoutType.pulse,
+  repeat: false,
+  goal_per_day: undefined,
+  interval: undefined,
+  rest: undefined,
+  squeeze: undefined,
+}
 
+export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
   const toast = useToast()
   const { user } = useIdentityContext()
-  const [addWorkoutFormData, setAddWorkoutFormData] = useState<
-    Partial<
-      Omit<
-        IWorkout,
-        'created_at' | 'updated_at' | 'id' | 'user_id' | 'stop_after'
-      >
-    >
-  >({
-    name: undefined,
-    type: workoutType.pulse,
-    repeat: false,
-    goal_per_day: undefined,
-    interval: undefined,
-    rest: undefined,
-    squeeze: undefined,
+
+  const [addWorkoutFormData, setAddWorkoutFormData] =
+    useState<TAddWorkoutVariable>(formInitialData)
+
+  const { mutate } = useAddWorkoutByUserId<IWorkout, TAddWorkoutVariable>({
+    access_token: user?.token.access_token,
+    onSettled(data, _) {
+      console.log(data, _)
+      if (!data) return
+
+      setWorkouts((prev) => [...prev, data])
+      toast({
+        status: 'success',
+        title: `Added workout: ${data.name}`,
+      })
+
+      setAddWorkoutFormData(formInitialData)
+    },
   })
 
-  const _responseQuery = queryClient.getQueryState<IWorkout[]>([
-    'list-workouts-by-user-id',
-    user?.token.access_token,
-  ])
-
-  const __workouts = _responseQuery?.data ?? []
-
   // create workout
-  const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleOnSubmit = (event: FormEvent<HTMLDivElement>) => {
     event.preventDefault()
 
     const _copy = { ...addWorkoutFormData }
@@ -70,45 +74,15 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
       (item) => typeof item === 'undefined',
     )
 
-    const _fetchData = async () => {
-      try {
-        if (isInvalidForm) {
-          throw new Error('All fields should be filled')
-        }
-
-        // TODO: resistance is not working after add the new input
-        const _response = await fetch(
-          '/.netlify/functions/add-workout-by-user',
-          {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${user?.token.access_token}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(addWorkoutFormData),
-          },
-        )
-
-        if (_response.status !== 200) {
-          throw new Error('Unexpected error on add workout')
-        }
-
-        const response = (await _response.json()) as IWorkout
-
-        setWorkouts((prev) => [...prev, response])
-        toast({
-          status: 'success',
-          title: `Added workout: ${addWorkoutFormData.name}`,
-        })
-      } catch (error) {
-        toast({
-          status: 'error',
-          title: (error as Error).message,
-        })
-      }
+    if (isInvalidForm) {
+      toast({
+        status: 'error',
+        title: 'All fields must be filled',
+      })
+      return
     }
 
-    _fetchData()
+    mutate(_copy)
   }
 
   const handleOnChange = (
@@ -116,13 +90,27 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
   ) => {
     const { name, value } = event.target
 
-    setAddWorkoutFormData((prev) => ({
-      ...prev,
-      [name]:
-        event.target.type === 'checkbox'
-          ? (event.target as HTMLInputElement).checked
-          : value,
-    }))
+    setAddWorkoutFormData((prev) => {
+      const objToReturn = {
+        [name]:
+          event.target.type === 'checkbox'
+            ? (event.target as HTMLInputElement).checked
+            : value,
+      }
+
+      if (name === 'type' && value !== 'resistance') {
+        return {
+          ...prev,
+          ...objToReturn,
+          interval: undefined,
+        }
+      }
+
+      return {
+        ...prev,
+        ...objToReturn,
+      }
+    })
   }
 
   // TODO: create a form validation
@@ -133,27 +121,36 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
       minHeight="500px"
       rowGap="15px"
       as="form"
-      onSubmit={(event) =>
-        handleOnSubmit(event as unknown as FormEvent<HTMLFormElement>)
-      }
+      onSubmit={handleOnSubmit}
     >
       <Heading size="md">Create a new workout:</Heading>
 
       <CardBody>
         <Stack spacing={5}>
           {/* workout name */}
-          <FormControl as="fieldset" display="grid" variant="floating">
+          <FormControl
+            isRequired
+            as="fieldset"
+            display="grid"
+            variant="floating"
+          >
             <Input
               onChange={handleOnChange}
               type="name"
               name="name"
               placeholder=" "
+              defaultValue={addWorkoutFormData.name}
             />
             <FormLabel>Name</FormLabel>
           </FormControl>
 
           {/* Squeeze */}
-          <FormControl as="fieldset" display="grid" variant="floating">
+          <FormControl
+            isRequired
+            as="fieldset"
+            display="grid"
+            variant="floating"
+          >
             <InputGroup>
               <Input
                 onChange={handleOnChange}
@@ -168,6 +165,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
 
           {/* workout type */}
           <FormControl
+            isRequired
             as="fieldset"
             display="grid"
             variant="floating"
@@ -193,6 +191,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
           </FormControl>
           {/* interval = should show only if is resistance */}
           <FormControl
+            isRequired={addWorkoutFormData.type === 'resistance'}
             as="fieldset"
             display="grid"
             variant="floating"
@@ -210,7 +209,12 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
             <FormLabel>hold up to</FormLabel>
           </FormControl>
           {/* goal per day = numero de series */}
-          <FormControl as="fieldset" display="grid" variant="floating">
+          <FormControl
+            isRequired
+            as="fieldset"
+            display="grid"
+            variant="floating"
+          >
             <Input
               onChange={handleOnChange}
               type="number"
@@ -220,7 +224,12 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
             <FormLabel># of Sets</FormLabel>
           </FormControl>
           {/* rest */}
-          <FormControl as="fieldset" display="grid" variant="floating">
+          <FormControl
+            isRequired
+            as="fieldset"
+            display="grid"
+            variant="floating"
+          >
             <InputGroup>
               <Input
                 onChange={handleOnChange}
