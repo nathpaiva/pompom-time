@@ -147,7 +147,8 @@ describe('Workout', () => {
           expect(screen.getByText('Error on delete mutation')).toBeVisible()
         })
       })
-      it('should open the dialog to delete workout and cancel the action', async () => {
+
+      it('should open the dialog to delete an workout and cancel the action', async () => {
         vi.mocked(_hoisted_useIdentityContext).mockReturnValue(validUserMocked)
 
         fetchMocker.mockResponseOnce(JSON.stringify(mockDataResponse))
@@ -182,6 +183,59 @@ describe('Workout', () => {
         expect(buttonCancelAction).toBeVisible()
 
         fireEvent.click(buttonCancelAction)
+
+        await waitFor(() => {
+          expect(
+            screen.queryByText(
+              `Are you sure you want to delete ${_workoutToDelete.name}?`,
+            ),
+          ).toBeFalsy()
+          expect(screen.queryByText('Delete workout')).toBeFalsy()
+        })
+      })
+
+      it('should open the dialog to delete an workout and close the modal', async () => {
+        vi.mocked(_hoisted_useIdentityContext).mockReturnValue(validUserMocked)
+
+        fetchMocker.mockResponseOnce(JSON.stringify(mockDataResponse))
+
+        render(<Workout />)
+
+        const _workoutToDelete = mockDataResponse[0]
+
+        act(() => expect(global.fetch).toHaveBeenCalled())
+
+        const deleteWorkoutAction = () =>
+          screen.queryByLabelText(`Delete ${_workoutToDelete.name} workout`)
+
+        await waitFor(() => expect(deleteWorkoutAction()).toBeVisible())
+
+        const buttonDeleteAction = screen.getByLabelText(
+          `Delete ${_workoutToDelete.name} workout`,
+        )
+
+        fireEvent.click(buttonDeleteAction)
+
+        await waitFor(() => {
+          expect(
+            screen.getByText(
+              `Are you sure you want to delete ${_workoutToDelete.name}?`,
+            ),
+          ).toBeVisible()
+          expect(screen.getByText('Delete workout')).toBeVisible()
+        })
+
+        fireEvent.keyDown(
+          screen.getByText(
+            `Are you sure you want to delete ${_workoutToDelete.name}?`,
+          ),
+          {
+            key: 'Escape',
+            code: 'Escape',
+            keyCode: 27,
+            charCode: 27,
+          },
+        )
 
         await waitFor(() => {
           expect(
