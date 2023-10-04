@@ -45,8 +45,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
 
   const { mutate } = useAddWorkoutByUserId<IWorkout, TAddWorkoutVariable>({
     access_token: user?.token.access_token,
-    onSettled(data, _) {
-      console.log(data, _)
+    onSettled(data) {
       if (!data) return
 
       setWorkouts((prev) => [...prev, data])
@@ -141,7 +140,6 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
           </FormControl>
           {/* workout type */}
           <FormControl
-            // isRequired
             isInvalid={!!errors.type}
             as="fieldset"
             display="grid"
@@ -172,7 +170,6 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
           {/* interval = should show only if is resistance */}
           <FormControl
             isInvalid={!!errors.interval}
-            // isRequired={isResistance}
             as="fieldset"
             display="grid"
             variant="floating"
@@ -198,7 +195,6 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
           </FormControl>
           {/* goal per day = numero de series */}
           <FormControl
-            // isRequired
             as="fieldset"
             display="grid"
             variant="floating"
@@ -218,7 +214,6 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
           </FormControl>
           {/* rest */}
           <FormControl
-            // isRequired
             as="fieldset"
             display="grid"
             variant="floating"

@@ -8,6 +8,7 @@ import {
   waitFor,
 } from '@utils/test'
 
+import { workoutType } from '../constants'
 import { Workout } from '../Workout'
 import { mockDataResponse, mockUser } from './mockDataResponse'
 
@@ -245,6 +246,101 @@ describe('Workout', () => {
           ).toBeFalsy()
           expect(screen.queryByText('Delete workout')).toBeFalsy()
         })
+      })
+    })
+  })
+
+  describe('AddWorkout', () => {
+    // console.log(workoutType)
+    it('should add a new workout successfully', async () => {
+      const addNewWorkoutMock = {
+        name: 'New Workout',
+        squeeze: 10,
+        type: workoutType.pulse,
+        goal_per_day: 4,
+        rest: 45,
+        repeat: true,
+      }
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue(validUserMocked)
+
+      render(<Workout />)
+
+      // find form and button action
+      const submitButton = screen.getByText('Add new workout')
+      expect(screen.getByText('Create a new workout:')).toBeVisible()
+      expect(submitButton).toBeVisible()
+
+      // get each field and test each one
+      const fieldName = screen.getByLabelText('Name')
+      const fieldSqueeze = screen.getByLabelText('Squeeze')
+      const fieldType = screen.getByLabelText('Workout type')
+      const fieldInterval = screen.getByLabelText('hold up to')
+      const fieldGolPerDay = screen.getByLabelText('# of Sets')
+      const fieldRest = screen.getByLabelText('Rest')
+      const fieldRepeat = screen.getByLabelText('Start next set automatically')
+
+      // Test each field with default values
+      expect(fieldName).toHaveValue('')
+      expect(fieldSqueeze).toHaveValue(null)
+      expect(fieldType).toHaveValue('')
+      // should not render interval if the type is not resistance
+      expect(fieldInterval).toHaveValue(null)
+      expect(fieldInterval).not.toBeVisible()
+      // END
+      expect(fieldGolPerDay).toHaveValue(null)
+      expect(fieldRest).toHaveValue(null)
+      expect(fieldRepeat).not.toBeChecked()
+
+      // update each filed with addNewWorkoutMock
+      act(() => {
+        fireEvent.change(fieldName, {
+          target: { value: addNewWorkoutMock.name },
+        })
+        fireEvent.change(fieldSqueeze, {
+          target: { value: addNewWorkoutMock.squeeze },
+        })
+        fireEvent.change(fieldType, {
+          target: { value: addNewWorkoutMock.type },
+        })
+        fireEvent.change(fieldGolPerDay, {
+          target: { value: addNewWorkoutMock.goal_per_day },
+        })
+        fireEvent.change(fieldRest, {
+          target: { value: addNewWorkoutMock.rest },
+        })
+        fireEvent.click(fieldRepeat)
+
+        expect(fieldName).toHaveValue(addNewWorkoutMock.name)
+        expect(fieldSqueeze).toHaveValue(addNewWorkoutMock.squeeze)
+        expect(fieldType).toHaveValue(addNewWorkoutMock.type)
+        // interval should keep hide
+        expect(fieldInterval).not.toBeVisible()
+        // END
+        expect(fieldGolPerDay).toHaveValue(addNewWorkoutMock.goal_per_day)
+        expect(fieldRest).toHaveValue(addNewWorkoutMock.rest)
+        expect(fieldRepeat).toBeChecked()
+      })
+
+      // test add workout after fill inputs
+      fireEvent.click(submitButton)
+      const dataMockReturn = {
+        ...mockDataResponse[0],
+        id: Date.now(),
+        ...addNewWorkoutMock,
+      }
+      fetchMocker.mockResponseOnce(JSON.stringify(dataMockReturn))
+
+      await waitFor(() => {
+        // show the success banner
+        expect(
+          screen.getByText(`Added workout: ${addNewWorkoutMock.name}`),
+        ).toBeVisible()
+        // after add show it on the workout list
+        const workoutAdded = screen.getByText(dataMockReturn.name)
+        expect(workoutAdded).toBeVisible()
+        expect(workoutAdded.nextSibling).toHaveTextContent(
+          addNewWorkoutMock.type,
+        )
       })
     })
   })
