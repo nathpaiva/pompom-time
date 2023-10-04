@@ -11,16 +11,15 @@ import {
 import { useRef } from 'react'
 
 export function Dialog<T>({
-  dialogAction: { isOpen, onClose },
+  isOpen,
+  onClose,
   labels: { confirmAction, cancelAction },
   title,
   description,
   dataOnFocus,
 }: {
-  dialogAction: {
-    isOpen: boolean
-    onClose: (isConfirm: boolean) => void
-  }
+  isOpen: boolean
+  onClose: (isConfirm: boolean) => void
   title: string
   description: string
   labels: {
