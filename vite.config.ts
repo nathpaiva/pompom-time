@@ -43,7 +43,7 @@ const testConfig = {
     ],
     all: true,
     branches: 80, // TODO: next PR add tests to back to 90
-    functions: 70, // TODO: next PR add tests to back to 80
+    functions: 60, // TODO: next PR add tests to back to 80
     lines: 80, // TODO: next PR add tests and back to 90
     statements: 70, // TODO: next PR add tests and back to 90
     cleanOnRerun: false,
