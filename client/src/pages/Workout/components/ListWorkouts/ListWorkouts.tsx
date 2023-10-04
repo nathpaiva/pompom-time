@@ -10,7 +10,6 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import { Dispatch } from 'react'
-import { useIdentityContext } from 'react-netlify-identity'
 
 import { useDeleteWorkoutById, useListByUserId } from '../../../../hooks'
 import { IWorkout } from '../../types'
@@ -30,17 +29,12 @@ export const ListWorkouts = ({
     useDialog<IWorkout>()
 
   const toast = useToast()
-  const { user } = useIdentityContext()
 
-  const { isLoading, error } = useListByUserId(
-    setWorkouts,
-    user?.token.access_token,
-  )
+  const { isLoading, error } = useListByUserId(setWorkouts)
   const { mutate, isLoading: isDeleting } = useDeleteWorkoutById<
     IWorkout,
     { id: IWorkout['id'] }
   >({
-    access_token: user?.token.access_token,
     onSettled(_, error, { id }) {
       setDataOnFocus(null)
 

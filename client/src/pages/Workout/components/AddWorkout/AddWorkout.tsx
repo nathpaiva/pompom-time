@@ -19,7 +19,6 @@ import {
 } from '@chakra-ui/react'
 import { type Dispatch } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { useIdentityContext } from 'react-netlify-identity'
 
 import { TAddWorkoutVariable, useAddWorkoutByUserId } from '../../../../hooks'
 import { IWorkout, workoutType } from '../../types'
@@ -41,11 +40,10 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
   const isResistance = watch('type') === 'resistance'
 
   const toast = useToast()
-  const { user } = useIdentityContext()
 
   const { mutate } = useAddWorkoutByUserId<IWorkout, TAddWorkoutVariable>({
-    access_token: user?.token.access_token,
     onSettled(data) {
+      /* c8 ignore next */
       if (!data) return
 
       setWorkouts((prev) => [...prev, data])
@@ -59,10 +57,8 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
   })
 
   const onSubmit: SubmitHandler<TAddWorkoutVariable> = (formInputData) => {
-    if (!formInputData) {
-      console.log(`has an error`, formInputData)
-      return
-    }
+    /* c8 ignore next */
+    if (!formInputData) return
 
     // TODO: change on BE to accept the interval as null
     mutate({
@@ -185,7 +181,6 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
                 required: isResistance
                   ? 'interval is required if is resistance'
                   : undefined,
-                // required: 'interval is required if is resistance',
                 deps: 'type',
                 valueAsNumber: true,
               })}

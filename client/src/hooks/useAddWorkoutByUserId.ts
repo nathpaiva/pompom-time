@@ -2,7 +2,7 @@ import { useToast } from '@chakra-ui/react'
 import { UseMutationOptions, useMutation } from '@tanstack/react-query'
 
 import { IWorkout } from '../pages/Workout/types'
-import { headersCommonSetup } from '../utils'
+import { useHeadersCommonSetup } from './useHeadersCommonSetup'
 
 export type TAddWorkoutVariable = Partial<
   Omit<IWorkout, 'created_at' | 'updated_at' | 'id' | 'user_id' | 'stop_after'>
@@ -14,20 +14,19 @@ export type TAddWorkoutVariable = Partial<
  * @returns
  */
 export function useAddWorkoutByUserId<T, V extends TAddWorkoutVariable>({
-  access_token,
   onSuccess,
   onSettled,
 }: {
-  access_token?: string
   onSuccess?: UseMutationOptions<T, Error, V>['onSuccess']
   onSettled?: UseMutationOptions<T, Error, V>['onSettled']
 }) {
+  const headers = useHeadersCommonSetup()
   const toast = useToast()
 
   return useMutation<T, Error, V>({
     mutationFn: async (addWorkoutFormData) => {
       try {
-        if (!access_token) {
+        if (!headers) {
           throw new Error('You are not authenticated')
         }
 
@@ -35,7 +34,7 @@ export function useAddWorkoutByUserId<T, V extends TAddWorkoutVariable>({
           '/.netlify/functions/add-workout-by-user',
           {
             method: 'POST',
-            ...headersCommonSetup(access_token),
+            headers,
             body: JSON.stringify(addWorkoutFormData),
           },
         )

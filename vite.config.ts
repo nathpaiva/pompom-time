@@ -43,10 +43,10 @@ const testConfig = {
       'serverless/**',
     ],
     all: true,
-    branches: 80, // TODO: next PR add tests to back to 90
-    functions: 80, // TODO: next PR add tests to back to 90
-    lines: 90, // TODO: next PR add tests and back to 90
-    statements: 90, // TODO: next PR add tests and back to 90
+    branches: 90, // TODO: next PR add tests to back to 90
+    functions: 90, // TODO: next PR add tests to back to 90
+    lines: 90,
+    statements: 90,
     cleanOnRerun: false,
   },
 } satisfies VitestConfigExport['test']

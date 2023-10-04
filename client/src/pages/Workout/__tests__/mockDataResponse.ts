@@ -51,6 +51,7 @@ const mockUser = () => {
     validUserMocked: {
       user: {
         token: {
+          token_type: 'bearer',
           access_token: Date.now(),
         },
       },
