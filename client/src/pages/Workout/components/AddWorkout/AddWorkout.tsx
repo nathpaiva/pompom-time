@@ -65,6 +65,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
       return
     }
 
+    // TODO: change on BE to accept the interval as null
     mutate({
       ...formInputData,
       interval: isResistance ? formInputData.interval : undefined,
