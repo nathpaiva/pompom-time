@@ -1,10 +1,12 @@
 import { useToast } from '@chakra-ui/react'
 import { useCallback, useEffect } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
+import { useNavigate } from 'react-router-dom'
 
 export const useAuth = (): {
   isLoggedIn: boolean
 } => {
+  const navigate = useNavigate()
   const toast = useToast()
   const { isLoggedIn, user, getFreshJWT, logoutUser } = useIdentityContext()
 
@@ -15,18 +17,26 @@ export const useAuth = (): {
 
     try {
       if (!user?.token.expires_at) {
-        throw new Error('Not token provided')
+        throw new Error('Toke not provided')
       }
 
       await getFreshJWT()
     } catch (error) {
-      logoutUser()
+      let message = 'Error on token'
+
+      if (error instanceof Error) {
+        message = error.message
+      }
+
       toast({
         status: 'error',
-        title: (error as Error).message,
+        title: message,
       })
+
+      await logoutUser()
+      navigate('/login')
     }
-  }, [getFreshJWT, logoutUser, toast, user?.token.expires_at])
+  }, [getFreshJWT, logoutUser, navigate, toast, user?.token.expires_at])
 
   useEffect(() => {
     checkAuth()
