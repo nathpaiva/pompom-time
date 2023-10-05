@@ -2,7 +2,7 @@ import { useToast } from '@chakra-ui/react'
 import { useQuery } from '@tanstack/react-query'
 import { Dispatch, useEffect } from 'react'
 
-import { headersCommonSetup } from '../utils'
+import { useHeadersCommonSetup } from './useHeadersCommonSetup'
 
 interface IUseListByUserId<T> {
   isLoading: boolean
@@ -23,8 +23,8 @@ interface IUseListByUserId<T> {
  */
 export function useListByUserId<T>(
   callback: Dispatch<React.SetStateAction<T[]>>,
-  access_token?: string,
 ): IUseListByUserId<T> {
+  const headers = useHeadersCommonSetup()
   const toast = useToast()
   const { isLoading, error, data, isError, isSuccess } = useQuery<
     T[],
@@ -32,19 +32,17 @@ export function useListByUserId<T>(
     T[],
     (string | undefined)[]
   >({
-    enabled: !!access_token,
-    queryKey: ['list-workouts-by-user-id', access_token],
-    queryFn: async ({ queryKey }) => {
+    enabled: !!headers,
+    queryKey: ['list-workouts-by-user-id'],
+    queryFn: async () => {
       try {
-        const [_queryName, _token] = queryKey
-
-        if (!_token) {
+        if (!headers) {
           throw new Error('You are not authenticated')
         }
 
         const _response = await fetch(
           '/.netlify/functions/list-workouts-by-user-id',
-          headersCommonSetup(_token),
+          { headers },
         )
 
         if (_response.status !== 200) {

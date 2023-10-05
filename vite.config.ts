@@ -33,6 +33,7 @@ const testConfig = {
       'client/src/**/*.d.ts',
       'client/src/**/mock.ts',
       'client/src/**/main.tsx',
+      'client/src/**/__tests__/*',
 
       // TODO: after create the theme, remove this line
       'client/src/utils/theme.ts',
@@ -42,10 +43,10 @@ const testConfig = {
       'serverless/**',
     ],
     all: true,
-    branches: 80, // TODO: next PR add tests to back to 90
-    functions: 60, // TODO: next PR add tests to back to 80
-    lines: 80, // TODO: next PR add tests and back to 90
-    statements: 70, // TODO: next PR add tests and back to 90
+    branches: 85, // TODO: next PR add tests to back to 90
+    functions: 90,
+    lines: 90,
+    statements: 90,
     cleanOnRerun: false,
   },
 } satisfies VitestConfigExport['test']

@@ -1,7 +1,7 @@
 import { useToast } from '@chakra-ui/react'
 import { UseMutationOptions, useMutation } from '@tanstack/react-query'
 
-import { headersCommonSetup } from '../utils'
+import { useHeadersCommonSetup } from './useHeadersCommonSetup'
 
 /**
  *
@@ -9,20 +9,19 @@ import { headersCommonSetup } from '../utils'
  * @returns
  */
 export function useDeleteWorkoutById<T, V extends { id: string }>({
-  access_token,
   onSuccess,
   onSettled,
 }: {
-  access_token?: string
   onSuccess?: UseMutationOptions<T, Error, V>['onSuccess']
   onSettled?: UseMutationOptions<T, Error, V>['onSettled']
 }) {
+  const headers = useHeadersCommonSetup()
   const toast = useToast()
 
   return useMutation<T, Error, V>({
     mutationFn: async ({ id }) => {
       try {
-        if (!access_token) {
+        if (!headers) {
           throw new Error('You are not authenticated')
         }
 
@@ -30,7 +29,7 @@ export function useDeleteWorkoutById<T, V extends { id: string }>({
           '/.netlify/functions/delete-workout-by-id',
           {
             method: 'DELETE',
-            ...headersCommonSetup(access_token),
+            headers,
             body: JSON.stringify({
               id,
             }),

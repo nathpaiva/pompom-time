@@ -10,7 +10,6 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import { Dispatch } from 'react'
-import { useIdentityContext } from 'react-netlify-identity'
 
 import { useDeleteWorkoutById, useListByUserId } from '../../../../hooks'
 import { IWorkout } from '../../types'
@@ -30,22 +29,19 @@ export const ListWorkouts = ({
     useDialog<IWorkout>()
 
   const toast = useToast()
-  const { user } = useIdentityContext()
 
-  const { isLoading, error } = useListByUserId(
-    setWorkouts,
-    user?.token.access_token,
-  )
+  const { isLoading, error } = useListByUserId(setWorkouts)
   const { mutate, isLoading: isDeleting } = useDeleteWorkoutById<
     IWorkout,
     { id: IWorkout['id'] }
   >({
-    access_token: user?.token.access_token,
-    onSettled(_, __, { id }) {
+    onSettled(_, error, { id }) {
+      setDataOnFocus(null)
+
+      if (error) return
       setWorkouts((prev) => {
         return prev.filter((_workout) => _workout.id !== id)
       })
-      setDataOnFocus(null)
     },
     onSuccess(response) {
       toast({
@@ -65,6 +61,7 @@ export const ListWorkouts = ({
   }
 
   const dialogHandleActions = (hasDelete: boolean) => {
+    /* c8 ignore next */
     if (!dataOnFocus) return
 
     onClose()
@@ -83,10 +80,8 @@ export const ListWorkouts = ({
         title="Delete workout"
         description={`Are you sure you want to delete ${dataOnFocus?.name}?`}
         labels={{ confirmAction: 'Delete', cancelAction: 'Cancel' }}
-        dialogAction={{
-          isOpen,
-          onClose: dialogHandleActions,
-        }}
+        isOpen={isOpen}
+        onClose={dialogHandleActions}
         dataOnFocus={dataOnFocus}
       />
 
@@ -96,6 +91,7 @@ export const ListWorkouts = ({
             {!error ? title : "Sorry we could't load your workouts"}
           </Heading>
         </Skeleton>
+
         <Stack spacing={5}>
           {/* TODO: add the input search */}
           {/* If the list is bigger then 5 */}
@@ -131,9 +127,8 @@ export const ListWorkouts = ({
                         colorScheme="red"
                         width="max-content"
                         variant="outline"
-                        aria-label="Add new workout"
+                        aria-label={`Delete ${workout.name} workout`}
                         icon={<DeleteIcon />}
-                        data-workout={JSON.stringify(workout)}
                         onClick={() => handleDeleteOpenModal(workout)}
                       />
                     </ButtonGroup>
