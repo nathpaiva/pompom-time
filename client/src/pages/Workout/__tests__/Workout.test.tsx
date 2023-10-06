@@ -10,7 +10,11 @@ import {
 
 import { workoutType } from '../constants'
 import { Workout } from '../Workout'
-import { mockDataResponse, mockUser } from './mockDataResponse'
+import {
+  mockDataResponse,
+  mockUser,
+  newMockDataResponse,
+} from './mockDataResponse'
 
 describe('Workout', () => {
   const { validUserMocked } = mockUser()
@@ -27,12 +31,13 @@ describe('Workout', () => {
       it('should render a workout list', async () => {
         vi.mocked(_hoisted_useIdentityContext).mockReturnValue(validUserMocked)
 
-        fetchMocker.mockResponseOnce(JSON.stringify(mockDataResponse))
+        validUserMocked.authedFetch.get.mockResolvedValue(newMockDataResponse)
 
         render(<Workout />)
 
-        act(() => expect(global.fetch).toHaveBeenCalled())
+        act(() => expect(validUserMocked.authedFetch.get).toHaveBeenCalled())
 
+        expect(true).toBeTruthy()
         await waitFor(() =>
           mockDataResponse.forEach((workout) =>
             expect(screen.getByText(workout.name)).toBeVisible(),
@@ -43,11 +48,13 @@ describe('Workout', () => {
       it('should render error message if the request return status !== 200', async () => {
         vi.mocked(_hoisted_useIdentityContext).mockReturnValue(validUserMocked)
 
-        fetchMocker.mockRejectedValueOnce('invalid content type')
+        validUserMocked.authedFetch.get.mockRejectedValueOnce(
+          'invalid content type',
+        )
 
         render(<Workout />)
 
-        act(() => expect(global.fetch).toHaveBeenCalled())
+        act(() => expect(validUserMocked.authedFetch.get).toHaveBeenCalled())
 
         await waitFor(() =>
           expect(
@@ -61,13 +68,13 @@ describe('Workout', () => {
       it('should delete workout successfully', async () => {
         vi.mocked(_hoisted_useIdentityContext).mockReturnValue(validUserMocked)
 
-        fetchMocker.mockResponseOnce(JSON.stringify(mockDataResponse))
+        validUserMocked.authedFetch.get.mockResolvedValue(newMockDataResponse)
 
         render(<Workout />)
 
         const _workoutToDelete = mockDataResponse[0]
 
-        act(() => expect(global.fetch).toHaveBeenCalled())
+        act(() => expect(validUserMocked.authedFetch.get).toHaveBeenCalled())
 
         const deleteWorkoutAction = () =>
           screen.queryByLabelText(`Delete ${_workoutToDelete.name} workout`)
@@ -108,13 +115,13 @@ describe('Workout', () => {
       it('should not delete workout and show error message', async () => {
         vi.mocked(_hoisted_useIdentityContext).mockReturnValue(validUserMocked)
 
-        fetchMocker.mockResponseOnce(JSON.stringify(mockDataResponse))
+        validUserMocked.authedFetch.get.mockResolvedValue(newMockDataResponse)
 
         render(<Workout />)
 
         const _workoutToDelete = mockDataResponse[0]
 
-        act(() => expect(global.fetch).toHaveBeenCalled())
+        act(() => expect(validUserMocked.authedFetch.get).toHaveBeenCalled())
 
         const deleteWorkoutAction = () =>
           screen.queryByLabelText(`Delete ${_workoutToDelete.name} workout`)
@@ -152,13 +159,13 @@ describe('Workout', () => {
       it('should open the dialog to delete an workout and cancel the action', async () => {
         vi.mocked(_hoisted_useIdentityContext).mockReturnValue(validUserMocked)
 
-        fetchMocker.mockResponseOnce(JSON.stringify(mockDataResponse))
+        validUserMocked.authedFetch.get.mockResolvedValue(newMockDataResponse)
 
         render(<Workout />)
 
         const _workoutToDelete = mockDataResponse[0]
 
-        act(() => expect(global.fetch).toHaveBeenCalled())
+        act(() => expect(validUserMocked.authedFetch.get).toHaveBeenCalled())
 
         const deleteWorkoutAction = () =>
           screen.queryByLabelText(`Delete ${_workoutToDelete.name} workout`)
@@ -198,13 +205,13 @@ describe('Workout', () => {
       it('should open the dialog to delete an workout and close the modal', async () => {
         vi.mocked(_hoisted_useIdentityContext).mockReturnValue(validUserMocked)
 
-        fetchMocker.mockResponseOnce(JSON.stringify(mockDataResponse))
+        validUserMocked.authedFetch.get.mockResolvedValue(newMockDataResponse)
 
         render(<Workout />)
 
         const _workoutToDelete = mockDataResponse[0]
 
-        act(() => expect(global.fetch).toHaveBeenCalled())
+        act(() => expect(validUserMocked.authedFetch.get).toHaveBeenCalled())
 
         const deleteWorkoutAction = () =>
           screen.queryByLabelText(`Delete ${_workoutToDelete.name} workout`)

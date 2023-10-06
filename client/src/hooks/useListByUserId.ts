@@ -1,13 +1,15 @@
 import { useToast } from '@chakra-ui/react'
 import { useQuery } from '@tanstack/react-query'
 import { Dispatch, useEffect } from 'react'
+import { useIdentityContext } from 'react-netlify-identity'
 
+import { WorkoutsByUserIdQuery } from '../../../serverless/functions/list-workouts-by-user-id/__generated__/list-workouts-by-user-id.graphql.generated'
 import { useHeadersCommonSetup } from './useHeadersCommonSetup'
 
 interface IUseListByUserId<T> {
   isLoading: boolean
   error: Error | null
-  data?: T[]
+  data?: T
   isError: boolean
   isSuccess: boolean
 }
@@ -22,34 +24,37 @@ interface IUseListByUserId<T> {
  * }
  */
 export function useListByUserId<T>(
-  callback: Dispatch<React.SetStateAction<T[]>>,
+  callback: (data: T) => void,
 ): IUseListByUserId<T> {
-  const headers = useHeadersCommonSetup()
+  const { authedFetch, user, getFreshJWT } = useIdentityContext()
   const toast = useToast()
+
   const { isLoading, error, data, isError, isSuccess } = useQuery<
-    T[],
+    T,
     Error,
-    T[],
+    T,
     (string | undefined)[]
   >({
-    enabled: !!headers,
     queryKey: ['list-workouts-by-user-id'],
     queryFn: async () => {
       try {
-        if (!headers) {
+        if (!user?.token.expires_at) {
           throw new Error('You are not authenticated')
         }
 
-        const _response = await fetch(
-          '/.netlify/functions/list-workouts-by-user-id',
-          { headers },
-        )
-
-        if (_response.status !== 200) {
-          throw new Error(`Error: ${_response.statusText}`)
+        if (user.token.expires_at < Date.now()) {
+          await getFreshJWT()
         }
 
-        return _response.json()
+        const response = (await authedFetch.get(
+          '/.netlify/functions/list-workouts-by-user-id',
+        )) as T
+
+        if ((response as any)?.error) {
+          throw new Error((response as any).error)
+        }
+
+        return response
       } catch (error) {
         let message = 'Error on request'
 

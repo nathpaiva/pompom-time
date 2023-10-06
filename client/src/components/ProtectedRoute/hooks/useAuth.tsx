@@ -11,9 +11,11 @@ export const useAuth = (): {
   const { isLoggedIn, user, getFreshJWT, logoutUser } = useIdentityContext()
 
   const checkAuth = useCallback(async () => {
-    console.log('user?.token.expires_at', user?.token.expires_at, Date.now())
-
-    if (user?.token.expires_at && user.token.expires_at >= Date.now()) {
+    if (
+      user?.token.expires_at &&
+      // subtract 1 min to request the refresh token before expires
+      user.token.expires_at - 1000 * 60 >= Date.now()
+    ) {
       return
     }
 
@@ -22,12 +24,7 @@ export const useAuth = (): {
         throw new Error('Toke not provided')
       }
 
-      console.log(`will request refresh token`)
-      const responseFreshJWT = await getFreshJWT()
-      console.log(
-        '🚀 ~ file: useAuth.tsx:27 ~ checkAuth ~ responseFreshJWT:',
-        responseFreshJWT,
-      )
+      await getFreshJWT()
     } catch (error) {
       let message = 'Error on token'
 
