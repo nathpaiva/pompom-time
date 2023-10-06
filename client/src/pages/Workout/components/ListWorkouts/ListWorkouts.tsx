@@ -172,11 +172,13 @@ export const ListWorkouts = ({
                 </Skeleton>
               )
             })}
-          {typeof workoutName !== 'undefined' && !_workouts.length && (
-            <Heading size="sm" as="p">
-              Workout {workoutName} not found
-            </Heading>
-          )}
+          {typeof workoutName !== 'undefined' &&
+            !_workouts.length &&
+            !isLoading && (
+              <Heading size="sm" as="p">
+                Workout {workoutName} not found
+              </Heading>
+            )}
         </Stack>
       </Card>
     </>
