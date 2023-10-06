@@ -7,7 +7,7 @@ describe('usePulse', () => {
     const { result } = renderHook(() =>
       usePulse({
         pulseLimit: 5,
-        pulseIntervalTimer: 500,
+        interval: 500,
       }),
     )
 
@@ -33,7 +33,7 @@ describe('usePulse', () => {
     const { result } = renderHook(() =>
       usePulse({
         pulseLimit: 5,
-        pulseIntervalTimer: 500,
+        interval: 500,
       }),
     )
 
