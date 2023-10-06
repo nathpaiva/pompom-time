@@ -11,7 +11,7 @@ import {
   DeleteWorkoutByIdMutationVariables,
 } from './__generated__/delete-workout-by-id.graphql.generated'
 import { bodySchema } from './bodySchema'
-import type { IWorkouts, PromiseResponseDeleteWorkoutById } from './types'
+import type { Workouts, PromiseResponseDeleteWorkoutById } from './types'
 
 const deleteWorkoutById = async (
   { body }: HandlerEventJsonParsed<DeleteWorkoutByIdMutationVariables>,
@@ -90,5 +90,5 @@ export {
   handler,
   type PromiseResponseDeleteWorkoutById,
   type DeleteWorkoutByIdMutationVariables as DeleteWorkoutByIdVariables,
-  type IWorkouts,
+  type Workouts,
 }

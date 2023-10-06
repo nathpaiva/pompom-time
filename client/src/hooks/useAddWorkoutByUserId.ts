@@ -1,11 +1,11 @@
 import { useToast } from '@chakra-ui/react'
 import { UseMutationOptions, useMutation } from '@tanstack/react-query'
 
-import { IWorkout } from '../pages/Workout/types'
+import { Workouts } from '../../../serverless/generated/graphql/GraphQLSchema'
 import { useHeadersCommonSetup } from './useHeadersCommonSetup'
 
 export type TAddWorkoutVariable = Partial<
-  Omit<IWorkout, 'created_at' | 'updated_at' | 'id' | 'user_id' | 'stop_after'>
+  Omit<Workouts, 'created_at' | 'updated_at' | 'id' | 'user_id' | 'stop_after'>
 >
 
 /**

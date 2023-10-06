@@ -1,4 +1,4 @@
-import { IWorkout } from '../types'
+import { Workouts } from '../../../../../serverless/generated/graphql/GraphQLSchema'
 
 export const mockDataResponse = [
   {
@@ -10,7 +10,6 @@ export const mockDataResponse = [
     repeat: true,
     rest: 40,
     squeeze: 20,
-    stop_after: 4,
     type: 'pulse',
     updated_at: new Date('2023-09-15T22:04:05.494429+00:00'),
     user_id: 'hello@nathpaiva.com.br',
@@ -24,7 +23,6 @@ export const mockDataResponse = [
     repeat: true,
     rest: 40,
     squeeze: 6,
-    stop_after: 10,
     type: 'pulse',
     updated_at: new Date('2023-09-16T01:16:33.008318+00:00'),
     user_id: 'hello@nathpaiva.com.br',
@@ -38,13 +36,11 @@ export const mockDataResponse = [
     repeat: true,
     rest: 40,
     squeeze: 6,
-    stop_after: 10,
     type: 'pulse',
     updated_at: new Date('2023-09-16T01:18:28.377767+00:00'),
     user_id: 'hello@nathpaiva.com.br',
   },
-  // TODO: change the IWorkout to use the type generated for serverless
-] satisfies IWorkout[]
+] satisfies Workouts[]
 
 export const newMockDataResponse = {
   nodes: mockDataResponse,
