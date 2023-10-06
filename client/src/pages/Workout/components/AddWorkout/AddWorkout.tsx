@@ -20,11 +20,12 @@ import {
 import { type Dispatch } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
+import { Workouts } from '../../../../../../serverless/generated/graphql/GraphQLSchema'
 import { TAddWorkoutVariable, useAddWorkoutByUserId } from '../../../../hooks'
 import { IWorkout, workoutType } from '../../types'
 
 interface IAddWorkout {
-  setWorkouts: Dispatch<React.SetStateAction<IWorkout[]>>
+  setWorkouts: Dispatch<React.SetStateAction<Workouts[]>>
 }
 
 type IFormInput = TAddWorkoutVariable
