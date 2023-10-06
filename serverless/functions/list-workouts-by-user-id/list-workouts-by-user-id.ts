@@ -11,11 +11,11 @@ const listWorkoutsByUserId = async (
   const config = graphQLClientConfig()
 
   try {
-    if (!clientContext?.user) {
+    if (!clientContext?.user || clientContext.user.exp * 1000 < Date.now()) {
       throw new Error('You must be authenticated')
     }
 
-    const { workouts } = await request({
+    const { workouts_aggregate } = await request({
       variables: {
         user_id: clientContext.user.email,
       },
@@ -23,13 +23,17 @@ const listWorkoutsByUserId = async (
       ...config,
     })
 
+    if (workouts_aggregate.aggregate === null) {
+      throw new Error('Request is wrong')
+    }
+
     return {
       statusCode: 200,
-      body: JSON.stringify(workouts),
+      body: JSON.stringify(workouts_aggregate),
     }
   } catch (error) {
     // TODO: review this Error type (before ClientError | Error)
-    const message = errorResolver(error as ClientError | IError)
+    const message = errorResolver(error as ClientError | Error)
 
     return {
       statusCode: 500,

@@ -22,12 +22,14 @@ describe('list-workouts-by-user-id', () => {
     expect(statusCode).toEqual(500)
     expect(JSON.parse(body).error).toEqual('You must be authenticated')
   })
+
   it('should return a list for active user', async () => {
     const { statusCode, body } = await listWorkoutsByUserId(
       _req,
       createMockContext({
         user: {
           email: 'test-user-do-not-delete@nathpaiva.com',
+          exp: Date.now(),
         },
       }),
     )
@@ -38,7 +40,7 @@ describe('list-workouts-by-user-id', () => {
     }
 
     expect(statusCode).toEqual(200)
-    expect(JSON.parse(body).length).toEqual(4)
+    expect(JSON.parse(body).nodes.length).toEqual(4)
   })
 
   it('should return an empty list for active user', async () => {
@@ -47,6 +49,7 @@ describe('list-workouts-by-user-id', () => {
       createMockContext({
         user: {
           email: 'test-empty@nathpaiva.com',
+          exp: Date.now(),
         },
       }),
     )
@@ -57,6 +60,6 @@ describe('list-workouts-by-user-id', () => {
     }
 
     expect(statusCode).toEqual(200)
-    expect(JSON.parse(body).length).toEqual(0)
+    expect(JSON.parse(body).nodes.length).toEqual(0)
   })
 })

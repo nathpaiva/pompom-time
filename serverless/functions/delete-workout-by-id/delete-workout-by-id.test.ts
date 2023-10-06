@@ -15,6 +15,7 @@ describe('delete-workout-by-id', () => {
     const _mockUserContext = {
       user: {
         email: 'test-user@nathpaiva.com',
+        exp: Date.now(),
       },
     }
 
@@ -79,6 +80,7 @@ describe('delete-workout-by-id', () => {
     const _mockUserContext = {
       user: {
         email: 'test-user@nathpaiva.com',
+        exp: Date.now(),
       },
     }
 

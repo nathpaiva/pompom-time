@@ -11,13 +11,14 @@ import {
 } from '@chakra-ui/react'
 import { Dispatch } from 'react'
 
+import { WorkoutsByUserIdQuery } from '../../../../../../serverless/functions/list-workouts-by-user-id/__generated__/list-workouts-by-user-id.graphql.generated'
+import { Workouts } from '../../../../../../serverless/generated/graphql/GraphQLSchema'
 import { useDeleteWorkoutById, useListByUserId } from '../../../../hooks'
-import { IWorkout } from '../../types'
 import { Dialog, useDialog } from './components/Dialog'
 
 interface IListWorkouts {
-  workouts: IWorkout[]
-  setWorkouts: Dispatch<React.SetStateAction<IWorkout[]>>
+  workouts: Workouts[]
+  setWorkouts: Dispatch<React.SetStateAction<Workouts[]>>
 }
 
 // TODO: change those components are using workouts in the state to use redux or context
@@ -26,14 +27,24 @@ export const ListWorkouts = ({
   setWorkouts,
 }: IListWorkouts) => {
   const { isOpen, onClose, onOpen, dataOnFocus, setDataOnFocus } =
-    useDialog<IWorkout>()
+    useDialog<Workouts>()
 
   const toast = useToast()
 
-  const { isLoading, error } = useListByUserId(setWorkouts)
+  const updateWorkoutState = (
+    data: WorkoutsByUserIdQuery['workouts_aggregate'],
+  ) => {
+    if (data.nodes) {
+      setWorkouts(data.nodes)
+    }
+  }
+
+  // Query
+  const { isLoading, error } = useListByUserId(updateWorkoutState)
+  // Mutation
   const { mutate, isLoading: isDeleting } = useDeleteWorkoutById<
-    IWorkout,
-    { id: IWorkout['id'] }
+    Workouts,
+    { id: Workouts['id'] }
   >({
     onSettled(_, error, { id }) {
       setDataOnFocus(null)
@@ -55,7 +66,7 @@ export const ListWorkouts = ({
     ? 'Select workout:'
     : `Oh no! You don't have any workout yet :(`
 
-  const handleDeleteOpenModal = (workout: IWorkout) => {
+  const handleDeleteOpenModal = (workout: Workouts) => {
     setDataOnFocus(workout)
     onOpen()
   }

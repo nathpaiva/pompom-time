@@ -14,7 +14,7 @@ export async function cleanupDbAfterTest(workoutsIdToCleanUp: unknown[]) {
     const result = await _deleteWorkoutById(
       { ...req, body: req.body },
       createMockContext({
-        user: { email: '' },
+        user: { email: '', exp: Date.now() },
       }),
     )
 

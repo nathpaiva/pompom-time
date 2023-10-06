@@ -11,7 +11,11 @@ export const useAuth = (): {
   const { isLoggedIn, user, getFreshJWT, logoutUser } = useIdentityContext()
 
   const checkAuth = useCallback(async () => {
-    if (user?.token.expires_at && user.token.expires_at >= Date.now()) {
+    if (
+      user?.token.expires_at &&
+      // subtract 1 min to request the refresh token before expires
+      user.token.expires_at - 1000 * 60 >= Date.now()
+    ) {
       return
     }
 

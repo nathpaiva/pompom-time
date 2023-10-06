@@ -58,6 +58,7 @@ describe('add-workout-by-user', () => {
       const _context = createMockContext({
         user: {
           email: 'test-user@nathpaiva.com',
+          exp: Date.now(),
         },
       })
       const { statusCode, body } = await addWorkoutByUser(
@@ -159,6 +160,7 @@ function expectWorkoutSuccessfully(type: EnumWorkoutType) {
   const _mockUserContext = {
     user: {
       email: 'test-user@nathpaiva.com',
+      exp: Date.now(),
     },
   }
 

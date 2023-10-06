@@ -4,7 +4,7 @@ declare type NtlHandlerResponse = import('@netlify/functions').HandlerResponse
 declare type LLambdaContext = import('@middy/core').LambdaContext
 
 interface IUserContext {
-  user?: { email: string }
+  user?: { email: string; exp: number }
 }
 
 type Context = Omit<NtlHandlerContext, 'clientContext' | 'identity'> & {

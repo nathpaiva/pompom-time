@@ -46,6 +46,10 @@ export const mockDataResponse = [
   // TODO: change the IWorkout to use the type generated for serverless
 ] satisfies IWorkout[]
 
+export const newMockDataResponse = {
+  nodes: mockDataResponse,
+}
+
 const mockUser = () => {
   return {
     validUserMocked: {
@@ -53,9 +57,13 @@ const mockUser = () => {
         token: {
           token_type: 'bearer',
           access_token: Date.now(),
+          expires_at: Date.now() * 60,
         },
       },
       isLoggedIn: true,
+      authedFetch: {
+        get: vi.fn(),
+      },
     },
     invalidUserMocked: {
       isLoggedIn: false,
