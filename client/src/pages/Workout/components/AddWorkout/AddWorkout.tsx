@@ -22,7 +22,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { Workouts } from '../../../../../../serverless/generated/graphql/GraphQLSchema'
 import { TAddWorkoutVariable, useAddWorkoutByUserId } from '../../../../hooks'
-import { IWorkout, workoutType } from '../../types'
+import { workoutType } from '../../constants'
 
 interface IAddWorkout {
   setWorkouts: Dispatch<React.SetStateAction<Workouts[]>>
@@ -42,7 +42,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
 
   const toast = useToast()
 
-  const { mutate } = useAddWorkoutByUserId<IWorkout, TAddWorkoutVariable>({
+  const { mutate } = useAddWorkoutByUserId<Workouts, TAddWorkoutVariable>({
     onSettled(data) {
       /* c8 ignore next */
       if (!data) return
@@ -153,7 +153,6 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
               {...register('type', {
                 required: 'Workout type is required',
               })}
-              // defaultValue={workoutType.pulse}
             >
               {Object.keys(workoutType).map((wType) => (
                 <option key={wType} value={wType}>

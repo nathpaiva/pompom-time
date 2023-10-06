@@ -1,10 +1,7 @@
 import { useToast } from '@chakra-ui/react'
 import { useQuery } from '@tanstack/react-query'
-import { Dispatch, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
-
-import { WorkoutsByUserIdQuery } from '../../../serverless/functions/list-workouts-by-user-id/__generated__/list-workouts-by-user-id.graphql.generated'
-import { useHeadersCommonSetup } from './useHeadersCommonSetup'
 
 interface IUseListByUserId<T> {
   isLoading: boolean

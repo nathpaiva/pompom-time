@@ -9,4 +9,4 @@ export type PromiseResponseDeleteWorkoutById = Promise<
   HandlerResponse<TSuccessResponse>
 >
 
-export type { Workouts as IWorkouts }
+export type { Workouts }
