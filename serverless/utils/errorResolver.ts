@@ -1,8 +1,12 @@
 import { ClientError } from 'graphql-request'
 
-export const errorResolver = (error: IError | ClientError) => {
+export const errorResolver = (error: IError | ClientError | Error) => {
   if (error instanceof ClientError && error.response.errors) {
     return error.response.errors[0].message
+  }
+
+  if (error instanceof Error && !error?.cause) {
+    return error.message
   }
 
   if (!error?.cause || !Array.isArray(error.cause)) {

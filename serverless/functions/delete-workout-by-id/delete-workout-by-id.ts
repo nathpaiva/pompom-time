@@ -19,7 +19,7 @@ const deleteWorkoutById = async (
 ): PromiseResponseDeleteWorkoutById => {
   const config = graphQLClientConfig()
   try {
-    if (!clientContext?.user) {
+    if (!clientContext?.user || clientContext.user.exp * 1000 < Date.now()) {
       throw new Error('You must be authenticated')
     }
 

@@ -1,5 +1,6 @@
-import { Workouts } from './__generated__/list-workouts-by-user-id.graphql.generated'
+import { WorkoutsByUserIdQuery } from './__generated__/list-workouts-by-user-id.graphql.generated'
 
 export type PromiseResponseListWorkoutsByUserId = Promise<
-  HandlerResponse<Workouts[]>
+  HandlerResponse<WorkoutsByUserIdQuery['workouts_aggregate']>
+  // HandlerResponse<Partial<Workouts_Aggregate>>
 >

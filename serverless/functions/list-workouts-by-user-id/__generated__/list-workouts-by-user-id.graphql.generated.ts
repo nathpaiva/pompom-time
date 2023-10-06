@@ -600,25 +600,35 @@ export type Workouts_Variance_Fields = {
 }
 
 export type WorkoutsByUserIdQueryVariables = Types.Exact<{
-  user_id: Types.InputMaybe<Types.Scalars['String']['input']>
+  user_id: Types.Scalars['String']['input']
+  limit?: Types.InputMaybe<Types.Scalars['Int']['input']>
+  offset?: Types.InputMaybe<Types.Scalars['Int']['input']>
+  workout_name?: Types.InputMaybe<Types.Scalars['String']['input']>
 }>
 
 export type WorkoutsByUserIdQuery = {
   __typename?: 'query_root'
-  workouts: Array<{
-    __typename: 'workouts'
-    created_at: any
-    goal_per_day: number
-    id: any
-    interval: number
-    name: string
-    repeat: boolean
-    rest: number
-    squeeze: number
-    type: string
-    updated_at: any
-    user_id: string
-  }>
+  workouts_aggregate: {
+    __typename?: 'workouts_aggregate'
+    aggregate: {
+      __typename?: 'workouts_aggregate_fields'
+      count: number
+    } | null
+    nodes: Array<{
+      __typename: 'workouts'
+      created_at: any
+      goal_per_day: number
+      id: any
+      interval: number
+      name: string
+      repeat: boolean
+      rest: number
+      squeeze: number
+      type: string
+      updated_at: any
+      user_id: string
+    }>
+  }
 }
 
 export const WorkoutsByUserIdDocument = {
@@ -635,7 +645,40 @@ export const WorkoutsByUserIdDocument = {
             kind: 'Variable',
             name: { kind: 'Name', value: 'user_id' },
           },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'limit' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          defaultValue: { kind: 'IntValue', value: '5' },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'offset' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+          defaultValue: { kind: 'IntValue', value: '0' },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'workout_name' },
+          },
           type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+          defaultValue: { kind: 'StringValue', value: '%%', block: false },
         },
       ],
       selectionSet: {
@@ -643,8 +686,24 @@ export const WorkoutsByUserIdDocument = {
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'workouts' },
+            name: { kind: 'Name', value: 'workouts_aggregate' },
             arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'limit' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'limit' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'offset' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'offset' },
+                },
+              },
               {
                 kind: 'Argument',
                 name: { kind: 'Name', value: 'where' },
@@ -668,6 +727,23 @@ export const WorkoutsByUserIdDocument = {
                         ],
                       },
                     },
+                    {
+                      kind: 'ObjectField',
+                      name: { kind: 'Name', value: 'name' },
+                      value: {
+                        kind: 'ObjectValue',
+                        fields: [
+                          {
+                            kind: 'ObjectField',
+                            name: { kind: 'Name', value: '_ilike' },
+                            value: {
+                              kind: 'Variable',
+                              name: { kind: 'Name', value: 'workout_name' },
+                            },
+                          },
+                        ],
+                      },
+                    },
                   ],
                 },
               },
@@ -675,21 +751,71 @@ export const WorkoutsByUserIdDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: '__typename' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'created_at' } },
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'goal_per_day' },
+                  name: { kind: 'Name', value: 'aggregate' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'count' },
+                        arguments: [
+                          {
+                            kind: 'Argument',
+                            name: { kind: 'Name', value: 'columns' },
+                            value: { kind: 'EnumValue', value: 'user_id' },
+                          },
+                        ],
+                      },
+                    ],
+                  },
                 },
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'interval' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'repeat' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'rest' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'squeeze' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'updated_at' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'user_id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'nodes' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: '__typename' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'created_at' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'goal_per_day' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'interval' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'repeat' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'rest' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'squeeze' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'updated_at' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'user_id' },
+                      },
+                    ],
+                  },
+                },
               ],
             },
           },
