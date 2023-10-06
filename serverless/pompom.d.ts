@@ -19,8 +19,12 @@ type LambdaContext = Omit<LLambdaContext, 'clientContext' | 'identity'> & {
   identity?: Record<string, any>
 }
 
-type HandlerEvent<T> = Omit<NtlHandlerEvent, 'body'> & {
+type HandlerEvent<T, Q> = Omit<
+  NtlHandlerEvent,
+  'body' | 'queryStringParameters'
+> & {
   body: Stringified<T>
+  queryStringParameters?: Q
 }
 
 type HandlerEventJsonParsed<T> = Omit<NtlHandlerEvent, 'body'> & {

@@ -7,12 +7,8 @@ import {
 } from './__generated__/list-workouts-by-user-id.graphql.generated'
 import type { PromiseResponseListWorkoutsByUserId } from './types'
 
-interface TSearchParam {
-  queryStringParameters?: WorkoutsByUserIdQueryVariables
-}
-
 const listWorkoutsByUserId = async (
-  event: HandlerEvent<TSearchParam>,
+  event: HandlerEvent<unknown, WorkoutsByUserIdQueryVariables>,
   { clientContext }: Context,
 ): PromiseResponseListWorkoutsByUserId => {
   const config = graphQLClientConfig()

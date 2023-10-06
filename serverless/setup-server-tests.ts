@@ -4,7 +4,7 @@ export function createMockHandlerEventBody<T>(body: T) {
     headers: {
       'Content-Type': 'application/json',
     } as any,
-  } as HandlerEvent<T>
+  } as HandlerEvent<T, unknown>
 }
 
 export function createMockContext(clientContext?: IUserContext) {
