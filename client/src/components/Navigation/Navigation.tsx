@@ -16,7 +16,7 @@ export const Navigation = () => {
         <LiContainer
           label="workout time"
           to="admin/workout"
-          isCurrent={pathname === '/admin/workout'}
+          isCurrent={!pathname.indexOf('/admin/workout')}
           isToShowItem={isLoggedIn}
           isAuthItem
         />
