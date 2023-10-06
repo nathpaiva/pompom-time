@@ -22,6 +22,7 @@ interface IUseListByUserId<T> {
  */
 export function useListByUserId<T>(
   callback: (data: T) => void,
+  workout_name?: string,
 ): IUseListByUserId<T> {
   const { authedFetch, user, getFreshJWT } = useIdentityContext()
   const toast = useToast()
@@ -32,8 +33,11 @@ export function useListByUserId<T>(
     T,
     (string | undefined)[]
   >({
-    queryKey: ['list-workouts-by-user-id'],
-    queryFn: async () => {
+    queryKey: ['list-workouts-by-user-id', workout_name],
+    queryFn: async ({ queryKey }) => {
+      const [_, param] = queryKey
+      const searchBy = param ? `?workout_name=${param}` : ''
+
       try {
         if (!user?.token.expires_at) {
           throw new Error('You are not authenticated')
@@ -44,7 +48,7 @@ export function useListByUserId<T>(
         }
 
         const response = (await authedFetch.get(
-          '/.netlify/functions/list-workouts-by-user-id',
+          `/.netlify/functions/list-workouts-by-user-id${searchBy}`,
         )) as T
 
         if ((response as any)?.error) {

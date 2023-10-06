@@ -1,15 +1,21 @@
 import { ClientError, request } from 'graphql-request'
 
 import { errorResolver, graphQLClientConfig } from '../../utils'
-import { WorkoutsByUserIdDocument } from './__generated__/list-workouts-by-user-id.graphql.generated'
+import {
+  WorkoutsByUserIdDocument,
+  WorkoutsByUserIdQueryVariables,
+} from './__generated__/list-workouts-by-user-id.graphql.generated'
 import type { PromiseResponseListWorkoutsByUserId } from './types'
 
+interface TSearchParam {
+  queryStringParameters?: WorkoutsByUserIdQueryVariables
+}
+
 const listWorkoutsByUserId = async (
-  _event: HandlerEvent<unknown>,
+  event: HandlerEvent<TSearchParam>,
   { clientContext }: Context,
 ): PromiseResponseListWorkoutsByUserId => {
   const config = graphQLClientConfig()
-
   try {
     if (!clientContext?.user || clientContext.user.exp * 1000 < Date.now()) {
       throw new Error('You must be authenticated')
@@ -18,6 +24,7 @@ const listWorkoutsByUserId = async (
     const { workouts_aggregate } = await request({
       variables: {
         user_id: clientContext.user.email,
+        workout_name: `%${event.queryStringParameters?.workout_name ?? ''}%`,
       },
       document: WorkoutsByUserIdDocument,
       ...config,
