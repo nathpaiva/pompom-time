@@ -4,13 +4,19 @@ import {
   createMockContext,
   createMockHandlerEventBody,
 } from '../../setup-server-tests'
+import { WorkoutsByUserIdQueryVariables } from './__generated__/list-workouts-by-user-id.graphql.generated'
 import { handler as listWorkoutsByUserId } from './list-workouts-by-user-id'
 
 describe('list-workouts-by-user-id', () => {
-  const _req = createMockHandlerEventBody<HandlerEvent['body']>(null)
+  const _req = createMockHandlerEventBody<
+    HandlerEvent['body'],
+    Pick<WorkoutsByUserIdQueryVariables, 'workout_name'>
+  >(null, {
+    workout_name: undefined,
+  })
   it('should return an error if the user is not authenticated', async () => {
     const { statusCode, body } = await listWorkoutsByUserId(
-      { ..._req, queryStringParameters: undefined },
+      _req,
       createMockContext(),
     )
 
@@ -25,7 +31,7 @@ describe('list-workouts-by-user-id', () => {
 
   it('should return a list for active user', async () => {
     const { statusCode, body } = await listWorkoutsByUserId(
-      { ..._req, queryStringParameters: undefined },
+      _req,
       createMockContext({
         user: {
           email: 'test-user-do-not-delete@nathpaiva.com',
@@ -45,7 +51,7 @@ describe('list-workouts-by-user-id', () => {
 
   it('should return an empty list for active user', async () => {
     const { statusCode, body } = await listWorkoutsByUserId(
-      { ..._req, queryStringParameters: undefined },
+      _req,
       createMockContext({
         user: {
           email: 'test-empty@nathpaiva.com',

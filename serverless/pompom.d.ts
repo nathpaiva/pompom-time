@@ -24,7 +24,7 @@ type HandlerEvent<T, Q> = Omit<
   'body' | 'queryStringParameters'
 > & {
   body: Stringified<T>
-  queryStringParameters?: Q
+  queryStringParameters: Q | null
 }
 
 type HandlerEventJsonParsed<T, Q> = Omit<
@@ -32,7 +32,7 @@ type HandlerEventJsonParsed<T, Q> = Omit<
   'body' | 'queryStringParameters'
 > & {
   body: T
-  queryStringParameters?: Q
+  queryStringParameters: Q | null
 }
 
 interface TErrorBodyResponse {

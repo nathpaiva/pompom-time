@@ -4,13 +4,19 @@ import {
   createMockContext,
   createMockHandlerEventBody,
 } from '../../setup-server-tests'
+import { GetWorkoutByIdQueryVariables } from './__generated__/get-workouts-by-id.graphql.generated'
 import { handler as getWorkoutsById } from './get-workouts-by-id'
 
 describe('get-workouts-by-id', () => {
-  const _req = createMockHandlerEventBody<HandlerEvent['body']>(null)
+  const _req = createMockHandlerEventBody<
+    HandlerEvent['body'],
+    Pick<GetWorkoutByIdQueryVariables, 'workout_id'>
+  >(null, {
+    workout_id: undefined,
+  })
   it('should return an error if the user is not authenticated', async () => {
     const { statusCode, body } = await getWorkoutsById(
-      { ..._req, queryStringParameters: { workout_id: undefined } },
+      _req,
       createMockContext(),
     )
 
@@ -50,7 +56,7 @@ describe('get-workouts-by-id', () => {
 
   it('should not return an workout if workout id is undefined ', async () => {
     const { statusCode, body } = await getWorkoutsById(
-      { ..._req, queryStringParameters: { workout_id: undefined } },
+      _req,
       createMockContext({
         user: {
           email: 'test-user-do-not-delete@nathpaiva.com',
