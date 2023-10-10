@@ -6,11 +6,11 @@ import { useGetWorkoutById } from '../../hooks'
 import { usePulse } from '../Workout/hooks'
 
 export const WorkoutTime = () => {
-  const { data, isLoading, error } = useGetWorkoutById<Workouts>()
+  const { data, isLoading } = useGetWorkoutById<Workouts>()
   const {
     counter,
     pulseInterval,
-    isPulseStarted,
+    isPulsing,
     handleStartStopPulse,
     isResting,
     restingInterval,
@@ -22,11 +22,7 @@ export const WorkoutTime = () => {
     sets: data?.goal_per_day,
     type: data?.type as EnumWorkoutType,
   })
-  // console.log(
-  //   '🚀 ~ file: WorkoutTime.tsx:5 ~ WorkoutTime ~ data:',
-  //   data,
-  //   isLoading,
-  // )
+
   if (isLoading) {
     return <Spinner />
   }
@@ -34,8 +30,8 @@ export const WorkoutTime = () => {
   return (
     <Box>
       <Heading>{data?.name}</Heading>
-      Já foram: {counter}
-      {isResting && <p>Is resting {restingInterval}</p>}
+      Workout: {counter} / {data?.goal_per_day}
+      {data?.repeat && <p>Time will rest: {restingInterval}</p>}
       <Box
         display="grid"
         rowGap="5"
@@ -51,16 +47,26 @@ export const WorkoutTime = () => {
         <Box
           w="150px"
           h="150px"
+          // change color to each state
           bgGradient="radial(gray.300, yellow.400, pink.200)"
           borderRadius={100}
           margin="auto"
           display="flex"
           justifyContent="center"
           alignItems="center"
+          // opacity={isResting ? 0 : 1}
+          // transition="opacity .5s"
         >
-          <Text variant="span" fontSize="2xl">
-            pulse {pulseInterval}
-          </Text>
+          {!isResting && (
+            <Text variant="span" fontSize="2xl">
+              pulse {pulseInterval}
+            </Text>
+          )}
+          {isResting && (
+            <Text variant="span" fontSize="2xl">
+              resting {restingInterval}
+            </Text>
+          )}
         </Box>
 
         <Box
@@ -71,7 +77,7 @@ export const WorkoutTime = () => {
           height="auto"
         >
           <Button
-            isDisabled={isPulseStarted}
+            isDisabled={isPulsing || isResting}
             onClick={handleStartStopPulse}
             colorScheme="purple"
           >
@@ -79,7 +85,7 @@ export const WorkoutTime = () => {
           </Button>
 
           <Button
-            isDisabled={!isPulseStarted}
+            isDisabled={!isPulsing || isResting}
             onClick={handleStartStopPulse}
             colorScheme="pink"
           >
