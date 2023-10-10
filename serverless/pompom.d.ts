@@ -27,8 +27,12 @@ type HandlerEvent<T, Q> = Omit<
   queryStringParameters?: Q
 }
 
-type HandlerEventJsonParsed<T> = Omit<NtlHandlerEvent, 'body'> & {
+type HandlerEventJsonParsed<T, Q> = Omit<
+  NtlHandlerEvent,
+  'body' | 'queryStringParameters'
+> & {
   body: T
+  queryStringParameters?: Q
 }
 
 interface TErrorBodyResponse {

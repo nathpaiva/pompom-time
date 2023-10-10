@@ -35,7 +35,7 @@ describe('delete-workout-by-id', () => {
       )
 
     const { statusCode, body } = await addWorkoutByUser(
-      reqCreation,
+      { ...reqCreation, queryStringParameters: {} },
       requestContext,
     )
     if (statusCode === 500 || statusCode === 400) {
@@ -50,7 +50,10 @@ describe('delete-workout-by-id', () => {
       })
 
     const { statusCode: deleteStatusCode, body: deleteBody } =
-      await deleteWorkoutById(reqDelete, requestContext)
+      await deleteWorkoutById(
+        { ...reqDelete, queryStringParameters: {} },
+        requestContext,
+      )
 
     if (deleteStatusCode === 500 || deleteStatusCode === 400) {
       expect(deleteStatusCode).toEqual(200)
@@ -66,7 +69,7 @@ describe('delete-workout-by-id', () => {
       })
     const requestContext = createMockContext()
     const { statusCode, body } = await deleteWorkoutById(
-      reqDelete,
+      { ...reqDelete, queryStringParameters: {} },
       requestContext,
     )
     if (statusCode === 200) {

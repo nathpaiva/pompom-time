@@ -39,7 +39,7 @@ describe('add-workout-by-user', () => {
           type: EnumWorkoutType.resistance,
         })
       const { statusCode, body } = await addWorkoutByUser(
-        req,
+        { ...req, queryStringParameters: {} },
         createMockContext(undefined),
       )
       // if the statusCode is 200 the test should break!!!
@@ -62,7 +62,7 @@ describe('add-workout-by-user', () => {
         },
       })
       const { statusCode, body } = await addWorkoutByUser(
-        _invalidRequest,
+        { ..._invalidRequest, queryStringParameters: {} },
         _context,
       )
       // if the statusCode is 200 the test should break!!!
@@ -185,7 +185,7 @@ function expectWorkoutSuccessfully(type: EnumWorkoutType) {
         )
 
       const { statusCode, body } = await addWorkoutByUser(
-        req,
+        { ...req, queryStringParameters: {} },
         createMockContext(_mockUserContext),
       )
 
@@ -230,7 +230,7 @@ function expectWorkoutSuccessfully(type: EnumWorkoutType) {
         )
 
       const { statusCode, body } = await addWorkoutByUser(
-        req,
+        { ...req, queryStringParameters: {} },
         createMockContext(_mockUserContext),
       )
 

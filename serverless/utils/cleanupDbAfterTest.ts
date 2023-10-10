@@ -12,7 +12,7 @@ export async function cleanupDbAfterTest(workoutsIdToCleanUp: unknown[]) {
     })
 
     const result = await _deleteWorkoutById(
-      { ...req, body: req.body },
+      { ...req, body: req.body, queryStringParameters: {} },
       createMockContext({
         user: { email: '', exp: Date.now() },
       }),

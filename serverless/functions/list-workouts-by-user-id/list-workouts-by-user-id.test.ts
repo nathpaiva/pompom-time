@@ -10,7 +10,7 @@ describe('list-workouts-by-user-id', () => {
   const _req = createMockHandlerEventBody<HandlerEvent['body']>(null)
   it('should return an error if the user is not authenticated', async () => {
     const { statusCode, body } = await listWorkoutsByUserId(
-      _req,
+      { ..._req, queryStringParameters: undefined },
       createMockContext(),
     )
 
@@ -25,7 +25,7 @@ describe('list-workouts-by-user-id', () => {
 
   it('should return a list for active user', async () => {
     const { statusCode, body } = await listWorkoutsByUserId(
-      _req,
+      { ..._req, queryStringParameters: undefined },
       createMockContext({
         user: {
           email: 'test-user-do-not-delete@nathpaiva.com',
@@ -45,7 +45,7 @@ describe('list-workouts-by-user-id', () => {
 
   it('should return an empty list for active user', async () => {
     const { statusCode, body } = await listWorkoutsByUserId(
-      _req,
+      { ..._req, queryStringParameters: undefined },
       createMockContext({
         user: {
           email: 'test-empty@nathpaiva.com',
