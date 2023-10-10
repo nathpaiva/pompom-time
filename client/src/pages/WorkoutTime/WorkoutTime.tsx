@@ -14,6 +14,8 @@ export const WorkoutTime = () => {
     handleStartStopPulse,
     isResting,
     restingInterval,
+    isCountingDown,
+    countingDownInterval,
   } = usePulse({
     interval: data?.interval,
     squeeze: data?.squeeze,
@@ -29,9 +31,10 @@ export const WorkoutTime = () => {
 
   return (
     <Box>
-      <Heading>{data?.name}</Heading>
+      <Heading>
+        {data?.name}: {data?.type}
+      </Heading>
       Workout: {counter} / {data?.goal_per_day}
-      {data?.repeat && <p>Time will rest: {restingInterval}</p>}
       <Box
         display="grid"
         rowGap="5"
@@ -43,6 +46,26 @@ export const WorkoutTime = () => {
         border="2px"
         borderRadius="md"
         mx="auto"
+        sx={{
+          position: 'relative',
+          '::after': {
+            content: `"will start in: ${countingDownInterval}"`,
+            position: 'absolute',
+            width: '100%',
+            height: '90%',
+            animation: 'blinking 1s infinite .5s',
+            opacity: isCountingDown ? 1 : 0,
+            transition: 'opacity .5s',
+          },
+          '@keyframes blinking': {
+            '0%': {
+              backgroundColor: '#06c3d1',
+            },
+            '100%': {
+              backgroundColor: '#270da6',
+            },
+          },
+        }}
       >
         <Box
           w="150px"
@@ -54,8 +77,8 @@ export const WorkoutTime = () => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          // opacity={isResting ? 0 : 1}
-          // transition="opacity .5s"
+          opacity={isPulsing || isResting ? 1 : 0}
+          transition="opacity .5s"
         >
           {!isResting && (
             <Text variant="span" fontSize="2xl">
@@ -68,6 +91,12 @@ export const WorkoutTime = () => {
             </Text>
           )}
         </Box>
+
+        {!isResting && !isPulsing && (
+          <Text variant="span" fontSize="2xl">
+            Start your workout
+          </Text>
+        )}
 
         <Box
           display="grid"

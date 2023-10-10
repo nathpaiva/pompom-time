@@ -113,28 +113,6 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
             <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
           </FormControl>
 
-          {/* Squeeze */}
-          <FormControl
-            as="fieldset"
-            display="grid"
-            variant="floating"
-            isInvalid={!!errors.squeeze}
-          >
-            <InputGroup>
-              <Input
-                type="number"
-                placeholder=" "
-                // eslint-disable-next-line react/jsx-props-no-spreading
-                {...register('squeeze', {
-                  required: 'Squeeze is required',
-                  valueAsNumber: true,
-                })}
-              />
-              <InputRightAddon>x</InputRightAddon>
-              <FormLabel>Squeeze</FormLabel>
-            </InputGroup>
-            <FormErrorMessage>{errors.squeeze?.message}</FormErrorMessage>
-          </FormControl>
           {/* workout type */}
           <FormControl
             isInvalid={!!errors.type}
@@ -163,6 +141,50 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
             <FormLabel>Workout type</FormLabel>
             <FormErrorMessage>{errors.type?.message}</FormErrorMessage>
           </FormControl>
+
+          {/* goal per day = numero de series */}
+          <FormControl
+            as="fieldset"
+            display="grid"
+            variant="floating"
+            isInvalid={!!errors.goal_per_day}
+          >
+            <Input
+              type="number"
+              placeholder=" "
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...register('goal_per_day', {
+                required: '# of sets is required',
+                valueAsNumber: true,
+              })}
+            />
+            <FormLabel># of Sets</FormLabel>
+            <FormErrorMessage>{errors.goal_per_day?.message}</FormErrorMessage>
+          </FormControl>
+
+          {/* Squeeze */}
+          <FormControl
+            as="fieldset"
+            display="grid"
+            variant="floating"
+            isInvalid={!!errors.squeeze}
+          >
+            <InputGroup>
+              <Input
+                type="number"
+                placeholder=" "
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                {...register('squeeze', {
+                  required: 'Squeeze is required',
+                  valueAsNumber: true,
+                })}
+              />
+              <InputRightAddon>x</InputRightAddon>
+              <FormLabel>Squeeze</FormLabel>
+            </InputGroup>
+            <FormErrorMessage>{errors.squeeze?.message}</FormErrorMessage>
+          </FormControl>
+
           {/* interval = should show only if is resistance */}
           <FormControl
             isInvalid={!!errors.interval}
@@ -188,25 +210,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
             <FormLabel>hold up to</FormLabel>
             <FormErrorMessage>{errors.interval?.message}</FormErrorMessage>
           </FormControl>
-          {/* goal per day = numero de series */}
-          <FormControl
-            as="fieldset"
-            display="grid"
-            variant="floating"
-            isInvalid={!!errors.goal_per_day}
-          >
-            <Input
-              type="number"
-              placeholder=" "
-              // eslint-disable-next-line react/jsx-props-no-spreading
-              {...register('goal_per_day', {
-                required: '# of sets is required',
-                valueAsNumber: true,
-              })}
-            />
-            <FormLabel># of Sets</FormLabel>
-            <FormErrorMessage>{errors.goal_per_day?.message}</FormErrorMessage>
-          </FormControl>
+
           {/* rest */}
           <FormControl
             as="fieldset"
@@ -230,6 +234,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
             </InputGroup>
             <FormErrorMessage>{errors.rest?.message}</FormErrorMessage>
           </FormControl>
+
           {/* Repeat */}
           <FormControl
             as="fieldset"
