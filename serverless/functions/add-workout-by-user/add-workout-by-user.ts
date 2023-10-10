@@ -18,7 +18,7 @@ import {
 } from './types'
 
 const addWorkoutByUser = async (
-  { body }: HandlerEventJsonParsed<TAddWorkoutByUserMutationVariables>,
+  { body }: HandlerEventJsonParsed<TAddWorkoutByUserMutationVariables, unknown>,
   { clientContext }: Context,
 ): PromiseResponseAddWorkoutByUserId => {
   const config = graphQLClientConfig()
@@ -79,7 +79,7 @@ const configTimeoutByEnvMode =
   process.env.MODE === 'test' ? { timeoutEarlyInMillis: 0 } : undefined
 
 const handler = middy<
-  HandlerEvent<TAddWorkoutByUserMutationVariables>,
+  HandlerEvent<TAddWorkoutByUserMutationVariables, unknown>,
   PromiseResponseAddWorkoutByUserId,
   IError
 >(addWorkoutByUser, configTimeoutByEnvMode)

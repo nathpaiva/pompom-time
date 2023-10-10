@@ -14,7 +14,7 @@ import { bodySchema } from './bodySchema'
 import type { Workouts, PromiseResponseDeleteWorkoutById } from './types'
 
 const deleteWorkoutById = async (
-  { body }: HandlerEventJsonParsed<DeleteWorkoutByIdMutationVariables>,
+  { body }: HandlerEventJsonParsed<DeleteWorkoutByIdMutationVariables, unknown>,
   { clientContext }: Context,
 ): PromiseResponseDeleteWorkoutById => {
   const config = graphQLClientConfig()
@@ -59,7 +59,7 @@ const configTimeoutByEnvMode =
   process.env.MODE === 'test' ? { timeoutEarlyInMillis: 0 } : undefined
 
 const handler = middy<
-  HandlerEvent<DeleteWorkoutByIdMutationVariables>,
+  HandlerEvent<DeleteWorkoutByIdMutationVariables, unknown>,
   PromiseResponseDeleteWorkoutById,
   IError
 >(deleteWorkoutById, configTimeoutByEnvMode)

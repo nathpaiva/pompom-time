@@ -2,13 +2,14 @@ import { type RouteObject, createBrowserRouter } from 'react-router-dom'
 
 import { App } from '../App'
 import { ProtectedRoute } from '../components'
-import { Login, Logout, Workout } from '../pages'
+import { Login, Logout, Workout, WorkoutTime } from '../pages'
 
 export enum RouteEnum {
   login = 'login',
   logout = 'logout',
   admin = 'admin',
   workout = 'workout',
+  'workout/:workout_id' = 'workout/:workout_id',
 }
 
 export const routeDataSource = {
@@ -30,6 +31,10 @@ export const routeDataSource = {
         {
           path: RouteEnum.workout,
           element: <Workout />,
+        },
+        {
+          path: RouteEnum['workout/:workout_id'],
+          element: <WorkoutTime />,
         },
       ],
     },

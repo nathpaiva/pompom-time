@@ -7,12 +7,13 @@ import {
 } from './__generated__/list-workouts-by-user-id.graphql.generated'
 import type { PromiseResponseListWorkoutsByUserId } from './types'
 
-interface TSearchParam {
-  queryStringParameters?: WorkoutsByUserIdQueryVariables
-}
-
 const listWorkoutsByUserId = async (
-  event: HandlerEvent<TSearchParam>,
+  {
+    queryStringParameters,
+  }: HandlerEvent<
+    unknown,
+    Pick<WorkoutsByUserIdQueryVariables, 'workout_name'>
+  >,
   { clientContext }: Context,
 ): PromiseResponseListWorkoutsByUserId => {
   const config = graphQLClientConfig()
@@ -24,7 +25,8 @@ const listWorkoutsByUserId = async (
     const { workouts_aggregate } = await request({
       variables: {
         user_id: clientContext.user.email,
-        workout_name: `%${event.queryStringParameters?.workout_name ?? ''}%`,
+        workout_name: `%${queryStringParameters?.workout_name ?? ''}%`,
+        limit: 5,
       },
       document: WorkoutsByUserIdDocument,
       ...config,

@@ -29,13 +29,13 @@ describe('delete-workout-by-id', () => {
       type: EnumWorkoutType.resistance,
     } as unknown as TAddWorkoutByUserMutationVariables
     const requestContext = createMockContext(_mockUserContext)
-    const reqCreation =
-      createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>(
-        _globalMockData,
-      )
+    const reqCreation = createMockHandlerEventBody<
+      TAddWorkoutByUserMutationVariables,
+      null
+    >(_globalMockData, null)
 
     const { statusCode, body } = await addWorkoutByUser(
-      reqCreation,
+      { ...reqCreation, queryStringParameters: {} },
       requestContext,
     )
     if (statusCode === 500 || statusCode === 400) {
@@ -44,13 +44,21 @@ describe('delete-workout-by-id', () => {
 
     const { id } = JSON.parse(body)
 
-    const reqDelete =
-      createMockHandlerEventBody<DeleteWorkoutByIdMutationVariables>({
+    const reqDelete = createMockHandlerEventBody<
+      DeleteWorkoutByIdMutationVariables,
+      null
+    >(
+      {
         id,
-      })
+      },
+      null,
+    )
 
     const { statusCode: deleteStatusCode, body: deleteBody } =
-      await deleteWorkoutById(reqDelete, requestContext)
+      await deleteWorkoutById(
+        { ...reqDelete, queryStringParameters: {} },
+        requestContext,
+      )
 
     if (deleteStatusCode === 500 || deleteStatusCode === 400) {
       expect(deleteStatusCode).toEqual(200)
@@ -60,13 +68,18 @@ describe('delete-workout-by-id', () => {
   })
 
   it('should not delete workout if the use is not authenticated', async () => {
-    const reqDelete =
-      createMockHandlerEventBody<DeleteWorkoutByIdMutationVariables>({
+    const reqDelete = createMockHandlerEventBody<
+      DeleteWorkoutByIdMutationVariables,
+      null
+    >(
+      {
         id: Date.now(),
-      })
+      },
+      null,
+    )
     const requestContext = createMockContext()
     const { statusCode, body } = await deleteWorkoutById(
-      reqDelete,
+      { ...reqDelete, queryStringParameters: {} },
       requestContext,
     )
     if (statusCode === 200) {

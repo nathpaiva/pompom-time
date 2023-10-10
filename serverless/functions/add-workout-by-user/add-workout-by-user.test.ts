@@ -28,8 +28,11 @@ describe('add-workout-by-user', () => {
 
   describe('context and event', () => {
     it('should return and error if the use is not authenticated', async () => {
-      const req =
-        createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>({
+      const _req = createMockHandlerEventBody<
+        TAddWorkoutByUserMutationVariables,
+        null
+      >(
+        {
           goal_per_day: 5,
           name: 'First Workout',
           repeat: true,
@@ -37,9 +40,11 @@ describe('add-workout-by-user', () => {
           squeeze: 20,
           interval: 10,
           type: EnumWorkoutType.resistance,
-        })
+        },
+        null,
+      )
       const { statusCode, body } = await addWorkoutByUser(
-        req,
+        _req,
         createMockContext(undefined),
       )
       // if the statusCode is 200 the test should break!!!
@@ -51,10 +56,10 @@ describe('add-workout-by-user', () => {
       expect(JSON.parse(body).error).toEqual('You must be authenticated')
     })
     it('should return and error if event is inconsistent', async () => {
-      const _invalidRequest =
-        createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>(
-          {} as TAddWorkoutByUserMutationVariables,
-        )
+      const _invalidRequest = createMockHandlerEventBody<
+        TAddWorkoutByUserMutationVariables,
+        null
+      >({} as TAddWorkoutByUserMutationVariables, null)
       const _context = createMockContext({
         user: {
           email: 'test-user@nathpaiva.com',
@@ -62,7 +67,7 @@ describe('add-workout-by-user', () => {
         },
       })
       const { statusCode, body } = await addWorkoutByUser(
-        _invalidRequest,
+        { ..._invalidRequest, queryStringParameters: {} },
         _context,
       )
       // if the statusCode is 200 the test should break!!!
@@ -179,13 +184,13 @@ function expectWorkoutSuccessfully(type: EnumWorkoutType) {
     expectsSuccessToAddWorkout: async (
       _mockWorkoutData: TAddWorkoutByUserMutationVariables,
     ) => {
-      const req =
-        createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>(
-          _mockWorkoutData,
-        )
+      const req = createMockHandlerEventBody<
+        TAddWorkoutByUserMutationVariables,
+        null
+      >(_mockWorkoutData, null)
 
       const { statusCode, body } = await addWorkoutByUser(
-        req,
+        { ...req, queryStringParameters: {} },
         createMockContext(_mockUserContext),
       )
 
@@ -224,13 +229,13 @@ function expectWorkoutSuccessfully(type: EnumWorkoutType) {
       _mockWorkoutData: TAddWorkoutByUserMutationVariables,
       errorMessage: string,
     ) => {
-      const req =
-        createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>(
-          _mockWorkoutData,
-        )
+      const req = createMockHandlerEventBody<
+        TAddWorkoutByUserMutationVariables,
+        null
+      >(_mockWorkoutData, null)
 
       const { statusCode, body } = await addWorkoutByUser(
-        req,
+        { ...req, queryStringParameters: {} },
         createMockContext(_mockUserContext),
       )
 

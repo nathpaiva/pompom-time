@@ -1,3 +1,4 @@
+import { EnumWorkoutType } from '../../../../../serverless/functions/add-workout-by-user/types'
 import { Workouts } from '../../../../../serverless/generated/graphql/GraphQLSchema'
 
 export const mockDataResponse = [
@@ -10,7 +11,7 @@ export const mockDataResponse = [
     repeat: true,
     rest: 40,
     squeeze: 20,
-    type: 'pulse',
+    type: EnumWorkoutType.pulse,
     updated_at: new Date('2023-09-15T22:04:05.494429+00:00'),
     user_id: 'hello@nathpaiva.com.br',
   },
@@ -21,9 +22,9 @@ export const mockDataResponse = [
     interval: 5,
     name: 'Second Workout',
     repeat: true,
-    rest: 40,
+    rest: 3,
     squeeze: 6,
-    type: 'pulse',
+    type: EnumWorkoutType.pulse,
     updated_at: new Date('2023-09-16T01:16:33.008318+00:00'),
     user_id: 'hello@nathpaiva.com.br',
   },
@@ -36,7 +37,7 @@ export const mockDataResponse = [
     repeat: true,
     rest: 40,
     squeeze: 6,
-    type: 'pulse',
+    type: EnumWorkoutType.pulse,
     updated_at: new Date('2023-09-16T01:18:28.377767+00:00'),
     user_id: 'hello@nathpaiva.com.br',
   },

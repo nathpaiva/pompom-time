@@ -19,12 +19,20 @@ type LambdaContext = Omit<LLambdaContext, 'clientContext' | 'identity'> & {
   identity?: Record<string, any>
 }
 
-type HandlerEvent<T> = Omit<NtlHandlerEvent, 'body'> & {
+type HandlerEvent<T, Q> = Omit<
+  NtlHandlerEvent,
+  'body' | 'queryStringParameters'
+> & {
   body: Stringified<T>
+  queryStringParameters: Q | null
 }
 
-type HandlerEventJsonParsed<T> = Omit<NtlHandlerEvent, 'body'> & {
+type HandlerEventJsonParsed<T, Q> = Omit<
+  NtlHandlerEvent,
+  'body' | 'queryStringParameters'
+> & {
   body: T
+  queryStringParameters: Q | null
 }
 
 interface TErrorBodyResponse {

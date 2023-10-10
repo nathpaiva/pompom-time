@@ -1,10 +1,14 @@
-export function createMockHandlerEventBody<T>(body: T) {
+export function createMockHandlerEventBody<T, Q>(
+  body: T,
+  queryStringParameters?: Q,
+) {
   return {
     body: JSON.stringify(body),
     headers: {
       'Content-Type': 'application/json',
     } as any,
-  } as HandlerEvent<T>
+    queryStringParameters: queryStringParameters ?? null,
+  } as HandlerEvent<T, Q>
 }
 
 export function createMockContext(clientContext?: IUserContext) {

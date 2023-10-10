@@ -8,6 +8,7 @@ const validateRoute = (_route: RouteObject) => {
     if (isValidElement(child.element)) {
       expect(typeof child.element.type).toEqual('function')
     }
+
     // check if the route exist in the RouteEnum config
     expect(RouteEnum[child.path as keyof typeof RouteEnum]).toBeTruthy()
 

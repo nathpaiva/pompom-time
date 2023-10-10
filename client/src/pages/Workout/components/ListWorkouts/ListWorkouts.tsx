@@ -1,6 +1,6 @@
 import { DeleteIcon } from '@chakra-ui/icons'
+import { Link as ChakraLink } from '@chakra-ui/react'
 import {
-  Button,
   ButtonGroup,
   Card,
   FormControl,
@@ -13,7 +13,8 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import { debounce } from 'lodash'
-import { ChangeEvent, Dispatch, FormEvent, useState } from 'react'
+import { ChangeEvent, Dispatch, useState } from 'react'
+import { Link } from 'react-router-dom'
 
 import { WorkoutsByUserIdQuery } from '../../../../../../serverless/functions/list-workouts-by-user-id/__generated__/list-workouts-by-user-id.graphql.generated'
 import { Workouts } from '../../../../../../serverless/generated/graphql/GraphQLSchema'
@@ -150,13 +151,9 @@ export const ListWorkouts = ({
                     <span>{workout.type}</span>
 
                     <ButtonGroup>
-                      <Button
-                        size="sm"
-                        colorScheme="purple"
-                        width="max-content"
-                      >
+                      <ChakraLink as={Link} to={workout.id} alignSelf="center">
                         Start
-                      </Button>
+                      </ChakraLink>
 
                       <IconButton
                         size="sm"
@@ -172,11 +169,13 @@ export const ListWorkouts = ({
                 </Skeleton>
               )
             })}
-          {typeof workoutName !== 'undefined' && !_workouts.length && (
-            <Heading size="sm" as="p">
-              Workout {workoutName} not found
-            </Heading>
-          )}
+          {typeof workoutName !== 'undefined' &&
+            !_workouts.length &&
+            !isLoading && (
+              <Heading size="sm" as="p">
+                Workout {workoutName} not found
+              </Heading>
+            )}
         </Stack>
       </Card>
     </>

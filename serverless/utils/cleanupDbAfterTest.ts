@@ -7,12 +7,18 @@ import {
 
 export async function cleanupDbAfterTest(workoutsIdToCleanUp: unknown[]) {
   for (const workoutId of workoutsIdToCleanUp) {
-    const req = createMockHandlerEventBody<DeleteWorkoutByIdMutationVariables>({
-      id: workoutId,
-    })
+    const req = createMockHandlerEventBody<
+      DeleteWorkoutByIdMutationVariables,
+      null
+    >(
+      {
+        id: workoutId,
+      },
+      null,
+    )
 
     const result = await _deleteWorkoutById(
-      { ...req, body: req.body },
+      { ...req, body: req.body, queryStringParameters: {} },
       createMockContext({
         user: { email: '', exp: Date.now() },
       }),

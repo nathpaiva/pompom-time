@@ -1,34 +1,91 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
+import { EnumWorkoutType } from '../../../../../../serverless/functions/add-workout-by-user/types'
 
 const PULSE_LIMIT = 20
 const PULSE_INTERVAL = 500
 
 interface IUsePulse {
   pulseInterval: number
-  isPulseStarted: boolean
+  isPulsing: boolean
   handleStartStopPulse: () => void
+  counter: number
+  restingInterval: number
+  isResting: boolean
 }
 
 interface IUsePulseParams {
-  pulseLimit?: number
-  pulseIntervalTimer?: number
+  interval?: number
+  squeeze?: number
+  repeat?: boolean
+  rest?: number
+  sets?: number
+  type?: EnumWorkoutType
 }
 
-type TUsePulse = (param?: IUsePulseParams) => IUsePulse
+type TUsePulse = (param: IUsePulseParams) => IUsePulse
 
-export const usePulse: TUsePulse = (param) => {
-  const { _PULSE_INTERVAL, _PULSE_LIMIT } = useMemo(
-    () => ({
-      _PULSE_INTERVAL: param?.pulseIntervalTimer ?? PULSE_INTERVAL,
-      _PULSE_LIMIT: param?.pulseLimit ?? PULSE_LIMIT,
-    }),
-    [param?.pulseIntervalTimer, param?.pulseLimit],
-  )
+export const usePulse: TUsePulse = ({
+  interval,
+  squeeze,
+  repeat,
+  rest,
+  sets,
+  type,
+}) => {
+  const { _PULSE_INTERVAL, _PULSE_LIMIT, _REST, _REPEAT, _SETS } =
+    useMemo(() => {
+      return {
+        _PULSE_INTERVAL: PULSE_INTERVAL,
+        _PULSE_LIMIT: squeeze ?? PULSE_LIMIT,
+        _REST: rest ?? 0,
+        _REPEAT: repeat,
+        _SETS: sets,
+      }
+    }, [squeeze, rest, repeat, sets])
 
-  const [isPulseStarted, setIsPulseStarted] = useState(false)
+  // workout counter
+  const [counter, setCounter] = useState(0)
+  // workout
+  const [isPulsing, setIsPulsing] = useState(false)
   const [pulseInterval, setPulseInterval] = useState(1)
-  const interval = useRef<NodeJS.Timeout>()
-  const _pulse = useRef(1)
+  const _pulseIntervalRef = useRef<NodeJS.Timeout>()
+  const _pulseInterval = useRef(1)
+  // rest
+  const [isResting, setIsResting] = useState(false)
+  const [restingInterval, setRestingInterval] = useState(0)
+  const _restingIntervalRef = useRef<NodeJS.Timeout>()
+  const _restingInterval = useRef(0)
+
+  const restingTimer = useCallback(
+    (callback: () => void) => {
+      // start resting
+      _restingIntervalRef.current = setInterval(() => {
+        /**
+         * if get the resting limit stop resting:
+         * - clean the interval
+         * - reset the resting interval
+         * - reset internal resting
+         */
+        if (_restingInterval.current === 1) {
+          _restingInterval.current = _REST
+          clearInterval(_restingIntervalRef.current)
+
+          _restingIntervalRef.current = undefined
+          setRestingInterval(_REST)
+          setIsResting((prev) => !prev)
+
+          callback()
+          return
+        }
+
+        // decrease the resting
+        _restingInterval.current -= 1
+        setRestingInterval(_restingInterval.current)
+      }, _PULSE_INTERVAL)
+    },
+    [_PULSE_INTERVAL, _REST],
+  )
 
   const pulseTimer = useCallback(() => {
     /**
@@ -37,48 +94,78 @@ export const usePulse: TUsePulse = (param) => {
      * - reset the pulse interval
      * - reset internal interval
      */
-    if (interval.current && isPulseStarted) {
-      _pulse.current = 1
-      clearInterval(interval.current)
+    if (_pulseIntervalRef.current && isPulsing) {
+      _pulseInterval.current = 1
+      clearInterval(_pulseIntervalRef.current)
+      setCounter(0)
 
-      interval.current = undefined
-      setPulseInterval(_pulse.current)
+      _pulseIntervalRef.current = undefined
+      setPulseInterval(_pulseInterval.current)
       return
     }
 
     // start the pulse
-    interval.current = setInterval(() => {
+    _pulseIntervalRef.current = setInterval(() => {
       /**
        * if get the pulse limit stop pulsing:
        * - clean the interval
        * - reset the pulse interval
        * - reset internal interval
        */
-      if (_pulse.current === _PULSE_LIMIT) {
-        _pulse.current = 1
-        clearInterval(interval.current)
+      if (_pulseInterval.current === _PULSE_LIMIT) {
+        _pulseInterval.current = 1
+        clearInterval(_pulseIntervalRef.current)
 
-        interval.current = undefined
-        setPulseInterval(_pulse.current)
-        setIsPulseStarted((prev) => !prev)
+        _pulseIntervalRef.current = undefined
+        setPulseInterval(_pulseInterval.current)
+        setIsPulsing((prev) => !prev)
+        setCounter((prev) => prev + 1)
 
+        // callFunctionToRest(pulseTimer)
         return
       }
 
       // increase the pulse
-      _pulse.current += 1
-      setPulseInterval(_pulse.current)
+      _pulseInterval.current += 1
+      setPulseInterval(_pulseInterval.current)
     }, _PULSE_INTERVAL)
-  }, [isPulseStarted, _PULSE_INTERVAL, _PULSE_LIMIT])
+  }, [isPulsing, _PULSE_INTERVAL, _PULSE_LIMIT])
 
-  const handleStartStopPulse = () => {
-    setIsPulseStarted((prev) => !prev)
+  const handleStartStopPulse = useCallback(() => {
+    setIsPulsing((prev) => !prev)
     pulseTimer()
-  }
+  }, [pulseTimer])
+
+  useEffect(() => {
+    if (!counter || !_REPEAT || !_REST || !_SETS) return
+
+    if (
+      counter < _SETS &&
+      !_restingIntervalRef.current &&
+      !_pulseIntervalRef.current
+    ) {
+      setIsResting((prev) => !prev)
+      restingTimer(handleStartStopPulse)
+    }
+
+    if (counter === _SETS) {
+      setCounter(0)
+    }
+  }, [counter, _SETS, _REPEAT, _REST, restingTimer, handleStartStopPulse])
+
+  useEffect(() => {
+    if (_REST) {
+      setRestingInterval(_REST)
+      _restingInterval.current = _REST
+    }
+  }, [_REST])
 
   return {
     pulseInterval,
-    isPulseStarted,
+    isPulsing,
     handleStartStopPulse,
+    counter,
+    isResting,
+    restingInterval,
   }
 }
