@@ -29,10 +29,10 @@ describe('delete-workout-by-id', () => {
       type: EnumWorkoutType.resistance,
     } as unknown as TAddWorkoutByUserMutationVariables
     const requestContext = createMockContext(_mockUserContext)
-    const reqCreation =
-      createMockHandlerEventBody<TAddWorkoutByUserMutationVariables>(
-        _globalMockData,
-      )
+    const reqCreation = createMockHandlerEventBody<
+      TAddWorkoutByUserMutationVariables,
+      null
+    >(_globalMockData, null)
 
     const { statusCode, body } = await addWorkoutByUser(
       { ...reqCreation, queryStringParameters: {} },
@@ -44,10 +44,15 @@ describe('delete-workout-by-id', () => {
 
     const { id } = JSON.parse(body)
 
-    const reqDelete =
-      createMockHandlerEventBody<DeleteWorkoutByIdMutationVariables>({
+    const reqDelete = createMockHandlerEventBody<
+      DeleteWorkoutByIdMutationVariables,
+      null
+    >(
+      {
         id,
-      })
+      },
+      null,
+    )
 
     const { statusCode: deleteStatusCode, body: deleteBody } =
       await deleteWorkoutById(
@@ -63,10 +68,15 @@ describe('delete-workout-by-id', () => {
   })
 
   it('should not delete workout if the use is not authenticated', async () => {
-    const reqDelete =
-      createMockHandlerEventBody<DeleteWorkoutByIdMutationVariables>({
+    const reqDelete = createMockHandlerEventBody<
+      DeleteWorkoutByIdMutationVariables,
+      null
+    >(
+      {
         id: Date.now(),
-      })
+      },
+      null,
+    )
     const requestContext = createMockContext()
     const { statusCode, body } = await deleteWorkoutById(
       { ...reqDelete, queryStringParameters: {} },
