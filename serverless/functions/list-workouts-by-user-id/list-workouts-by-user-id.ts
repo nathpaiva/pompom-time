@@ -17,7 +17,6 @@ const listWorkoutsByUserId = async (
       throw new Error('You must be authenticated')
     }
 
-    console.log(`%${event.queryStringParameters?.workout_name ?? ''}%`)
     const { workouts_aggregate } = await request({
       variables: {
         user_id: clientContext.user.email,
