@@ -11,19 +11,6 @@ export function createMockHandlerEventBody<T, Q>(
   } as HandlerEvent<T, Q>
 }
 
-export function createMockHandlerEventJsonBody<T, Q>(
-  body: T,
-  queryStringParameters?: Q,
-) {
-  return {
-    body: JSON.stringify(body),
-    headers: {
-      'Content-Type': 'application/json',
-    } as any,
-    queryStringParameters: queryStringParameters ?? null,
-  } as HandlerEventJsonParsed<T, Q>
-}
-
 export function createMockContext(clientContext?: IUserContext) {
   return {
     callbackWaitsForEmptyEventLoop: false,

@@ -1,10 +1,6 @@
-import { HandlerEvent } from '@netlify/functions'
-import { APIGatewayProxyEventQueryStringParameters } from 'aws-lambda'
-
 import {
   createMockContext,
   createMockHandlerEventBody,
-  createMockHandlerEventJsonBody,
 } from '../../setup-server-tests'
 import { cleanupDbAfterTest } from '../../utils/cleanupDbAfterTest'
 import { Workouts } from './__generated__/add-workout-by-user.graphql.generated'
