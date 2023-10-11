@@ -22,7 +22,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { Workouts } from '../../../../../../serverless/generated/graphql/GraphQLSchema'
 import { TAddWorkoutVariable, useAddWorkoutByUserId } from '../../../../hooks'
-import { workoutType } from '../../constants'
+import { Variety_Enum } from '../../../WorkoutTime/types'
 
 interface IAddWorkout {
   setWorkouts: Dispatch<React.SetStateAction<Workouts[]>>
@@ -38,7 +38,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<IFormInput>()
-  const isResistance = watch('type') === 'resistance'
+  const isResistance = watch('variety') === Variety_Enum.Resistance
 
   const toast = useToast()
 
@@ -113,9 +113,9 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
             <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
           </FormControl>
 
-          {/* workout type */}
+          {/* workout variety */}
           <FormControl
-            isInvalid={!!errors.type}
+            isInvalid={!!errors.variety}
             as="fieldset"
             display="grid"
             variant="floating"
@@ -128,18 +128,18 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
             <Select
               placeholder=" "
               // eslint-disable-next-line react/jsx-props-no-spreading
-              {...register('type', {
+              {...register('variety', {
                 required: 'Workout type is required',
               })}
             >
-              {Object.keys(workoutType).map((wType) => (
+              {Object.keys(Variety_Enum).map((wType) => (
                 <option key={wType} value={wType}>
                   {wType}
                 </option>
               ))}
             </Select>
             <FormLabel>Workout type</FormLabel>
-            <FormErrorMessage>{errors.type?.message}</FormErrorMessage>
+            <FormErrorMessage>{errors.variety?.message}</FormErrorMessage>
           </FormControl>
 
           {/* goal per day = numero de series */}

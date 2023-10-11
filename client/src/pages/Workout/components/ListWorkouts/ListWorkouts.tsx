@@ -148,7 +148,7 @@ export const ListWorkouts = ({
                     <span>{workout.name}</span>
 
                     {/* TODO: change text to use icon */}
-                    <span>{workout.type}</span>
+                    <span>{workout.variety}</span>
 
                     <ButtonGroup>
                       <ChakraLink as={Link} to={workout.id} alignSelf="center">

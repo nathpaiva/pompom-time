@@ -8,7 +8,7 @@ import {
   waitFor,
 } from '@utils/test'
 
-import { workoutType } from '../constants'
+import { Variety_Enum } from '../../../../../serverless/functions/add-workout-by-user/types'
 import { Workout } from '../Workout'
 import {
   mockDataResponse,
@@ -258,7 +258,7 @@ describe('Workout', () => {
   })
 
   describe('AddWorkout', () => {
-    Object.values(workoutType).forEach((_workoutType) => {
+    Object.values(Variety_Enum).forEach((_workoutType) => {
       it(`should add a new workout successfully with ${_workoutType} type`, async () => {
         const addNewWorkoutMock = {
           name: 'New Workout',
@@ -267,7 +267,7 @@ describe('Workout', () => {
           goal_per_day: 4,
           rest: 45,
           repeat: true,
-          interval: _workoutType === 'resistance' ? 10 : undefined,
+          interval: _workoutType === Variety_Enum.Resistance ? 10 : undefined,
         }
         vi.mocked(_hoisted_useIdentityContext).mockReturnValue(validUserMocked)
 
@@ -324,7 +324,7 @@ describe('Workout', () => {
           expect(fieldSqueeze).toHaveValue(addNewWorkoutMock.squeeze)
           expect(fieldType).toHaveValue(addNewWorkoutMock.type)
 
-          if (_workoutType !== 'resistance') {
+          if (_workoutType !== Variety_Enum.Resistance) {
             expect(fieldInterval).not.toBeVisible()
           } else {
             expect(fieldInterval).toBeVisible()
@@ -417,7 +417,7 @@ describe('Workout', () => {
       // change workout type to resistance to test the interval validation
       act(() => {
         fireEvent.change(fieldType, {
-          target: { value: workoutType.resistance },
+          target: { value: Variety_Enum.Resistance },
         })
 
         expect(fieldInterval).toBeVisible()
