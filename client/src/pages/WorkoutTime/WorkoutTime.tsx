@@ -14,6 +14,8 @@ export const WorkoutTime = () => {
     handleStartStopPulse,
     isResting,
     restingInterval,
+    isCountingDown,
+    countingDownInterval,
   } = usePulse({
     interval: data?.interval,
     squeeze: data?.squeeze,
@@ -29,9 +31,10 @@ export const WorkoutTime = () => {
 
   return (
     <Box>
-      <Heading>{data?.name}</Heading>
+      <Heading>
+        {data?.name}: {data?.type}
+      </Heading>
       Workout: {counter} / {data?.goal_per_day}
-      {data?.repeat && <p>Time will rest: {restingInterval}</p>}
       <Box
         display="grid"
         rowGap="5"
@@ -43,6 +46,26 @@ export const WorkoutTime = () => {
         border="2px"
         borderRadius="md"
         mx="auto"
+        sx={{
+          position: 'relative',
+          '::after': {
+            content: `" "`,
+            position: 'absolute',
+            width: '100%',
+            height: '90%',
+            animation: isCountingDown ? 'blinking 1s infinite .1s' : undefined,
+            opacity: isCountingDown ? 1 : 0,
+            transition: 'opacity .5s',
+          },
+          '@keyframes blinking': {
+            '0%': {
+              backgroundColor: '#b794f4',
+            },
+            '100%': {
+              backgroundColor: '#44337a',
+            },
+          },
+        }}
       >
         <Box
           w="150px"
@@ -54,8 +77,8 @@ export const WorkoutTime = () => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          // opacity={isResting ? 0 : 1}
-          // transition="opacity .5s"
+          opacity={isPulsing || isResting ? 1 : 0}
+          transition="opacity .5s"
         >
           {!isResting && (
             <Text variant="span" fontSize="2xl">
@@ -68,6 +91,13 @@ export const WorkoutTime = () => {
             </Text>
           )}
         </Box>
+
+        <Text variant="span" fontSize="2xl" zIndex="9999">
+          {isCountingDown && <> will start in: {countingDownInterval}</>}
+          {!isCountingDown && !isResting && !isPulsing && (
+            <> Start your workout</>
+          )}
+        </Text>
 
         <Box
           display="grid"
