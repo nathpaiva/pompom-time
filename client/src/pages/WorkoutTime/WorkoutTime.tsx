@@ -1,9 +1,51 @@
 import { Box, Button, Heading, Spinner, Text } from '@chakra-ui/react'
 
-import { EnumWorkoutType } from '../../../../serverless/functions/add-workout-by-user/types'
-import { Workouts } from '../../../../serverless/functions/delete-workout-by-id/types'
 import { useGetWorkoutById } from '../../hooks'
-import { usePulse } from '../Workout/hooks'
+import { usePulse } from './hooks'
+import type { Workouts, TWorkoutAnimation } from './types'
+
+const animationByWorkoutType: TWorkoutAnimation = {
+  strength: {
+    animation: '750ms infinite alternate bounce',
+    keyframes: {
+      '@keyframes bounce': {
+        '0%': {
+          transform: 'translateY(100%)',
+        },
+        '20%': {
+          transform: 'translateY(100%)',
+        },
+        '50%': {
+          transform: 'translateY(0%)',
+        },
+        '100%': {
+          transform: 'translateY(0%)',
+        },
+      },
+    },
+  },
+  pulse: {
+    animation: '250ms infinite alternate-reverse pulse',
+    keyframes: {
+      '@keyframes pulse': {
+        '0%': {
+          width: '30%',
+        },
+        '100%': {
+          width: '150px',
+        },
+      },
+    },
+  },
+  intensity: {
+    animation: '',
+    keyframes: {},
+  },
+  resistance: {
+    animation: '',
+    keyframes: {},
+  },
+}
 
 export const WorkoutTime = () => {
   const { data, isLoading } = useGetWorkoutById<Workouts>()
@@ -22,7 +64,7 @@ export const WorkoutTime = () => {
     repeat: data?.repeat,
     rest: data?.rest,
     sets: data?.goal_per_day,
-    type: data?.type as EnumWorkoutType,
+    variety: data?.variety,
   })
 
   if (isLoading) {
@@ -32,7 +74,7 @@ export const WorkoutTime = () => {
   return (
     <Box>
       <Heading>
-        {data?.name}: {data?.type}
+        {data?.name}: {data?.variety}
       </Heading>
       Workout: {counter} / {data?.goal_per_day}
       <Box
@@ -79,6 +121,16 @@ export const WorkoutTime = () => {
           alignItems="center"
           opacity={isPulsing || isResting ? 1 : 0}
           transition="opacity .5s"
+          animation={
+            isPulsing && data?.variety
+              ? animationByWorkoutType[data.variety].animation
+              : ''
+          }
+          sx={{
+            ...(isPulsing && data?.variety
+              ? animationByWorkoutType[data.variety].keyframes
+              : {}),
+          }}
         >
           {!isResting && (
             <Text variant="span" fontSize="2xl">
