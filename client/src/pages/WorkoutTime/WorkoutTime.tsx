@@ -49,20 +49,20 @@ export const WorkoutTime = () => {
         sx={{
           position: 'relative',
           '::after': {
-            content: `"will start in: ${countingDownInterval}"`,
+            content: `" "`,
             position: 'absolute',
             width: '100%',
             height: '90%',
-            animation: 'blinking 1s infinite .5s',
+            animation: isCountingDown ? 'blinking 1s infinite .1s' : undefined,
             opacity: isCountingDown ? 1 : 0,
             transition: 'opacity .5s',
           },
           '@keyframes blinking': {
             '0%': {
-              backgroundColor: '#06c3d1',
+              backgroundColor: '#b794f4',
             },
             '100%': {
-              backgroundColor: '#270da6',
+              backgroundColor: '#44337a',
             },
           },
         }}
@@ -92,11 +92,12 @@ export const WorkoutTime = () => {
           )}
         </Box>
 
-        {!isResting && !isPulsing && (
-          <Text variant="span" fontSize="2xl">
-            Start your workout
-          </Text>
-        )}
+        <Text variant="span" fontSize="2xl" zIndex="9999">
+          {isCountingDown && <> will start in: {countingDownInterval}</>}
+          {!isCountingDown && !isResting && !isPulsing && (
+            <> Start your workout</>
+          )}
+        </Text>
 
         <Box
           display="grid"
