@@ -4,6 +4,7 @@ mutation DeleteWorkoutById($id: uuid) {
       __typename
       name
       id
+      variety
       created_at
       updated_at
     }

@@ -5,7 +5,7 @@ import {
 import { cleanupDbAfterTest } from '../../utils/cleanupDbAfterTest'
 import { Workouts } from './__generated__/add-workout-by-user.graphql.generated'
 import {
-  EnumWorkoutType,
+  Variety_Enum,
   TAddWorkoutByUserMutationVariables,
   handler as addWorkoutByUser,
 } from './add-workout-by-user'
@@ -39,7 +39,7 @@ describe('add-workout-by-user', () => {
           rest: 40,
           squeeze: 20,
           interval: 10,
-          type: EnumWorkoutType.resistance,
+          variety: Variety_Enum.Resistance,
         },
         null,
       )
@@ -82,22 +82,22 @@ describe('add-workout-by-user', () => {
     })
   })
 
-  describe('workout type: strength | pulse | intensity', () => {
-    Object.keys(EnumWorkoutType).forEach((item) => {
+  describe('workout variety: strength | pulse | intensity', () => {
+    Object.keys(Variety_Enum).forEach((item) => {
       it(`should add a workout ${item} successfully without interval`, async () => {
         const { globalMockData, expectsSuccessToAddWorkout } =
-          expectWorkoutSuccessfully(EnumWorkoutType[item])
+          expectWorkoutSuccessfully(Variety_Enum[item])
         // should not create workout for this type
         const _copy = { ...globalMockData }
         delete _copy.interval
 
-        if (item === EnumWorkoutType.resistance) {
+        if (Variety_Enum[item] === Variety_Enum.Resistance) {
           return
         }
 
         const _mockWorkoutData = {
           ..._copy,
-          type: EnumWorkoutType[item],
+          variety: Variety_Enum[item],
         } as TAddWorkoutByUserMutationVariables
 
         await expectsSuccessToAddWorkout(_mockWorkoutData)
@@ -105,16 +105,16 @@ describe('add-workout-by-user', () => {
 
       it(`should not add a workout "${item}" if has interval`, async () => {
         const { globalMockData, expectsErrorToAdd } = expectWorkoutSuccessfully(
-          EnumWorkoutType[item],
+          Variety_Enum[item],
         )
 
         // should not create workout for this type
-        if (item === 'resistance') {
+        if (Variety_Enum[item] === Variety_Enum.Resistance) {
           return
         }
         const _mockWorkoutData = {
           ...globalMockData,
-          type: EnumWorkoutType[item],
+          variety: Variety_Enum[item],
         } as TAddWorkoutByUserMutationVariables
 
         await expectsErrorToAdd(
@@ -125,16 +125,16 @@ describe('add-workout-by-user', () => {
     })
   })
 
-  describe('workout type: resistance', () => {
+  describe('workout variety: resistance', () => {
     it('should add a workout type as resistance and interval is 10', async () => {
       const { globalMockData, expectsSuccessToAddWorkout } =
-        expectWorkoutSuccessfully(EnumWorkoutType.resistance)
+        expectWorkoutSuccessfully(Variety_Enum.Resistance)
 
       const _copy = { ...globalMockData }
       const _mockWorkoutData = {
         ..._copy,
         interval: 10,
-        type: EnumWorkoutType.resistance,
+        variety: Variety_Enum.Resistance,
       } satisfies TAddWorkoutByUserMutationVariables
 
       await expectsSuccessToAddWorkout(_mockWorkoutData)
@@ -142,7 +142,7 @@ describe('add-workout-by-user', () => {
 
     it('should not add a workout if resistance type and interval is undefined', async () => {
       const { globalMockData, expectsErrorToAdd } = expectWorkoutSuccessfully(
-        EnumWorkoutType.resistance,
+        Variety_Enum.Resistance,
       )
 
       const _copy = { ...globalMockData }
@@ -150,7 +150,7 @@ describe('add-workout-by-user', () => {
 
       const _mockWorkoutData = {
         ..._copy,
-        type: EnumWorkoutType.resistance,
+        variety: Variety_Enum.Resistance,
       } as TAddWorkoutByUserMutationVariables
 
       await expectsErrorToAdd(
@@ -161,7 +161,7 @@ describe('add-workout-by-user', () => {
   })
 })
 
-function expectWorkoutSuccessfully(type: EnumWorkoutType) {
+function expectWorkoutSuccessfully(variety: Variety_Enum) {
   const _mockUserContext = {
     user: {
       email: 'test-user@nathpaiva.com',
@@ -176,7 +176,7 @@ function expectWorkoutSuccessfully(type: EnumWorkoutType) {
     rest: 40,
     squeeze: 20,
     interval: 10,
-    type,
+    variety,
   } as unknown as TAddWorkoutByUserMutationVariables
 
   return {
@@ -214,7 +214,7 @@ function expectWorkoutSuccessfully(type: EnumWorkoutType) {
           return
         }
 
-        if (key === 'interval' && type !== EnumWorkoutType.resistance) {
+        if (key === 'interval' && variety !== Variety_Enum.Resistance) {
           expect(typeof (_mockWorkoutData as Workouts)[key]).toEqual(
             'undefined',
           )

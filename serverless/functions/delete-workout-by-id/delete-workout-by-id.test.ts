@@ -4,7 +4,7 @@ import {
 } from '../../setup-server-tests'
 import { handler as addWorkoutByUser } from '../add-workout-by-user/add-workout-by-user'
 import {
-  EnumWorkoutType,
+  Variety_Enum,
   TAddWorkoutByUserMutationVariables,
 } from '../add-workout-by-user/types'
 import { DeleteWorkoutByIdMutationVariables } from './__generated__/delete-workout-by-id.graphql.generated'
@@ -26,7 +26,7 @@ describe('delete-workout-by-id', () => {
       rest: 40,
       squeeze: 20,
       interval: 10,
-      type: EnumWorkoutType.resistance,
+      variety: Variety_Enum.Resistance,
     } as unknown as TAddWorkoutByUserMutationVariables
     const requestContext = createMockContext(_mockUserContext)
     const reqCreation = createMockHandlerEventBody<

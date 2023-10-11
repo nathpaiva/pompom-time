@@ -22,7 +22,7 @@ query WorkoutsByUserId(
       repeat
       rest
       squeeze
-      type
+      variety
       updated_at
       user_id
     }

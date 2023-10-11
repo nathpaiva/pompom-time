@@ -92,6 +92,159 @@ export type String_Comparison_Exp = {
   _similar: InputMaybe<Scalars['String']['input']>
 }
 
+/** enum workout variety */
+export type Variety = {
+  __typename?: 'Variety'
+  description: Scalars['String']['output']
+  variety: Scalars['String']['output']
+}
+
+/** aggregated selection of "Variety" */
+export type Variety_Aggregate = {
+  __typename?: 'Variety_aggregate'
+  aggregate: Maybe<Variety_Aggregate_Fields>
+  nodes: Array<Variety>
+}
+
+/** aggregate fields of "Variety" */
+export type Variety_Aggregate_Fields = {
+  __typename?: 'Variety_aggregate_fields'
+  count: Scalars['Int']['output']
+  max: Maybe<Variety_Max_Fields>
+  min: Maybe<Variety_Min_Fields>
+}
+
+/** aggregate fields of "Variety" */
+export type Variety_Aggregate_FieldsCountArgs = {
+  columns: InputMaybe<Array<Variety_Select_Column>>
+  distinct: InputMaybe<Scalars['Boolean']['input']>
+}
+
+/** Boolean expression to filter rows from the table "Variety". All fields are combined with a logical 'AND'. */
+export type Variety_Bool_Exp = {
+  _and: InputMaybe<Array<Variety_Bool_Exp>>
+  _not: InputMaybe<Variety_Bool_Exp>
+  _or: InputMaybe<Array<Variety_Bool_Exp>>
+  description: InputMaybe<String_Comparison_Exp>
+  variety: InputMaybe<String_Comparison_Exp>
+}
+
+/** unique or primary key constraints on table "Variety" */
+export enum Variety_Constraint {
+  /** unique or primary key constraint on columns "variety" */
+  EnumVarietyPkey = '_enumVariety_pkey',
+}
+
+export enum Variety_Enum {
+  /** intensity workout */
+  Intensity = 'intensity',
+  /** pulse workout */
+  Pulse = 'pulse',
+  /** resistance workout */
+  Resistance = 'resistance',
+  /** strength workout */
+  Strength = 'strength',
+}
+
+/** Boolean expression to compare columns of type "Variety_enum". All fields are combined with logical 'AND'. */
+export type Variety_Enum_Comparison_Exp = {
+  _eq: InputMaybe<Variety_Enum>
+  _in: InputMaybe<Array<Variety_Enum>>
+  _is_null: InputMaybe<Scalars['Boolean']['input']>
+  _neq: InputMaybe<Variety_Enum>
+  _nin: InputMaybe<Array<Variety_Enum>>
+}
+
+/** input type for inserting data into table "Variety" */
+export type Variety_Insert_Input = {
+  description: InputMaybe<Scalars['String']['input']>
+  variety: InputMaybe<Scalars['String']['input']>
+}
+
+/** aggregate max on columns */
+export type Variety_Max_Fields = {
+  __typename?: 'Variety_max_fields'
+  description: Maybe<Scalars['String']['output']>
+  variety: Maybe<Scalars['String']['output']>
+}
+
+/** aggregate min on columns */
+export type Variety_Min_Fields = {
+  __typename?: 'Variety_min_fields'
+  description: Maybe<Scalars['String']['output']>
+  variety: Maybe<Scalars['String']['output']>
+}
+
+/** response of any mutation on the table "Variety" */
+export type Variety_Mutation_Response = {
+  __typename?: 'Variety_mutation_response'
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int']['output']
+  /** data from the rows affected by the mutation */
+  returning: Array<Variety>
+}
+
+/** on_conflict condition type for table "Variety" */
+export type Variety_On_Conflict = {
+  constraint: Variety_Constraint
+  update_columns: Array<Variety_Update_Column>
+  where: InputMaybe<Variety_Bool_Exp>
+}
+
+/** Ordering options when selecting data from "Variety". */
+export type Variety_Order_By = {
+  description: InputMaybe<Order_By>
+  variety: InputMaybe<Order_By>
+}
+
+/** primary key columns input for table: Variety */
+export type Variety_Pk_Columns_Input = {
+  variety: Scalars['String']['input']
+}
+
+/** select columns of table "Variety" */
+export enum Variety_Select_Column {
+  /** column name */
+  Description = 'description',
+  /** column name */
+  Variety = 'variety',
+}
+
+/** input type for updating data in table "Variety" */
+export type Variety_Set_Input = {
+  description: InputMaybe<Scalars['String']['input']>
+  variety: InputMaybe<Scalars['String']['input']>
+}
+
+/** Streaming cursor of the table "Variety" */
+export type Variety_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Variety_Stream_Cursor_Value_Input
+  /** cursor ordering */
+  ordering: InputMaybe<Cursor_Ordering>
+}
+
+/** Initial value of the column from where the streaming should start */
+export type Variety_Stream_Cursor_Value_Input = {
+  description: InputMaybe<Scalars['String']['input']>
+  variety: InputMaybe<Scalars['String']['input']>
+}
+
+/** update columns of table "Variety" */
+export enum Variety_Update_Column {
+  /** column name */
+  Description = 'description',
+  /** column name */
+  Variety = 'variety',
+}
+
+export type Variety_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set: InputMaybe<Variety_Set_Input>
+  /** filter the rows which have to be updated */
+  where: Variety_Bool_Exp
+}
+
 /** ordering argument of a cursor */
 export enum Cursor_Ordering {
   /** ascending ordering of the cursor */
@@ -103,20 +256,44 @@ export enum Cursor_Ordering {
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root'
+  /** delete data from the table: "Variety" */
+  delete_Variety: Maybe<Variety_Mutation_Response>
+  /** delete single row from the table: "Variety" */
+  delete_Variety_by_pk: Maybe<Variety>
   /** delete data from the table: "workouts" */
   delete_workouts: Maybe<Workouts_Mutation_Response>
   /** delete single row from the table: "workouts" */
   delete_workouts_by_pk: Maybe<Workouts>
+  /** insert data into the table: "Variety" */
+  insert_Variety: Maybe<Variety_Mutation_Response>
+  /** insert a single row into the table: "Variety" */
+  insert_Variety_one: Maybe<Variety>
   /** insert data into the table: "workouts" */
   insert_workouts: Maybe<Workouts_Mutation_Response>
   /** insert a single row into the table: "workouts" */
   insert_workouts_one: Maybe<Workouts>
+  /** update data of the table: "Variety" */
+  update_Variety: Maybe<Variety_Mutation_Response>
+  /** update single row of the table: "Variety" */
+  update_Variety_by_pk: Maybe<Variety>
+  /** update multiples rows of table: "Variety" */
+  update_Variety_many: Maybe<Array<Maybe<Variety_Mutation_Response>>>
   /** update data of the table: "workouts" */
   update_workouts: Maybe<Workouts_Mutation_Response>
   /** update single row of the table: "workouts" */
   update_workouts_by_pk: Maybe<Workouts>
   /** update multiples rows of table: "workouts" */
   update_workouts_many: Maybe<Array<Maybe<Workouts_Mutation_Response>>>
+}
+
+/** mutation root */
+export type Mutation_RootDelete_VarietyArgs = {
+  where: Variety_Bool_Exp
+}
+
+/** mutation root */
+export type Mutation_RootDelete_Variety_By_PkArgs = {
+  variety: Scalars['String']['input']
 }
 
 /** mutation root */
@@ -130,6 +307,18 @@ export type Mutation_RootDelete_Workouts_By_PkArgs = {
 }
 
 /** mutation root */
+export type Mutation_RootInsert_VarietyArgs = {
+  objects: Array<Variety_Insert_Input>
+  on_conflict: InputMaybe<Variety_On_Conflict>
+}
+
+/** mutation root */
+export type Mutation_RootInsert_Variety_OneArgs = {
+  object: Variety_Insert_Input
+  on_conflict: InputMaybe<Variety_On_Conflict>
+}
+
+/** mutation root */
 export type Mutation_RootInsert_WorkoutsArgs = {
   objects: Array<Workouts_Insert_Input>
   on_conflict: InputMaybe<Workouts_On_Conflict>
@@ -139,6 +328,23 @@ export type Mutation_RootInsert_WorkoutsArgs = {
 export type Mutation_RootInsert_Workouts_OneArgs = {
   object: Workouts_Insert_Input
   on_conflict: InputMaybe<Workouts_On_Conflict>
+}
+
+/** mutation root */
+export type Mutation_RootUpdate_VarietyArgs = {
+  _set: InputMaybe<Variety_Set_Input>
+  where: Variety_Bool_Exp
+}
+
+/** mutation root */
+export type Mutation_RootUpdate_Variety_By_PkArgs = {
+  _set: InputMaybe<Variety_Set_Input>
+  pk_columns: Variety_Pk_Columns_Input
+}
+
+/** mutation root */
+export type Mutation_RootUpdate_Variety_ManyArgs = {
+  updates: Array<Variety_Updates>
 }
 
 /** mutation root */
@@ -178,12 +384,38 @@ export enum Order_By {
 
 export type Query_Root = {
   __typename?: 'query_root'
+  /** fetch data from the table: "Variety" */
+  Variety: Array<Variety>
+  /** fetch aggregated fields from the table: "Variety" */
+  Variety_aggregate: Variety_Aggregate
+  /** fetch data from the table: "Variety" using primary key columns */
+  Variety_by_pk: Maybe<Variety>
   /** fetch data from the table: "workouts" */
   workouts: Array<Workouts>
   /** fetch aggregated fields from the table: "workouts" */
   workouts_aggregate: Workouts_Aggregate
   /** fetch data from the table: "workouts" using primary key columns */
   workouts_by_pk: Maybe<Workouts>
+}
+
+export type Query_RootVarietyArgs = {
+  distinct_on: InputMaybe<Array<Variety_Select_Column>>
+  limit: InputMaybe<Scalars['Int']['input']>
+  offset: InputMaybe<Scalars['Int']['input']>
+  order_by: InputMaybe<Array<Variety_Order_By>>
+  where: InputMaybe<Variety_Bool_Exp>
+}
+
+export type Query_RootVariety_AggregateArgs = {
+  distinct_on: InputMaybe<Array<Variety_Select_Column>>
+  limit: InputMaybe<Scalars['Int']['input']>
+  offset: InputMaybe<Scalars['Int']['input']>
+  order_by: InputMaybe<Array<Variety_Order_By>>
+  where: InputMaybe<Variety_Bool_Exp>
+}
+
+export type Query_RootVariety_By_PkArgs = {
+  variety: Scalars['String']['input']
 }
 
 export type Query_RootWorkoutsArgs = {
@@ -208,6 +440,14 @@ export type Query_RootWorkouts_By_PkArgs = {
 
 export type Subscription_Root = {
   __typename?: 'subscription_root'
+  /** fetch data from the table: "Variety" */
+  Variety: Array<Variety>
+  /** fetch aggregated fields from the table: "Variety" */
+  Variety_aggregate: Variety_Aggregate
+  /** fetch data from the table: "Variety" using primary key columns */
+  Variety_by_pk: Maybe<Variety>
+  /** fetch data from the table in a streaming manner: "Variety" */
+  Variety_stream: Array<Variety>
   /** fetch data from the table: "workouts" */
   workouts: Array<Workouts>
   /** fetch aggregated fields from the table: "workouts" */
@@ -216,6 +456,32 @@ export type Subscription_Root = {
   workouts_by_pk: Maybe<Workouts>
   /** fetch data from the table in a streaming manner: "workouts" */
   workouts_stream: Array<Workouts>
+}
+
+export type Subscription_RootVarietyArgs = {
+  distinct_on: InputMaybe<Array<Variety_Select_Column>>
+  limit: InputMaybe<Scalars['Int']['input']>
+  offset: InputMaybe<Scalars['Int']['input']>
+  order_by: InputMaybe<Array<Variety_Order_By>>
+  where: InputMaybe<Variety_Bool_Exp>
+}
+
+export type Subscription_RootVariety_AggregateArgs = {
+  distinct_on: InputMaybe<Array<Variety_Select_Column>>
+  limit: InputMaybe<Scalars['Int']['input']>
+  offset: InputMaybe<Scalars['Int']['input']>
+  order_by: InputMaybe<Array<Variety_Order_By>>
+  where: InputMaybe<Variety_Bool_Exp>
+}
+
+export type Subscription_RootVariety_By_PkArgs = {
+  variety: Scalars['String']['input']
+}
+
+export type Subscription_RootVariety_StreamArgs = {
+  batch_size: Scalars['Int']['input']
+  cursor: Array<InputMaybe<Variety_Stream_Cursor_Input>>
+  where: InputMaybe<Variety_Bool_Exp>
 }
 
 export type Subscription_RootWorkoutsArgs = {
@@ -281,9 +547,9 @@ export type Workouts = {
   repeat: Scalars['Boolean']['output']
   rest: Scalars['Float']['output']
   squeeze: Scalars['Float']['output']
-  type: Scalars['String']['output']
   updated_at: Scalars['timestamptz']['output']
   user_id: Scalars['String']['output']
+  variety: Variety_Enum
 }
 
 /** aggregated selection of "workouts" */
@@ -337,9 +603,9 @@ export type Workouts_Bool_Exp = {
   repeat: InputMaybe<Boolean_Comparison_Exp>
   rest: InputMaybe<Float_Comparison_Exp>
   squeeze: InputMaybe<Float_Comparison_Exp>
-  type: InputMaybe<String_Comparison_Exp>
   updated_at: InputMaybe<Timestamptz_Comparison_Exp>
   user_id: InputMaybe<String_Comparison_Exp>
+  variety: InputMaybe<Variety_Enum_Comparison_Exp>
 }
 
 /** unique or primary key constraints on table "workouts" */
@@ -366,9 +632,9 @@ export type Workouts_Insert_Input = {
   repeat: InputMaybe<Scalars['Boolean']['input']>
   rest: InputMaybe<Scalars['Float']['input']>
   squeeze: InputMaybe<Scalars['Float']['input']>
-  type: InputMaybe<Scalars['String']['input']>
   updated_at: InputMaybe<Scalars['timestamptz']['input']>
   user_id: InputMaybe<Scalars['String']['input']>
+  variety: InputMaybe<Variety_Enum>
 }
 
 /** aggregate max on columns */
@@ -381,7 +647,6 @@ export type Workouts_Max_Fields = {
   name: Maybe<Scalars['String']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
-  type: Maybe<Scalars['String']['output']>
   updated_at: Maybe<Scalars['timestamptz']['output']>
   user_id: Maybe<Scalars['String']['output']>
 }
@@ -396,7 +661,6 @@ export type Workouts_Min_Fields = {
   name: Maybe<Scalars['String']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
-  type: Maybe<Scalars['String']['output']>
   updated_at: Maybe<Scalars['timestamptz']['output']>
   user_id: Maybe<Scalars['String']['output']>
 }
@@ -427,9 +691,9 @@ export type Workouts_Order_By = {
   repeat: InputMaybe<Order_By>
   rest: InputMaybe<Order_By>
   squeeze: InputMaybe<Order_By>
-  type: InputMaybe<Order_By>
   updated_at: InputMaybe<Order_By>
   user_id: InputMaybe<Order_By>
+  variety: InputMaybe<Order_By>
 }
 
 /** primary key columns input for table: workouts */
@@ -456,11 +720,11 @@ export enum Workouts_Select_Column {
   /** column name */
   Squeeze = 'squeeze',
   /** column name */
-  Type = 'type',
-  /** column name */
   UpdatedAt = 'updated_at',
   /** column name */
   UserId = 'user_id',
+  /** column name */
+  Variety = 'variety',
 }
 
 /** input type for updating data in table "workouts" */
@@ -473,9 +737,9 @@ export type Workouts_Set_Input = {
   repeat: InputMaybe<Scalars['Boolean']['input']>
   rest: InputMaybe<Scalars['Float']['input']>
   squeeze: InputMaybe<Scalars['Float']['input']>
-  type: InputMaybe<Scalars['String']['input']>
   updated_at: InputMaybe<Scalars['timestamptz']['input']>
   user_id: InputMaybe<Scalars['String']['input']>
+  variety: InputMaybe<Variety_Enum>
 }
 
 /** aggregate stddev on columns */
@@ -523,9 +787,9 @@ export type Workouts_Stream_Cursor_Value_Input = {
   repeat: InputMaybe<Scalars['Boolean']['input']>
   rest: InputMaybe<Scalars['Float']['input']>
   squeeze: InputMaybe<Scalars['Float']['input']>
-  type: InputMaybe<Scalars['String']['input']>
   updated_at: InputMaybe<Scalars['timestamptz']['input']>
   user_id: InputMaybe<Scalars['String']['input']>
+  variety: InputMaybe<Variety_Enum>
 }
 
 /** aggregate sum on columns */
@@ -556,11 +820,11 @@ export enum Workouts_Update_Column {
   /** column name */
   Squeeze = 'squeeze',
   /** column name */
-  Type = 'type',
-  /** column name */
   UpdatedAt = 'updated_at',
   /** column name */
   UserId = 'user_id',
+  /** column name */
+  Variety = 'variety',
 }
 
 export type Workouts_Updates = {
@@ -616,7 +880,7 @@ export type GetWorkoutByIdQuery = {
     repeat: boolean
     rest: number
     squeeze: number
-    type: string
+    variety: Types.Variety_Enum
     updated_at: any
     user_id: string
   }>
@@ -730,7 +994,7 @@ export const GetWorkoutByIdDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'repeat' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'rest' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'squeeze' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'variety' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'updated_at' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'user_id' } },
               ],
