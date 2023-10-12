@@ -151,7 +151,11 @@ export const ListWorkouts = ({
                     <span>{workout.variety}</span>
 
                     <ButtonGroup>
-                      <ChakraLink as={Link} to={workout.id} alignSelf="center">
+                      <ChakraLink
+                        as={Link}
+                        to={`start/${workout.id}`}
+                        alignSelf="center"
+                      >
                         Start
                       </ChakraLink>
 

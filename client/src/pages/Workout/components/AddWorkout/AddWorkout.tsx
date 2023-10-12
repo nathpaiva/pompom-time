@@ -119,17 +119,12 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
             as="fieldset"
             display="grid"
             variant="floating"
-            sx={{
-              'option[value=""]': {
-                display: 'none',
-              },
-            }}
           >
             <Select
-              placeholder=" "
+              placeholder="Select workout variety"
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...register('variety', {
-                required: 'Workout type is required',
+                required: 'Workout variety is required',
               })}
             >
               {Object.keys(Variety_Enum).map((wType) => (
@@ -138,7 +133,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
                 </option>
               ))}
             </Select>
-            <FormLabel>Workout type</FormLabel>
+            <FormLabel>Select workout variety</FormLabel>
             <FormErrorMessage>{errors.variety?.message}</FormErrorMessage>
           </FormControl>
 
