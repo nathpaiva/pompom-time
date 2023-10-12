@@ -26,104 +26,104 @@ describe('add-workout-by-user', () => {
     console.log('db cleaned:', response)
   })
 
-  // describe('context and event', () => {
-  //   it('should return and error if the use is not authenticated', async () => {
-  //     const _req = createMockHandlerEventBody<
-  //       TAddWorkoutByUserMutationVariables,
-  //       null
-  //     >(
-  //       {
-  //         goal_per_day: 5,
-  //         name: 'First Workout',
-  //         repeat: true,
-  //         rest: 40,
-  //         squeeze: 20,
-  //         interval: 10,
-  //         variety: Variety_Enum.Resistance,
-  //       },
-  //       null,
-  //     )
-  //     const { statusCode, body } = await addWorkoutByUser(
-  //       _req,
-  //       createMockContext(undefined),
-  //     )
-  //     // if the statusCode is 200 the test should break!!!
-  //     if (statusCode === 200 || statusCode === 400) {
-  //       expect(statusCode).toEqual(500)
-  //       return
-  //     }
-  //     expect(statusCode).toEqual(500)
-  //     expect(JSON.parse(body).error).toEqual('You must be authenticated')
-  //   })
-  //   it('should return and error if event is inconsistent', async () => {
-  //     const _invalidRequest = createMockHandlerEventBody<
-  //       TAddWorkoutByUserMutationVariables,
-  //       null
-  //     >({} as TAddWorkoutByUserMutationVariables, null)
-  //     const _context = createMockContext({
-  //       user: {
-  //         email: 'test-user@nathpaiva.com',
-  //         exp: Date.now(),
-  //       },
-  //     })
-  //     const { statusCode, body } = await addWorkoutByUser(
-  //       { ..._invalidRequest, queryStringParameters: {} },
-  //       _context,
-  //     )
-  //     // if the statusCode is 200 the test should break!!!
-  //     if (statusCode === 200 || statusCode === 500) {
-  //       expect(statusCode).toEqual(400)
-  //       return
-  //     }
-  //     expect(statusCode).toEqual(400)
-  //     expect(JSON.parse(body).error).toEqual(
-  //       'You should provide the workout data',
-  //     )
-  //   })
-  // })
+  describe('context and event', () => {
+    it('should return and error if the use is not authenticated', async () => {
+      const _req = createMockHandlerEventBody<
+        TAddWorkoutByUserMutationVariables,
+        null
+      >(
+        {
+          goal_per_day: 5,
+          name: 'First Workout',
+          repeat: true,
+          rest: 40,
+          squeeze: 20,
+          interval: 10,
+          variety: Variety_Enum.Resistance,
+        },
+        null,
+      )
+      const { statusCode, body } = await addWorkoutByUser(
+        _req,
+        createMockContext(undefined),
+      )
+      // if the statusCode is 200 the test should break!!!
+      if (statusCode === 200 || statusCode === 400) {
+        expect(statusCode).toEqual(500)
+        return
+      }
+      expect(statusCode).toEqual(300)
+      expect(JSON.parse(body).error).toEqual('You must be authenticated')
+    })
+    it('should return and error if event is inconsistent', async () => {
+      const _invalidRequest = createMockHandlerEventBody<
+        TAddWorkoutByUserMutationVariables,
+        null
+      >({} as TAddWorkoutByUserMutationVariables, null)
+      const _context = createMockContext({
+        user: {
+          email: 'test-user@nathpaiva.com',
+          exp: Date.now(),
+        },
+      })
+      const { statusCode, body } = await addWorkoutByUser(
+        { ..._invalidRequest, queryStringParameters: {} },
+        _context,
+      )
+      // if the statusCode is 200 the test should break!!!
+      if (statusCode === 200 || statusCode === 500) {
+        expect(statusCode).toEqual(400)
+        return
+      }
+      expect(statusCode).toEqual(400)
+      expect(JSON.parse(body).error).toEqual(
+        'You should provide the workout data',
+      )
+    })
+  })
 
-  // describe('workout variety: strength | pulse | intensity', () => {
-  //   Object.keys(Variety_Enum).forEach((item) => {
-  //     it(`should add a workout ${item} successfully without interval`, async () => {
-  //       const { globalMockData, expectsSuccessToAddWorkout } =
-  //         expectWorkoutSuccessfully(Variety_Enum[item])
-  //       // should not create workout for this type
-  //       const _copy = { ...globalMockData }
-  //       delete _copy.interval
+  describe('workout variety: strength | pulse | intensity', () => {
+    Object.keys(Variety_Enum).forEach((item) => {
+      it(`should add a workout ${item} successfully without interval`, async () => {
+        const { globalMockData, expectsSuccessToAddWorkout } =
+          expectWorkoutSuccessfully(Variety_Enum[item])
+        // should not create workout for this type
+        const _copy = { ...globalMockData }
+        delete _copy.interval
 
-  //       if (Variety_Enum[item] === Variety_Enum.Resistance) {
-  //         return
-  //       }
+        if (Variety_Enum[item] === Variety_Enum.Resistance) {
+          return
+        }
 
-  //       const _mockWorkoutData = {
-  //         ..._copy,
-  //         variety: Variety_Enum[item],
-  //       } as TAddWorkoutByUserMutationVariables
+        const _mockWorkoutData = {
+          ..._copy,
+          variety: Variety_Enum[item],
+        } as TAddWorkoutByUserMutationVariables
 
-  //       await expectsSuccessToAddWorkout(_mockWorkoutData)
-  //     })
+        await expectsSuccessToAddWorkout(_mockWorkoutData)
+      })
 
-  //     it(`should not add a workout "${item}" if has interval`, async () => {
-  //       const { globalMockData, expectsErrorToAdd } = expectWorkoutSuccessfully(
-  //         Variety_Enum[item],
-  //       )
+      it(`should not add a workout "${item}" if has interval`, async () => {
+        const { globalMockData, expectsErrorToAdd } = expectWorkoutSuccessfully(
+          Variety_Enum[item],
+        )
 
-  //       // should not create workout for this type
-  //       if (Variety_Enum[item] === Variety_Enum.Resistance) {
-  //         return
-  //       }
-  //       const _mockWorkoutData = {
-  //         ...globalMockData,
-  //         variety: Variety_Enum[item],
-  //       } as TAddWorkoutByUserMutationVariables
+        // should not create workout for this type
+        if (Variety_Enum[item] === Variety_Enum.Resistance) {
+          return
+        }
+        const _mockWorkoutData = {
+          ...globalMockData,
+          variety: Variety_Enum[item],
+        } as TAddWorkoutByUserMutationVariables
 
-  //       await expectsErrorToAdd(
-  //         _mockWorkoutData,
-  //         `Interval is not valid for "${item}" workout type.`,
-  //       )
-  //     })
-  //   })
-  // })
+        await expectsErrorToAdd(
+          _mockWorkoutData,
+          `Interval is not valid for "${Variety_Enum[item]}" workout type.`,
+        )
+      })
+    })
+  })
 
   describe('workout variety: resistance', () => {
     it('should add a workout type as resistance and interval is 10', async () => {
@@ -200,7 +200,7 @@ function expectWorkoutSuccessfully(variety: Variety_Enum) {
         return
       }
 
-      const workout = JSON.parse(body)
+      const workout = JSON.parse(body as Stringified<Workouts>)
       workoutsIdToCleanUp.push(workout.id)
 
       Object.keys(workout).forEach((key) => {
@@ -218,7 +218,7 @@ function expectWorkoutSuccessfully(variety: Variety_Enum) {
           expect(typeof (_mockWorkoutData as Workouts)[key]).toEqual(
             'undefined',
           )
-          expect(0).toEqual(workout[key])
+          expect(null).toEqual(workout[key])
           return
         }
 

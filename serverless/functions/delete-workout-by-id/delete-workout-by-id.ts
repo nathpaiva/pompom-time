@@ -5,7 +5,7 @@ import validator from '@middy/validator'
 import { transpileSchema } from '@middy/validator/transpile'
 import { ClientError, request } from 'graphql-request'
 
-import { errorResolver, graphQLClientConfig } from '../../utils'
+import { ErrorHandler, errorResolver, graphQLClientConfig } from '../../utils'
 import {
   DeleteWorkoutByIdDocument,
   DeleteWorkoutByIdMutationVariables,
@@ -20,7 +20,10 @@ const deleteWorkoutById = async (
   const config = graphQLClientConfig()
   try {
     if (!clientContext?.user || clientContext.user.exp * 1000 < Date.now()) {
-      throw new Error('You must be authenticated')
+      throw new ErrorHandler({
+        message: 'You must be authenticated',
+        status: 300,
+      })
     }
 
     const { id } = body
@@ -36,7 +39,10 @@ const deleteWorkoutById = async (
     /* c8 ignore next */
     if (!delete_workouts) {
       /* c8 ignore next */
-      throw new Error('Could not delete the workout')
+      throw new ErrorHandler({
+        message: 'Could not delete the workout',
+        status: 400,
+      })
       /* c8 ignore next */
     }
 
@@ -45,10 +51,16 @@ const deleteWorkoutById = async (
       body: JSON.stringify(delete_workouts.returning[0]),
     }
   } catch (error) {
-    const message = errorResolver(error as ClientError | IError)
+    let statusCode: 400 | 500 | 300 = 500
+
+    const message = errorResolver(error as ClientError | ErrorHandler)
+
+    if (error instanceof ErrorHandler) {
+      statusCode = error.status
+    }
 
     return {
-      statusCode: 500,
+      statusCode,
       body: JSON.stringify({ error: message }),
     }
   }

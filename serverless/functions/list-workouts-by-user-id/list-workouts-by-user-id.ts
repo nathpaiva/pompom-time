@@ -1,6 +1,6 @@
 import { ClientError, request } from 'graphql-request'
 
-import { errorResolver, graphQLClientConfig } from '../../utils'
+import { ErrorHandler, errorResolver, graphQLClientConfig } from '../../utils'
 import {
   WorkoutsByUserIdDocument,
   WorkoutsByUserIdQueryVariables,
@@ -19,7 +19,10 @@ const listWorkoutsByUserId = async (
   const config = graphQLClientConfig()
   try {
     if (!clientContext?.user || clientContext.user.exp * 1000 < Date.now()) {
-      throw new Error('You must be authenticated')
+      throw new ErrorHandler({
+        message: 'You must be authenticated',
+        status: 300,
+      })
     }
 
     const { workouts_aggregate } = await request({
@@ -33,7 +36,10 @@ const listWorkoutsByUserId = async (
     })
 
     if (workouts_aggregate.aggregate === null) {
-      throw new Error('Request is wrong')
+      throw new ErrorHandler({
+        message: 'Request is wrong',
+        status: 400,
+      })
     }
 
     return {
@@ -41,11 +47,16 @@ const listWorkoutsByUserId = async (
       body: JSON.stringify(workouts_aggregate),
     }
   } catch (error) {
-    // TODO: review this Error type (before ClientError | Error)
-    const message = errorResolver(error as ClientError | Error)
+    let statusCode: 400 | 500 | 300 = 500
+
+    const message = errorResolver(error as ClientError | ErrorHandler)
+
+    if (error instanceof ErrorHandler) {
+      statusCode = error.status
+    }
 
     return {
-      statusCode: 500,
+      statusCode,
       body: JSON.stringify({ error: message }),
     }
   }

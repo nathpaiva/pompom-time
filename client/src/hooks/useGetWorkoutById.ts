@@ -2,7 +2,7 @@ import { useToast } from '@chakra-ui/react'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 interface IUseListByUserId<T> {
   isLoading: boolean
@@ -22,6 +22,7 @@ interface IUseListByUserId<T> {
  * }
  */
 export function useGetWorkoutById<T>(): IUseListByUserId<T> {
+  const navigate = useNavigate()
   const { workout_id } = useParams()
   const { authedFetch, user, getFreshJWT } = useIdentityContext()
   const toast = useToast()
@@ -70,13 +71,17 @@ export function useGetWorkoutById<T>(): IUseListByUserId<T> {
   })
 
   useEffect(() => {
+    if (isError && error?.message === 'Workout not found.') {
+      navigate('/admin/workout')
+      return
+    }
     if (isError && error?.message) {
       toast({
         status: 'error',
         title: error.message,
       })
     }
-  }, [isError, error?.message, toast])
+  }, [isError, error?.message, toast, navigate])
 
   return {
     isLoading,

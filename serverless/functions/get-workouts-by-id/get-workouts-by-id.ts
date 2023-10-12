@@ -1,6 +1,6 @@
 import { ClientError, request } from 'graphql-request'
 
-import { errorResolver, graphQLClientConfig } from '../../utils'
+import { ErrorHandler, errorResolver, graphQLClientConfig } from '../../utils'
 import {
   GetWorkoutByIdDocument,
   GetWorkoutByIdQueryVariables,
@@ -17,7 +17,10 @@ const getWorkoutsById = async (
   const config = graphQLClientConfig()
   try {
     if (!clientContext?.user || clientContext.user.exp * 1000 < Date.now()) {
-      throw new Error('You must be authenticated')
+      throw new ErrorHandler({
+        message: 'You must be authenticated',
+        status: 300,
+      })
     }
 
     const { workouts } = await request({
@@ -29,16 +32,28 @@ const getWorkoutsById = async (
       ...config,
     })
 
+    if (!workouts.length) {
+      throw new ErrorHandler({
+        message: 'Workout not found.',
+        status: 300,
+      })
+    }
+
     return {
       statusCode: 200,
       body: JSON.stringify(workouts),
     }
   } catch (error) {
-    // TODO: review this Error type (before ClientError | Error)
-    const message = errorResolver(error as ClientError | Error)
+    let statusCode: 400 | 500 | 300 = 500
+
+    const message = errorResolver(error as ClientError | ErrorHandler)
+
+    if (error instanceof ErrorHandler) {
+      statusCode = error.status
+    }
 
     return {
-      statusCode: 500,
+      statusCode,
       body: JSON.stringify({ error: message }),
     }
   }

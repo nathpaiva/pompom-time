@@ -3,9 +3,9 @@ import httpErrorHandler from '@middy/http-error-handler'
 import jsonBodyParser from '@middy/http-json-body-parser'
 import validator from '@middy/validator'
 import { transpileSchema } from '@middy/validator/transpile'
-import { request } from 'graphql-request'
+import { ClientError, request } from 'graphql-request'
 
-import { errorResolver, graphQLClientConfig } from '../../utils'
+import { ErrorHandler, errorResolver, graphQLClientConfig } from '../../utils'
 import {
   AddWorkoutByUserDocument,
   AddWorkoutByUserMutationVariables,
@@ -25,7 +25,10 @@ const addWorkoutByUser = async (
 
   try {
     if (!clientContext?.user || clientContext.user.exp * 1000 < Date.now()) {
-      throw new Error('You must be authenticated')
+      throw new ErrorHandler({
+        message: 'You must be authenticated',
+        status: 300,
+      })
     }
 
     const { name, variety, repeat, goal_per_day, interval, rest, squeeze } =
@@ -51,7 +54,10 @@ const addWorkoutByUser = async (
     /* c8 ignore next */
     if (!insert_workouts) {
       /* c8 ignore next */
-      throw new Error('Could not load data from workout mutation')
+      throw new ErrorHandler({
+        message: 'Could not load data from workout mutation',
+        status: 400,
+      })
       /* c8 ignore next */
     }
 
@@ -60,11 +66,16 @@ const addWorkoutByUser = async (
       body: JSON.stringify(insert_workouts.returning[0]),
     }
   } catch (error) {
-    // TODO: review this Error type (before Error)
-    const message = errorResolver(error as IError)
+    let statusCode: 400 | 500 | 300 = 500
+
+    const message = errorResolver(error as ClientError | ErrorHandler)
+
+    if (error instanceof ErrorHandler) {
+      statusCode = error.status
+    }
 
     return {
-      statusCode: 500,
+      statusCode,
       body: JSON.stringify({ error: message }),
     }
   }
