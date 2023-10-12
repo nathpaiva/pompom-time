@@ -901,7 +901,11 @@ type workouts {
   created_at: timestamptz!
   goal_per_day: Float!
   id: uuid!
-  interval: Float!
+
+  """
+  if the variety is Resistance is not nullable
+  """
+  interval: Float
   name: String!
   repeat: Boolean!
   rest: Float!
@@ -941,6 +945,10 @@ aggregate avg on columns
 """
 type workouts_avg_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -981,6 +989,10 @@ input type for incrementing numeric columns in table "workouts"
 """
 input workouts_inc_input {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -993,6 +1005,10 @@ input workouts_insert_input {
   created_at: timestamptz
   goal_per_day: Float
   id: uuid
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   name: String
   repeat: Boolean
@@ -1010,6 +1026,10 @@ type workouts_max_fields {
   created_at: timestamptz
   goal_per_day: Float
   id: uuid
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   name: String
   rest: Float
@@ -1025,6 +1045,10 @@ type workouts_min_fields {
   created_at: timestamptz
   goal_per_day: Float
   id: uuid
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   name: String
   rest: Float
@@ -1148,6 +1172,10 @@ input workouts_set_input {
   created_at: timestamptz
   goal_per_day: Float
   id: uuid
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   name: String
   repeat: Boolean
@@ -1163,6 +1191,10 @@ aggregate stddev on columns
 """
 type workouts_stddev_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -1173,6 +1205,10 @@ aggregate stddev_pop on columns
 """
 type workouts_stddev_pop_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -1183,6 +1219,10 @@ aggregate stddev_samp on columns
 """
 type workouts_stddev_samp_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -1210,6 +1250,10 @@ input workouts_stream_cursor_value_input {
   created_at: timestamptz
   goal_per_day: Float
   id: uuid
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   name: String
   repeat: Boolean
@@ -1225,6 +1269,10 @@ aggregate sum on columns
 """
 type workouts_sum_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -1312,6 +1360,10 @@ aggregate var_pop on columns
 """
 type workouts_var_pop_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -1322,6 +1374,10 @@ aggregate var_samp on columns
 """
 type workouts_var_samp_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -1332,6 +1388,10 @@ aggregate variance on columns
 """
 type workouts_variance_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float

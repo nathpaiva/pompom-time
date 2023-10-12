@@ -542,7 +542,8 @@ export type Workouts = {
   created_at: Scalars['timestamptz']['output']
   goal_per_day: Scalars['Float']['output']
   id: Scalars['uuid']['output']
-  interval: Scalars['Float']['output']
+  /** if the variety is Resistance is not nullable */
+  interval: Maybe<Scalars['Float']['output']>
   name: Scalars['String']['output']
   repeat: Scalars['Boolean']['output']
   rest: Scalars['Float']['output']
@@ -585,6 +586,7 @@ export type Workouts_Aggregate_FieldsCountArgs = {
 export type Workouts_Avg_Fields = {
   __typename?: 'workouts_avg_fields'
   goal_per_day: Maybe<Scalars['Float']['output']>
+  /** if the variety is Resistance is not nullable */
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
@@ -617,6 +619,7 @@ export enum Workouts_Constraint {
 /** input type for incrementing numeric columns in table "workouts" */
 export type Workouts_Inc_Input = {
   goal_per_day: InputMaybe<Scalars['Float']['input']>
+  /** if the variety is Resistance is not nullable */
   interval: InputMaybe<Scalars['Float']['input']>
   rest: InputMaybe<Scalars['Float']['input']>
   squeeze: InputMaybe<Scalars['Float']['input']>
@@ -627,6 +630,7 @@ export type Workouts_Insert_Input = {
   created_at: InputMaybe<Scalars['timestamptz']['input']>
   goal_per_day: InputMaybe<Scalars['Float']['input']>
   id: InputMaybe<Scalars['uuid']['input']>
+  /** if the variety is Resistance is not nullable */
   interval: InputMaybe<Scalars['Float']['input']>
   name: InputMaybe<Scalars['String']['input']>
   repeat: InputMaybe<Scalars['Boolean']['input']>
@@ -643,6 +647,7 @@ export type Workouts_Max_Fields = {
   created_at: Maybe<Scalars['timestamptz']['output']>
   goal_per_day: Maybe<Scalars['Float']['output']>
   id: Maybe<Scalars['uuid']['output']>
+  /** if the variety is Resistance is not nullable */
   interval: Maybe<Scalars['Float']['output']>
   name: Maybe<Scalars['String']['output']>
   rest: Maybe<Scalars['Float']['output']>
@@ -657,6 +662,7 @@ export type Workouts_Min_Fields = {
   created_at: Maybe<Scalars['timestamptz']['output']>
   goal_per_day: Maybe<Scalars['Float']['output']>
   id: Maybe<Scalars['uuid']['output']>
+  /** if the variety is Resistance is not nullable */
   interval: Maybe<Scalars['Float']['output']>
   name: Maybe<Scalars['String']['output']>
   rest: Maybe<Scalars['Float']['output']>
@@ -732,6 +738,7 @@ export type Workouts_Set_Input = {
   created_at: InputMaybe<Scalars['timestamptz']['input']>
   goal_per_day: InputMaybe<Scalars['Float']['input']>
   id: InputMaybe<Scalars['uuid']['input']>
+  /** if the variety is Resistance is not nullable */
   interval: InputMaybe<Scalars['Float']['input']>
   name: InputMaybe<Scalars['String']['input']>
   repeat: InputMaybe<Scalars['Boolean']['input']>
@@ -746,6 +753,7 @@ export type Workouts_Set_Input = {
 export type Workouts_Stddev_Fields = {
   __typename?: 'workouts_stddev_fields'
   goal_per_day: Maybe<Scalars['Float']['output']>
+  /** if the variety is Resistance is not nullable */
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
@@ -755,6 +763,7 @@ export type Workouts_Stddev_Fields = {
 export type Workouts_Stddev_Pop_Fields = {
   __typename?: 'workouts_stddev_pop_fields'
   goal_per_day: Maybe<Scalars['Float']['output']>
+  /** if the variety is Resistance is not nullable */
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
@@ -764,6 +773,7 @@ export type Workouts_Stddev_Pop_Fields = {
 export type Workouts_Stddev_Samp_Fields = {
   __typename?: 'workouts_stddev_samp_fields'
   goal_per_day: Maybe<Scalars['Float']['output']>
+  /** if the variety is Resistance is not nullable */
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
@@ -782,6 +792,7 @@ export type Workouts_Stream_Cursor_Value_Input = {
   created_at: InputMaybe<Scalars['timestamptz']['input']>
   goal_per_day: InputMaybe<Scalars['Float']['input']>
   id: InputMaybe<Scalars['uuid']['input']>
+  /** if the variety is Resistance is not nullable */
   interval: InputMaybe<Scalars['Float']['input']>
   name: InputMaybe<Scalars['String']['input']>
   repeat: InputMaybe<Scalars['Boolean']['input']>
@@ -796,6 +807,7 @@ export type Workouts_Stream_Cursor_Value_Input = {
 export type Workouts_Sum_Fields = {
   __typename?: 'workouts_sum_fields'
   goal_per_day: Maybe<Scalars['Float']['output']>
+  /** if the variety is Resistance is not nullable */
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
@@ -840,6 +852,7 @@ export type Workouts_Updates = {
 export type Workouts_Var_Pop_Fields = {
   __typename?: 'workouts_var_pop_fields'
   goal_per_day: Maybe<Scalars['Float']['output']>
+  /** if the variety is Resistance is not nullable */
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
@@ -849,6 +862,7 @@ export type Workouts_Var_Pop_Fields = {
 export type Workouts_Var_Samp_Fields = {
   __typename?: 'workouts_var_samp_fields'
   goal_per_day: Maybe<Scalars['Float']['output']>
+  /** if the variety is Resistance is not nullable */
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
@@ -858,6 +872,7 @@ export type Workouts_Var_Samp_Fields = {
 export type Workouts_Variance_Fields = {
   __typename?: 'workouts_variance_fields'
   goal_per_day: Maybe<Scalars['Float']['output']>
+  /** if the variety is Resistance is not nullable */
   interval: Maybe<Scalars['Float']['output']>
   rest: Maybe<Scalars['Float']['output']>
   squeeze: Maybe<Scalars['Float']['output']>
@@ -886,7 +901,7 @@ export type AddWorkoutByUserMutation = {
       id: any
       name: string
       variety: Types.Variety_Enum
-      interval: number
+      interval: number | null
       repeat: boolean
       goal_per_day: number
       rest: number
