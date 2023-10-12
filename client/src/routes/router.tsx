@@ -27,6 +27,9 @@ export const routeDataSource = {
     {
       path: RouteEnum.admin,
       element: <ProtectedRoute />,
+      ErrorBoundary: () => {
+        return <div>Handle with error</div>
+      },
       children: [
         {
           path: RouteEnum.workout,
