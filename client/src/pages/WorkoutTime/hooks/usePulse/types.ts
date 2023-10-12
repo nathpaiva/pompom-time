@@ -12,7 +12,7 @@ interface IUsePulse {
 }
 
 interface IUsePulseParams {
-  interval?: number
+  interval: number | null
   squeeze?: number
   repeat?: boolean
   rest?: number

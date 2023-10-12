@@ -10,4 +10,4 @@ export type TWorkoutAnimation = {
   }
 }
 
-export { Variety_Enum, Workouts }
+export { Variety_Enum }

@@ -59,7 +59,7 @@ export const WorkoutTime = () => {
     isCountingDown,
     countingDownInterval,
   } = usePulse({
-    interval: data?.interval,
+    interval: data?.interval ?? null,
     squeeze: data?.squeeze,
     repeat: data?.repeat,
     rest: data?.rest,
