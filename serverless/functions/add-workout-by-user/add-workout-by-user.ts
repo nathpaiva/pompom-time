@@ -36,16 +36,11 @@ const addWorkoutByUser = async (
       name,
       variety,
       repeat,
-      interval: 0,
+      interval,
       goal_per_day,
       rest,
       squeeze,
     } satisfies AddWorkoutByUserMutationVariables
-
-    // if resistance the interval must be provided by the user
-    if (variety === Variety_Enum.Resistance) {
-      variables.interval = +interval
-    }
 
     const { insert_workouts } = await request({
       document: AddWorkoutByUserDocument,

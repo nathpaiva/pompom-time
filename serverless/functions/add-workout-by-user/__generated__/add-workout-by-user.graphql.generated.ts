@@ -882,7 +882,7 @@ export type AddWorkoutByUserMutationVariables = Types.Exact<{
   user_id: Types.Scalars['String']['input']
   name: Types.Scalars['String']['input']
   variety: Types.Variety_Enum
-  interval: Types.Scalars['Float']['input']
+  interval?: Types.InputMaybe<Types.Scalars['Float']['input']>
   repeat: Types.Scalars['Boolean']['input']
   goal_per_day: Types.Scalars['Float']['input']
   rest: Types.Scalars['Float']['input']
@@ -963,10 +963,8 @@ export const AddWorkoutByUserDocument = {
             kind: 'Variable',
             name: { kind: 'Name', value: 'interval' },
           },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Float' } },
-          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Float' } },
+          defaultValue: { kind: 'NullValue' },
         },
         {
           kind: 'VariableDefinition',
