@@ -30,8 +30,14 @@ export const useIdentityForm = (): TUseIdentityForm => {
   // TODO: take a look to see if this is the best approach
   const [shouldShowPage, setShouldShowPage] = useState(false)
   // get initial credentials from netlify identity
-  const { loginUser, isLoggedIn, signupUser, requestPasswordRecovery } =
-    useIdentityContext()
+  const {
+    loginUser,
+    isLoggedIn,
+    signupUser,
+    requestPasswordRecovery,
+    isConfirmedUser,
+  } = useIdentityContext()
+
   // init toast
   const toast = useToast()
   /**
@@ -195,7 +201,7 @@ export const useIdentityForm = (): TUseIdentityForm => {
   }, [])
 
   return {
-    isLoggedIn,
+    isLoggedIn: isLoggedIn && isConfirmedUser,
     containerRef,
     onChangeHandle,
     onSubmit,
