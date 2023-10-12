@@ -2,7 +2,7 @@ mutation AddWorkoutByUser(
   $user_id: String!
   $name: String!
   $variety: Variety_enum!
-  $interval: Float!
+  $interval: Float = null
   $repeat: Boolean!
   $goal_per_day: Float!
   $rest: Float!
