@@ -29,7 +29,7 @@ const viteConfig = {
       ],
       all: true,
       branches: 80, // TODO: next PR add tests and back to 90
-      functions: 80,
+      functions: 80, // TODO: next PR add tests and back to 90
       lines: 90,
       statements: 90,
       cleanOnRerun: false,

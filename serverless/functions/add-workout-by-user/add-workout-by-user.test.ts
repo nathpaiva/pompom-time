@@ -10,7 +10,7 @@ import {
   handler as addWorkoutByUser,
 } from './add-workout-by-user'
 
-const workoutsIdToCleanUp: unknown[] = []
+const workoutsIdToCleanUp: string[] = []
 const keysToNotValidateWithMock = [
   '__typename',
   'created_at',
@@ -119,14 +119,14 @@ describe('add-workout-by-user', () => {
 
         await expectsErrorToAdd(
           _mockWorkoutData,
-          `Interval is not valid for "${Variety_Enum[item]}" workout type.`,
+          `Interval is not valid for "${Variety_Enum[item]}" variety.`,
         )
       })
     })
   })
 
   describe('workout variety: resistance', () => {
-    it('should add a workout type as resistance and interval is 10', async () => {
+    it('should add a workout variety as resistance and interval is 10', async () => {
       const { globalMockData, expectsSuccessToAddWorkout } =
         expectWorkoutSuccessfully(Variety_Enum.Resistance)
 
@@ -155,7 +155,7 @@ describe('add-workout-by-user', () => {
 
       await expectsErrorToAdd(
         _mockWorkoutData,
-        'Interval is required for "resistance" workout type.',
+        'Interval is required for "resistance" variety.',
       )
     })
   })

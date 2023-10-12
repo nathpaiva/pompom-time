@@ -22,7 +22,7 @@ export const bodySchema = {
       then: {
         required: ['interval'],
         errorMessage: {
-          required: 'Interval is required for ${/body/variety} workout type.',
+          required: 'Interval is required for ${/body/variety} variety.',
           _: 'You should provide the workout data',
         },
       },
@@ -36,8 +36,7 @@ export const bodySchema = {
         },
         errorMessage: {
           properties: {
-            interval:
-              'Interval is not valid for ${/body/variety} workout type.',
+            interval: 'Interval is not valid for ${/body/variety} variety.',
           },
         },
       },
