@@ -133,7 +133,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
               })}
             >
               {Object.keys(Variety_Enum).map((wType) => (
-                <option key={wType} value={wType}>
+                <option key={wType} value={Variety_Enum[wType]}>
                   {wType}
                 </option>
               ))}
