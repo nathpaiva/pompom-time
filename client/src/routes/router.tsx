@@ -9,7 +9,7 @@ export enum RouteEnum {
   logout = 'logout',
   admin = 'admin',
   workout = 'workout',
-  'workout/:workout_id' = 'workout/:workout_id',
+  'workout/start/:workout_id' = 'workout/start/:workout_id',
 }
 
 export const routeDataSource = {
@@ -33,7 +33,7 @@ export const routeDataSource = {
           element: <Workout />,
         },
         {
-          path: RouteEnum['workout/:workout_id'],
+          path: RouteEnum['workout/start/:workout_id'],
           element: <WorkoutTime />,
         },
       ],

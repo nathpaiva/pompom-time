@@ -281,7 +281,7 @@ describe('Workout', () => {
         // get each field and test each one
         const fieldName = screen.getByLabelText('Name')
         const fieldSqueeze = screen.getByLabelText('Squeeze')
-        const fieldType = screen.getByLabelText('Workout variety')
+        const fieldType = screen.getByLabelText('Select workout variety')
         const fieldInterval = screen.getByLabelText('hold up to')
         const fieldGolPerDay = screen.getByLabelText('# of Sets')
         const fieldRest = screen.getByLabelText('Rest')
@@ -376,7 +376,7 @@ describe('Workout', () => {
       // get each field and test each one
       const fieldName = screen.getByLabelText('Name')
       const fieldSqueeze = screen.getByLabelText('Squeeze')
-      const fieldType = screen.getByLabelText('Workout variety')
+      const fieldType = screen.getByLabelText('Select workout variety')
       const fieldInterval = screen.getByLabelText('hold up to')
       const fieldGolPerDay = screen.getByLabelText('# of Sets')
       const fieldRest = screen.getByLabelText('Rest')
