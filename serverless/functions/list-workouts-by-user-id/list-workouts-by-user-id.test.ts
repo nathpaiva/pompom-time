@@ -34,7 +34,7 @@ describe('list-workouts-by-user-id', () => {
       _req,
       createMockContext({
         user: {
-          email: 'test-user-do-not-delete@nathpaiva.com',
+          email: 'hello+test@nathpaiva.com.br',
           exp: Date.now(),
         },
       }),

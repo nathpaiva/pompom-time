@@ -1,7 +1,7 @@
 mutation AddWorkoutByUser(
   $user_id: String!
   $name: String!
-  $type: String!
+  $variety: Variety_enum!
   $interval: Float!
   $repeat: Boolean!
   $goal_per_day: Float!
@@ -12,7 +12,7 @@ mutation AddWorkoutByUser(
     objects: {
       user_id: $user_id
       name: $name
-      type: $type
+      variety: $variety
       interval: $interval
       repeat: $repeat
       goal_per_day: $goal_per_day
@@ -27,7 +27,7 @@ mutation AddWorkoutByUser(
       updated_at
       id
       name
-      type
+      variety
       interval
       repeat
       goal_per_day

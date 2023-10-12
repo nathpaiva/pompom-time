@@ -10,7 +10,7 @@ query GetWorkoutById($workout_id: uuid!, $user_id: String!) {
     repeat
     rest
     squeeze
-    type
+    variety
     updated_at
     user_id
   }

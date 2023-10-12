@@ -1,40 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { EnumWorkoutType } from '../../../../../../serverless/functions/add-workout-by-user/types'
-
-const PULSE_LIMIT = 20
-const PULSE_INTERVAL_FALLBACK = 500
-const PULSE_INTERVAL_RESTING = 1000
-
-const intervalByWorkoutType: Record<keyof typeof EnumWorkoutType, number> = {
-  [EnumWorkoutType.pulse]: 500,
-  [EnumWorkoutType.intensity]: 500,
-  [EnumWorkoutType.resistance]: 500,
-  [EnumWorkoutType.strength]: 1500,
-} as const
-
-// EnumWorkoutType
-interface IUsePulse {
-  pulseInterval: number
-  isPulsing: boolean
-  handleStartStopPulse: () => void
-  counter: number
-  restingInterval: number
-  isResting: boolean
-  isCountingDown: boolean
-  countingDownInterval: number
-}
-
-interface IUsePulseParams {
-  interval?: number
-  squeeze?: number
-  repeat?: boolean
-  rest?: number
-  sets?: number
-  type?: EnumWorkoutType
-}
-
-type TUsePulse = (param: IUsePulseParams) => IUsePulse
+import {
+  PULSE_INTERVAL_FALLBACK,
+  PULSE_INTERVAL_RESTING,
+  intervalByWorkoutType,
+} from '../../constants'
+import { type TUsePulse, Variety_Enum } from './types'
 
 export const usePulse: TUsePulse = ({
   interval,
@@ -42,22 +13,22 @@ export const usePulse: TUsePulse = ({
   repeat,
   rest,
   sets,
-  type,
+  variety,
 }) => {
   const { _PULSE_INTERVAL, _PULSE_LIMIT, _REST, _REPEAT, _SETS } =
     useMemo(() => {
       return {
-        _PULSE_INTERVAL: !type
+        _PULSE_INTERVAL: !variety
           ? PULSE_INTERVAL_FALLBACK
-          : type === EnumWorkoutType.resistance && interval
+          : variety === Variety_Enum.Resistance && interval
           ? interval * 1000
-          : intervalByWorkoutType[type],
+          : intervalByWorkoutType[variety],
         _PULSE_LIMIT: squeeze,
         _REST: rest,
         _REPEAT: repeat,
         _SETS: sets,
       }
-    }, [type, interval, squeeze, rest, repeat, sets])
+    }, [variety, interval, squeeze, rest, repeat, sets])
 
   // workout counter
   const [counter, setCounter] = useState(0)
@@ -79,7 +50,7 @@ export const usePulse: TUsePulse = ({
 
   const countingDownTimer = useCallback((callback: () => void) => {
     _countingDownIntervalRef.current = setInterval(() => {
-      if (_countingDownInterval.current === 1) {
+      if (_countingDownInterval.current === 0) {
         _countingDownInterval.current = 3
         clearInterval(_countingDownIntervalRef.current)
 

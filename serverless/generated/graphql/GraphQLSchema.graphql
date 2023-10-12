@@ -115,6 +115,221 @@ input String_comparison_exp {
 }
 
 """
+enum workout variety
+"""
+type Variety {
+  description: String!
+  variety: String!
+}
+
+"""
+aggregated selection of "Variety"
+"""
+type Variety_aggregate {
+  aggregate: Variety_aggregate_fields
+  nodes: [Variety!]!
+}
+
+"""
+aggregate fields of "Variety"
+"""
+type Variety_aggregate_fields {
+  count(columns: [Variety_select_column!], distinct: Boolean): Int!
+  max: Variety_max_fields
+  min: Variety_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "Variety". All fields are combined with a logical 'AND'.
+"""
+input Variety_bool_exp {
+  _and: [Variety_bool_exp!]
+  _not: Variety_bool_exp
+  _or: [Variety_bool_exp!]
+  description: String_comparison_exp
+  variety: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "Variety"
+"""
+enum Variety_constraint {
+  """
+  unique or primary key constraint on columns "variety"
+  """
+  _enumVariety_pkey
+}
+
+enum Variety_enum {
+  """
+  intensity workout
+  """
+  intensity
+
+  """
+  pulse workout
+  """
+  pulse
+
+  """
+  resistance workout
+  """
+  resistance
+
+  """
+  strength workout
+  """
+  strength
+}
+
+"""
+Boolean expression to compare columns of type "Variety_enum". All fields are combined with logical 'AND'.
+"""
+input Variety_enum_comparison_exp {
+  _eq: Variety_enum
+  _in: [Variety_enum!]
+  _is_null: Boolean
+  _neq: Variety_enum
+  _nin: [Variety_enum!]
+}
+
+"""
+input type for inserting data into table "Variety"
+"""
+input Variety_insert_input {
+  description: String
+  variety: String
+}
+
+"""
+aggregate max on columns
+"""
+type Variety_max_fields {
+  description: String
+  variety: String
+}
+
+"""
+aggregate min on columns
+"""
+type Variety_min_fields {
+  description: String
+  variety: String
+}
+
+"""
+response of any mutation on the table "Variety"
+"""
+type Variety_mutation_response {
+  """
+  number of rows affected by the mutation
+  """
+  affected_rows: Int!
+
+  """
+  data from the rows affected by the mutation
+  """
+  returning: [Variety!]!
+}
+
+"""
+on_conflict condition type for table "Variety"
+"""
+input Variety_on_conflict {
+  constraint: Variety_constraint!
+  update_columns: [Variety_update_column!]! = []
+  where: Variety_bool_exp
+}
+
+"""
+Ordering options when selecting data from "Variety".
+"""
+input Variety_order_by {
+  description: order_by
+  variety: order_by
+}
+
+"""
+primary key columns input for table: Variety
+"""
+input Variety_pk_columns_input {
+  variety: String!
+}
+
+"""
+select columns of table "Variety"
+"""
+enum Variety_select_column {
+  """
+  column name
+  """
+  description
+
+  """
+  column name
+  """
+  variety
+}
+
+"""
+input type for updating data in table "Variety"
+"""
+input Variety_set_input {
+  description: String
+  variety: String
+}
+
+"""
+Streaming cursor of the table "Variety"
+"""
+input Variety_stream_cursor_input {
+  """
+  Stream column input with initial value
+  """
+  initial_value: Variety_stream_cursor_value_input!
+
+  """
+  cursor ordering
+  """
+  ordering: cursor_ordering
+}
+
+"""
+Initial value of the column from where the streaming should start
+"""
+input Variety_stream_cursor_value_input {
+  description: String
+  variety: String
+}
+
+"""
+update columns of table "Variety"
+"""
+enum Variety_update_column {
+  """
+  column name
+  """
+  description
+
+  """
+  column name
+  """
+  variety
+}
+
+input Variety_updates {
+  """
+  sets the columns of the filtered rows to the given values
+  """
+  _set: Variety_set_input
+
+  """
+  filter the rows which have to be updated
+  """
+  where: Variety_bool_exp!
+}
+
+"""
 ordering argument of a cursor
 """
 enum cursor_ordering {
@@ -134,6 +349,21 @@ mutation root
 """
 type mutation_root {
   """
+  delete data from the table: "Variety"
+  """
+  delete_Variety(
+    """
+    filter the rows which have to be deleted
+    """
+    where: Variety_bool_exp!
+  ): Variety_mutation_response
+
+  """
+  delete single row from the table: "Variety"
+  """
+  delete_Variety_by_pk(variety: String!): Variety
+
+  """
   delete data from the table: "workouts"
   """
   delete_workouts(
@@ -147,6 +377,36 @@ type mutation_root {
   delete single row from the table: "workouts"
   """
   delete_workouts_by_pk(id: uuid!): workouts
+
+  """
+  insert data into the table: "Variety"
+  """
+  insert_Variety(
+    """
+    the rows to be inserted
+    """
+    objects: [Variety_insert_input!]!
+
+    """
+    upsert condition
+    """
+    on_conflict: Variety_on_conflict
+  ): Variety_mutation_response
+
+  """
+  insert a single row into the table: "Variety"
+  """
+  insert_Variety_one(
+    """
+    the row to be inserted
+    """
+    object: Variety_insert_input!
+
+    """
+    upsert condition
+    """
+    on_conflict: Variety_on_conflict
+  ): Variety
 
   """
   insert data into the table: "workouts"
@@ -177,6 +437,42 @@ type mutation_root {
     """
     on_conflict: workouts_on_conflict
   ): workouts
+
+  """
+  update data of the table: "Variety"
+  """
+  update_Variety(
+    """
+    sets the columns of the filtered rows to the given values
+    """
+    _set: Variety_set_input
+
+    """
+    filter the rows which have to be updated
+    """
+    where: Variety_bool_exp!
+  ): Variety_mutation_response
+
+  """
+  update single row of the table: "Variety"
+  """
+  update_Variety_by_pk(
+    """
+    sets the columns of the filtered rows to the given values
+    """
+    _set: Variety_set_input
+    pk_columns: Variety_pk_columns_input!
+  ): Variety
+
+  """
+  update multiples rows of table: "Variety"
+  """
+  update_Variety_many(
+    """
+    updates to execute, in order
+    """
+    updates: [Variety_updates!]!
+  ): [Variety_mutation_response]
 
   """
   update data of the table: "workouts"
@@ -262,6 +558,71 @@ enum order_by {
 
 type query_root {
   """
+  fetch data from the table: "Variety"
+  """
+  Variety(
+    """
+    distinct select on columns
+    """
+    distinct_on: [Variety_select_column!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    order_by: [Variety_order_by!]
+
+    """
+    filter the rows returned
+    """
+    where: Variety_bool_exp
+  ): [Variety!]!
+
+  """
+  fetch aggregated fields from the table: "Variety"
+  """
+  Variety_aggregate(
+    """
+    distinct select on columns
+    """
+    distinct_on: [Variety_select_column!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    order_by: [Variety_order_by!]
+
+    """
+    filter the rows returned
+    """
+    where: Variety_bool_exp
+  ): Variety_aggregate!
+
+  """
+  fetch data from the table: "Variety" using primary key columns
+  """
+  Variety_by_pk(variety: String!): Variety
+
+  """
   fetch data from the table: "workouts"
   """
   workouts(
@@ -328,6 +689,91 @@ type query_root {
 }
 
 type subscription_root {
+  """
+  fetch data from the table: "Variety"
+  """
+  Variety(
+    """
+    distinct select on columns
+    """
+    distinct_on: [Variety_select_column!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    order_by: [Variety_order_by!]
+
+    """
+    filter the rows returned
+    """
+    where: Variety_bool_exp
+  ): [Variety!]!
+
+  """
+  fetch aggregated fields from the table: "Variety"
+  """
+  Variety_aggregate(
+    """
+    distinct select on columns
+    """
+    distinct_on: [Variety_select_column!]
+
+    """
+    limit the number of rows returned
+    """
+    limit: Int
+
+    """
+    skip the first n rows. Use only with order_by
+    """
+    offset: Int
+
+    """
+    sort the rows by one or more columns
+    """
+    order_by: [Variety_order_by!]
+
+    """
+    filter the rows returned
+    """
+    where: Variety_bool_exp
+  ): Variety_aggregate!
+
+  """
+  fetch data from the table: "Variety" using primary key columns
+  """
+  Variety_by_pk(variety: String!): Variety
+
+  """
+  fetch data from the table in a streaming manner: "Variety"
+  """
+  Variety_stream(
+    """
+    maximum number of rows returned in a single batch
+    """
+    batch_size: Int!
+
+    """
+    cursor to stream the results returned by the query
+    """
+    cursor: [Variety_stream_cursor_input]!
+
+    """
+    filter the rows returned
+    """
+    where: Variety_bool_exp
+  ): [Variety!]!
+
   """
   fetch data from the table: "workouts"
   """
@@ -455,14 +901,18 @@ type workouts {
   created_at: timestamptz!
   goal_per_day: Float!
   id: uuid!
-  interval: Float!
+
+  """
+  if the variety is Resistance is not nullable
+  """
+  interval: Float
   name: String!
   repeat: Boolean!
   rest: Float!
   squeeze: Float!
-  type: String!
   updated_at: timestamptz!
   user_id: String!
+  variety: Variety_enum!
 }
 
 """
@@ -495,6 +945,10 @@ aggregate avg on columns
 """
 type workouts_avg_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -515,9 +969,9 @@ input workouts_bool_exp {
   repeat: Boolean_comparison_exp
   rest: Float_comparison_exp
   squeeze: Float_comparison_exp
-  type: String_comparison_exp
   updated_at: timestamptz_comparison_exp
   user_id: String_comparison_exp
+  variety: Variety_enum_comparison_exp
 }
 
 """
@@ -535,6 +989,10 @@ input type for incrementing numeric columns in table "workouts"
 """
 input workouts_inc_input {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -547,14 +1005,18 @@ input workouts_insert_input {
   created_at: timestamptz
   goal_per_day: Float
   id: uuid
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   name: String
   repeat: Boolean
   rest: Float
   squeeze: Float
-  type: String
   updated_at: timestamptz
   user_id: String
+  variety: Variety_enum
 }
 
 """
@@ -564,11 +1026,14 @@ type workouts_max_fields {
   created_at: timestamptz
   goal_per_day: Float
   id: uuid
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   name: String
   rest: Float
   squeeze: Float
-  type: String
   updated_at: timestamptz
   user_id: String
 }
@@ -580,11 +1045,14 @@ type workouts_min_fields {
   created_at: timestamptz
   goal_per_day: Float
   id: uuid
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   name: String
   rest: Float
   squeeze: Float
-  type: String
   updated_at: timestamptz
   user_id: String
 }
@@ -625,9 +1093,9 @@ input workouts_order_by {
   repeat: order_by
   rest: order_by
   squeeze: order_by
-  type: order_by
   updated_at: order_by
   user_id: order_by
+  variety: order_by
 }
 
 """
@@ -684,17 +1152,17 @@ enum workouts_select_column {
   """
   column name
   """
-  type
-
-  """
-  column name
-  """
   updated_at
 
   """
   column name
   """
   user_id
+
+  """
+  column name
+  """
+  variety
 }
 
 """
@@ -704,14 +1172,18 @@ input workouts_set_input {
   created_at: timestamptz
   goal_per_day: Float
   id: uuid
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   name: String
   repeat: Boolean
   rest: Float
   squeeze: Float
-  type: String
   updated_at: timestamptz
   user_id: String
+  variety: Variety_enum
 }
 
 """
@@ -719,6 +1191,10 @@ aggregate stddev on columns
 """
 type workouts_stddev_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -729,6 +1205,10 @@ aggregate stddev_pop on columns
 """
 type workouts_stddev_pop_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -739,6 +1219,10 @@ aggregate stddev_samp on columns
 """
 type workouts_stddev_samp_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -766,14 +1250,18 @@ input workouts_stream_cursor_value_input {
   created_at: timestamptz
   goal_per_day: Float
   id: uuid
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   name: String
   repeat: Boolean
   rest: Float
   squeeze: Float
-  type: String
   updated_at: timestamptz
   user_id: String
+  variety: Variety_enum
 }
 
 """
@@ -781,6 +1269,10 @@ aggregate sum on columns
 """
 type workouts_sum_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -833,17 +1325,17 @@ enum workouts_update_column {
   """
   column name
   """
-  type
-
-  """
-  column name
-  """
   updated_at
 
   """
   column name
   """
   user_id
+
+  """
+  column name
+  """
+  variety
 }
 
 input workouts_updates {
@@ -868,6 +1360,10 @@ aggregate var_pop on columns
 """
 type workouts_var_pop_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -878,6 +1374,10 @@ aggregate var_samp on columns
 """
 type workouts_var_samp_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float
@@ -888,6 +1388,10 @@ aggregate variance on columns
 """
 type workouts_variance_fields {
   goal_per_day: Float
+
+  """
+  if the variety is Resistance is not nullable
+  """
   interval: Float
   rest: Float
   squeeze: Float

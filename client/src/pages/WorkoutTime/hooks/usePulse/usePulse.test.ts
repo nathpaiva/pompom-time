@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 
-import { mockDataResponse } from '../../__tests__/mockDataResponse'
+import { mockDataResponse } from '../../../Workout/__tests__/mockDataResponse'
 import { usePulse } from './usePulse'
 
 describe('usePulse', () => {
@@ -13,7 +13,7 @@ describe('usePulse', () => {
         repeat: data.repeat,
         rest: data.rest,
         sets: data.goal_per_day,
-        type: data.type,
+        variety: data.variety,
       }),
     )
 
@@ -55,7 +55,7 @@ describe('usePulse', () => {
         repeat: data.repeat,
         rest: data.rest,
         sets: data.goal_per_day,
-        type: data.type,
+        variety: data.variety,
       }),
     )
 

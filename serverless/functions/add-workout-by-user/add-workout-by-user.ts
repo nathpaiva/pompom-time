@@ -9,10 +9,10 @@ import { errorResolver, graphQLClientConfig } from '../../utils'
 import {
   AddWorkoutByUserDocument,
   AddWorkoutByUserMutationVariables,
+  Variety_Enum,
 } from './__generated__/add-workout-by-user.graphql.generated'
 import { bodySchema } from './bodySchema'
 import {
-  EnumWorkoutType,
   PromiseResponseAddWorkoutByUserId,
   type TAddWorkoutByUserMutationVariables,
 } from './types'
@@ -28,12 +28,13 @@ const addWorkoutByUser = async (
       throw new Error('You must be authenticated')
     }
 
-    const { name, type, repeat, goal_per_day, interval, rest, squeeze } = body
+    const { name, variety, repeat, goal_per_day, interval, rest, squeeze } =
+      body
 
     const variables = {
       user_id: clientContext.user.email,
       name,
-      type,
+      variety,
       repeat,
       interval: 0,
       goal_per_day,
@@ -42,7 +43,7 @@ const addWorkoutByUser = async (
     } satisfies AddWorkoutByUserMutationVariables
 
     // if resistance the interval must be provided by the user
-    if (type === EnumWorkoutType.resistance) {
+    if (variety === Variety_Enum.Resistance) {
       variables.interval = +interval
     }
 
@@ -108,7 +109,7 @@ const handler = middy<
 
 export {
   handler,
-  EnumWorkoutType,
+  Variety_Enum,
   type PromiseResponseAddWorkoutByUserId,
   type TAddWorkoutByUserMutationVariables,
 }
