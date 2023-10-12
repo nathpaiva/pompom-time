@@ -19,7 +19,7 @@ export const customVariant = extendTheme({
                 ...activeLabelStyles,
               },
             },
-            'input:not(:placeholder-shown) + label, .chakra-select__wrapper + label, textarea:not(:placeholder-shown) ~ label, input:not(:placeholder-shown) + div + label':
+            'input:not(:placeholder-shown) + label, .chakra-select__wrapper:has(select option:checked:not([value=""])) + label, textarea:not(:placeholder-shown) ~ label, input:not(:placeholder-shown) + div + label':
               {
                 ...activeLabelStyles,
               },

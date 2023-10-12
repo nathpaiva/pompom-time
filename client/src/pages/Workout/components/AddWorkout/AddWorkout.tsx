@@ -119,14 +119,9 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
             as="fieldset"
             display="grid"
             variant="floating"
-            sx={{
-              'option[value=""]': {
-                display: 'none',
-              },
-            }}
           >
             <Select
-              placeholder=" "
+              placeholder="Select workout variety"
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...register('variety', {
                 required: 'Workout variety is required',
@@ -138,7 +133,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
                 </option>
               ))}
             </Select>
-            <FormLabel>Workout variety</FormLabel>
+            <FormLabel>Select workout variety</FormLabel>
             <FormErrorMessage>{errors.variety?.message}</FormErrorMessage>
           </FormControl>
 
