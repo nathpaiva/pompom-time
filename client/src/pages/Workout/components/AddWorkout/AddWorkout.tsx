@@ -129,7 +129,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
               placeholder=" "
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...register('variety', {
-                required: 'Workout type is required',
+                required: 'Workout variety is required',
               })}
             >
               {Object.keys(Variety_Enum).map((wType) => (
@@ -138,7 +138,7 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
                 </option>
               ))}
             </Select>
-            <FormLabel>Workout type</FormLabel>
+            <FormLabel>Workout variety</FormLabel>
             <FormErrorMessage>{errors.variety?.message}</FormErrorMessage>
           </FormControl>
 
