@@ -1,8 +1,9 @@
 import { Box, Button, Heading, Spinner, Text } from '@chakra-ui/react'
 
+import { Workouts } from '../../../../serverless/generated/graphql/GraphQLSchema'
 import { useGetWorkoutById } from '../../hooks'
 import { usePulse } from './hooks'
-import type { Workouts, TWorkoutAnimation } from './types'
+import type { TWorkoutAnimation } from './types'
 
 const animationByWorkoutType: TWorkoutAnimation = {
   strength: {
