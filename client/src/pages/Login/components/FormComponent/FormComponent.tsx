@@ -112,6 +112,7 @@ export const FormComponent = ({
             <FormLabel>Name</FormLabel>
           </FormControl>
         )}
+
         {/* all forms */}
         <FormControl as="fieldset" display="grid" variant="floating">
           <Input
@@ -123,6 +124,7 @@ export const FormComponent = ({
           />
           <FormLabel>Email</FormLabel>
         </FormControl>
+
         {/* login & register  */}
         {formType !== EnumFormType.reset && (
           <FormControl as="fieldset" display="grid" variant="floating">
