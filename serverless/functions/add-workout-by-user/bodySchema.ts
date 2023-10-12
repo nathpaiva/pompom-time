@@ -12,7 +12,7 @@ export const bodySchema = {
       },
       if: {
         properties: {
-          type: {
+          variety: {
             type: 'string',
             pattern: '^resistance$',
           },
@@ -22,13 +22,13 @@ export const bodySchema = {
       then: {
         required: ['interval'],
         errorMessage: {
-          required: 'Interval is required for ${/body/type} workout type.',
+          required: 'Interval is required for ${/body/variety} workout type.',
           _: 'You should provide the workout data',
         },
       },
       else: {
         properties: {
-          type: {
+          variety: {
             type: 'string',
             pattern: '(^pulse$)|(^strength$)|(^intensity$)',
           },
@@ -36,11 +36,19 @@ export const bodySchema = {
         },
         errorMessage: {
           properties: {
-            interval: 'Interval is not valid for ${/body/type} workout type.',
+            interval:
+              'Interval is not valid for ${/body/variety} workout type.',
           },
         },
       },
-      required: ['name', 'type', 'repeat', 'goal_per_day', 'rest', 'squeeze'],
+      required: [
+        'name',
+        'variety',
+        'repeat',
+        'goal_per_day',
+        'rest',
+        'squeeze',
+      ],
     },
   },
   required: ['body'],
