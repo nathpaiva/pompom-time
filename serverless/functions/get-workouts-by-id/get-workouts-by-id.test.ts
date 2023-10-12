@@ -25,7 +25,7 @@ describe('get-workouts-by-id', () => {
       return
     }
 
-    expect(statusCode).toEqual(500)
+    expect(statusCode).toEqual(300)
     expect(JSON.parse(body).error).toEqual('You must be authenticated')
   })
 

@@ -51,6 +51,9 @@ type HandlerResponse<T> = Omit<NtlHandlerResponse, 'body'> &
     | (TErrorBodyResponse & {
         statusCode: 400
       })
+    | (TErrorBodyResponse & {
+        statusCode: 300
+      })
   )
 
 interface ICause {
