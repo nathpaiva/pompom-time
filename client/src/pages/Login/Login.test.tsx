@@ -260,7 +260,9 @@ describe('Page::Login', () => {
       )
 
       expect(
-        screen.getByText(`Hi ${userDataMock.fullName}. Welcome to Pompom time`),
+        screen.getByText(
+          `Hi ${userDataMock.fullName}. The email confirmation was sent. Please confirm before continuing.`,
+        ),
       ).toBeTruthy()
     })
   })

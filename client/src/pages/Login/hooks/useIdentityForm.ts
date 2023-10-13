@@ -85,7 +85,7 @@ export const useIdentityForm = (): TUseIdentityForm => {
       const toastMessage =
         formTypeOpened === EnumFormType.login
           ? `${greetName}. Welcome back to Pompom time`
-          : `${greetName}. Welcome to Pompom time`
+          : `${greetName}. The email confirmation was sent. Please confirm before continuing.`
 
       resetLoginForm()
       resetRegisterForm()
