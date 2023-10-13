@@ -4,6 +4,7 @@ import { EnumFormType } from '../../types'
 
 interface IFormMainActions {
   formFocus: EnumFormType
+  switchToForm: (value: React.SetStateAction<EnumFormType>) => void
 }
 
 const BUTTON_SIZE = 200
@@ -30,7 +31,10 @@ const textCommonSx: SystemStyleObject = {
   bottom: '55px',
 }
 
-export const FormMainActions = ({ formFocus }: IFormMainActions) => {
+export const FormMainActions = ({
+  formFocus,
+  switchToForm,
+}: IFormMainActions) => {
   const isLoginFocused = formFocus === EnumFormType.login
   const isResetFocused = formFocus === EnumFormType.reset
   const isRegisterFocused = !isLoginFocused && !isResetFocused
@@ -55,6 +59,7 @@ export const FormMainActions = ({ formFocus }: IFormMainActions) => {
       >
         Still don't have an account?
       </Text>
+      {/* TODO: review buttons */}
       <Button
         sx={{
           ...buttonCommonSx,
@@ -72,6 +77,30 @@ export const FormMainActions = ({ formFocus }: IFormMainActions) => {
         type="submit"
         form="register"
         colorScheme="purple"
+        opacity={isRegisterFocused ? 1 : 0}
+        zIndex={isRegisterFocused ? 9999 : 0}
+      >
+        Register
+      </Button>
+
+      <Button
+        sx={{
+          ...buttonCommonSx,
+          left: 'var(--left-right-position)',
+          paddingLeft: isRegisterFocused
+            ? // grows button when the form is focused
+              'var(--button-size)'
+            : // shrink button when the form is not focused
+              'var(--chakra-space-4)',
+          transform: isResetFocused
+            ? // hides button when the form is reset
+              'translateX(calc(var(--translateX-to) * -1))'
+            : 'translateX(0)',
+        }}
+        type="button"
+        colorScheme="purple"
+        opacity={!isRegisterFocused ? 1 : 0}
+        onClick={() => switchToForm(EnumFormType.register)}
       >
         Register
       </Button>
@@ -93,6 +122,31 @@ export const FormMainActions = ({ formFocus }: IFormMainActions) => {
       >
         Do you have an account?
       </Text>
+
+      {/* TODO: review buttons */}
+      <Button
+        sx={{
+          ...buttonCommonSx,
+          right: 'var(--left-right-position)',
+          paddingRight: isLoginFocused
+            ? // grows button when the form is focused
+              'var(--button-size)'
+            : // shrink button when the form is not focused
+              'var(--chakra-space-4)',
+          transform: isResetFocused
+            ? // hides button when the form is reset
+              'translateX(var(--translateX-to))'
+            : 'translateX(0)',
+        }}
+        type="button"
+        colorScheme="purple"
+        opacity={!isLoginFocused ? 1 : 0}
+        zIndex={!isLoginFocused ? 9999 : 0}
+        onClick={() => switchToForm(EnumFormType.login)}
+      >
+        Login
+      </Button>
+
       <Button
         sx={{
           ...buttonCommonSx,

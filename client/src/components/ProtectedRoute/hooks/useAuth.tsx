@@ -8,20 +8,25 @@ export const useAuth = (): {
 } => {
   const navigate = useNavigate()
   const toast = useToast()
-  const { isLoggedIn, user, getFreshJWT, logoutUser } = useIdentityContext()
+  const { isLoggedIn, user, getFreshJWT, logoutUser, isConfirmedUser } =
+    useIdentityContext()
 
   const checkAuth = useCallback(async () => {
-    if (
-      user?.token.expires_at &&
-      // subtract 1 min to request the refresh token before expires
-      user.token.expires_at - 1000 * 60 >= Date.now()
-    ) {
-      return
-    }
-
     try {
-      if (!user?.token.expires_at) {
+      if (!isConfirmedUser) {
+        throw new Error('Please confirm your resitration')
+      }
+
+      if (!user?.token?.expires_at) {
         throw new Error('Toke not provided')
+      }
+
+      if (
+        user?.token.expires_at &&
+        // subtract 1 min to request the refresh token before expires
+        user.token.expires_at - 1000 * 60 >= Date.now()
+      ) {
+        return
       }
 
       await getFreshJWT()
@@ -37,10 +42,19 @@ export const useAuth = (): {
         title: message,
       })
 
-      await logoutUser()
+      if (isConfirmedUser) {
+        await logoutUser()
+      }
       navigate('/login')
     }
-  }, [getFreshJWT, logoutUser, navigate, toast, user?.token.expires_at])
+  }, [
+    isConfirmedUser,
+    user?.token?.expires_at,
+    getFreshJWT,
+    toast,
+    navigate,
+    logoutUser,
+  ])
 
   useEffect(() => {
     checkAuth()

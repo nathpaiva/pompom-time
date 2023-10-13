@@ -39,6 +39,7 @@ describe('App', () => {
     it('should render auth navigation', () => {
       vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         isLoggedIn: true,
+        isConfirmedUser: true,
       })
       render(<App />)
 

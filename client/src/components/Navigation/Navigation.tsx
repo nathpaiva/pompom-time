@@ -6,7 +6,7 @@ import { LiContainer } from './components'
 
 export const Navigation = () => {
   const { pathname } = useLocation()
-  const { isLoggedIn } = useIdentityContext()
+  const { isLoggedIn, isConfirmedUser } = useIdentityContext()
 
   return (
     <GridItem as="nav" p="3">
@@ -17,7 +17,7 @@ export const Navigation = () => {
           label="workout time"
           to="admin/workout"
           isCurrent={!pathname.indexOf('/admin/workout')}
-          isToShowItem={isLoggedIn}
+          isToShowItem={isLoggedIn && isConfirmedUser}
           isAuthItem
         />
 
@@ -26,7 +26,7 @@ export const Navigation = () => {
           to="#"
           isCurrent={pathname === '/#'}
           isAuthItem
-          isToShowItem={isLoggedIn}
+          isToShowItem={isLoggedIn && isConfirmedUser}
         />
 
         <LiContainer
@@ -34,14 +34,14 @@ export const Navigation = () => {
           to="logout"
           isCurrent={pathname === '/logout'}
           isAuthItem
-          isToShowItem={isLoggedIn}
+          isToShowItem={isLoggedIn && isConfirmedUser}
         />
         <LiContainer
           label="login"
           to="login"
           isCurrent={pathname === '/login'}
           isAuthItem
-          isToShowItem={!isLoggedIn}
+          isToShowItem={!isLoggedIn || !isConfirmedUser}
         />
       </Stack>
     </GridItem>

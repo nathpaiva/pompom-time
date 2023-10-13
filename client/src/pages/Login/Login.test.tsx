@@ -203,7 +203,12 @@ describe('Page::Login', () => {
         resetForm: false,
       })
 
-      const buttonToRegister = screen.getByText('Register')
+      const _buttonToRegister = screen.queryAllByText('Register')
+      const buttonToRegister = _buttonToRegister.filter(
+        (item) => (item as HTMLButtonElement).type === 'button',
+      )[0]
+
+      expect(_buttonToRegister.length).toEqual(2)
       expect(buttonToRegister).toBeVisible()
 
       // change the form type

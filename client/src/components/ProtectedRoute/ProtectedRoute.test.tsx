@@ -4,6 +4,7 @@ import { ProtectedRoute } from './ProtectedRoute'
 
 interface TMock {
   isLoggedIn?: boolean
+  isConfirmedUser?: boolean
   expires_at?: number
 }
 
@@ -11,6 +12,7 @@ describe('ProtectedRoute', () => {
   const mockUser = (param?: TMock) => {
     return {
       isLoggedIn: param?.isLoggedIn ?? true,
+      isConfirmedUser: param?.isConfirmedUser ?? true,
       logoutUser: vi.fn(),
       user: {
         token: {
@@ -41,6 +43,7 @@ describe('ProtectedRoute', () => {
   })
 
   describe('if the user is not authenticated', () => {
+    it.todo('🚨 create test for not confirmed user')
     it('should call getFreshJWT and on success keep the user in the current page', () => {
       const mockUserData = mockUser({
         isLoggedIn: false,

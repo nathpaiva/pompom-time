@@ -39,7 +39,7 @@ describe('get-workouts-by-id', () => {
       },
       createMockContext({
         user: {
-          email: 'hello+test@nathpaiva.com.br',
+          email: 'hello+no-remove@nathpaiva.com.br',
           exp: Date.now(),
         },
       }),
@@ -59,7 +59,7 @@ describe('get-workouts-by-id', () => {
       _req,
       createMockContext({
         user: {
-          email: 'hello+test@nathpaiva.com.br',
+          email: 'hello+no-remove@nathpaiva.com.br',
           exp: Date.now(),
         },
       }),
