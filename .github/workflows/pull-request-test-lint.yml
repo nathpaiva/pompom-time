@@ -116,7 +116,7 @@ jobs:
           HASURA_ENDPOINT: ${{ secrets.HASURA_ENDPOINT }}
           HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET }}
         with:
-          args: migrate apply --envfile .env --database-name default --version 1697069158519
+          args: migrate apply --envfile .env --database-name default
 
       - name: Seeds db
         uses: browniefed/hasura-runner@master
@@ -125,7 +125,7 @@ jobs:
           HASURA_ENDPOINT: ${{ secrets.HASURA_ENDPOINT }}
           HASURA_ADMIN_SECRET: ${{ secrets.HASURA_ADMIN_SECRET }}
         with:
-          args: seeds apply --envfile .env --database-name default --file 1697070011217_pompom_seeds.sql
+          args: seed apply --envfile .env --database-name default --file workouts_seed.sql
 
       - name: Metadata db
         uses: browniefed/hasura-runner@master
