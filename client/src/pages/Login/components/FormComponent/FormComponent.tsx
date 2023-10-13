@@ -2,6 +2,7 @@ import {
   Button,
   Card,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   Input,
@@ -9,14 +10,15 @@ import {
   InputRightElement,
   SystemStyleObject,
 } from '@chakra-ui/react'
-import { FormEvent, useState } from 'react'
+import { useState } from 'react'
+import { UseFormReset, useForm } from 'react-hook-form'
 
 import { IMAGE_CONTAINER_WIDTH_SIZE_PX } from '../../constants'
+import { IFormInput } from '../../hooks'
 import { EnumFormType } from '../../types'
 
 export interface IFormComponentPropsCommon {
-  onChangeHandle: (e: FormEvent<HTMLInputElement>) => void
-  onSubmit: (e: FormEvent<HTMLFormElement>) => void
+  onSubmit: (e: IFormInput, reset: UseFormReset<IFormInput>) => void
   formTitle: string
   sxContainer?: SystemStyleObject
   sxForm?: SystemStyleObject
@@ -25,34 +27,37 @@ export interface IFormComponentPropsCommon {
 
 interface TLoginForm {
   formType: EnumFormType.login
-  switchToReset: () => void
+  switchToForm: () => void
 }
 interface TRegisterForm {
   formType: EnumFormType.register
-  switchToReset?: never
+  switchToForm?: never
 }
 
 interface TResetForm {
   formType: EnumFormType.reset
-  switchToReset: () => void
+  switchToForm: () => void
 }
 
 type IFormComponentProps = IFormComponentPropsCommon &
   (TLoginForm | TRegisterForm | TResetForm)
 
 // TODO: organize the code to group by form type
-// - clean form after submit
-// - add input value to all forms, if the inputFormData is filled
 export const FormComponent = ({
-  onChangeHandle,
   formType,
   onSubmit,
-  switchToReset,
+  switchToForm,
   formTitle,
   sxContainer,
   sxForm,
   formIsHidden,
 }: IFormComponentProps) => {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    reset,
+  } = useForm<IFormInput>()
   const [show, setShow] = useState(false)
   const handleClick = () => setShow(!show)
 
@@ -64,7 +69,9 @@ export const FormComponent = ({
   return (
     <Card
       as="form"
-      onSubmit={(e) => onSubmit(e as unknown as FormEvent<HTMLFormElement>)}
+      onSubmit={(event) => {
+        handleSubmit((_event) => onSubmit(_event, reset))(event)
+      }}
       sx={{
         minHeight: '500px',
         minWidth: containerSize,
@@ -101,41 +108,64 @@ export const FormComponent = ({
         {/* reset form */}
         {/* if is register should add input name  */}
         {formType === EnumFormType.register && (
-          <FormControl as="fieldset" display="grid" variant="floating">
+          <FormControl
+            as="fieldset"
+            display="grid"
+            variant="floating"
+            isInvalid={!!errors.fullName}
+          >
             <Input
-              onChange={onChangeHandle}
               type="name"
-              name="fullName"
-              data-testid={`${formType}-fullName`}
               placeholder=" "
+              data-testid={`${formType}-fullName`}
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              {...register('fullName', {
+                required: 'Name is required',
+              })}
             />
             <FormLabel>Name</FormLabel>
+            <FormErrorMessage>{errors.fullName?.message}</FormErrorMessage>
           </FormControl>
         )}
 
         {/* all forms */}
-        <FormControl as="fieldset" display="grid" variant="floating">
+        <FormControl
+          as="fieldset"
+          display="grid"
+          variant="floating"
+          isInvalid={!!errors.email}
+        >
           <Input
-            onChange={onChangeHandle}
             type="email"
-            name="email"
             data-testid={`${formType}-email`}
             placeholder=" "
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...register('email', {
+              required: 'Email is required',
+            })}
           />
           <FormLabel>Email</FormLabel>
+          <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
         </FormControl>
 
         {/* login & register  */}
         {formType !== EnumFormType.reset && (
-          <FormControl as="fieldset" display="grid" variant="floating">
+          <FormControl
+            as="fieldset"
+            display="grid"
+            variant="floating"
+            isInvalid={!!errors.password}
+          >
             <InputGroup size="md">
               <Input
                 pr="4.5rem"
                 type={show ? 'text' : 'password'}
                 placeholder=" "
-                name="password"
                 data-testid={`${formType}-password`}
-                onChange={onChangeHandle}
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                {...register('password', {
+                  required: 'password is required',
+                })}
               />
               <FormLabel>Password</FormLabel>
               <InputRightElement width="4.5rem">
@@ -154,7 +184,7 @@ export const FormComponent = ({
             {formType === EnumFormType.login && (
               <Button
                 variant="link"
-                onClick={switchToReset}
+                onClick={switchToForm}
                 size="xs"
                 sx={{
                   position: 'absolute',
@@ -165,6 +195,7 @@ export const FormComponent = ({
                 Forgot Password
               </Button>
             )}
+            <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
           </FormControl>
         )}
         {/* actions */}
@@ -178,7 +209,7 @@ export const FormComponent = ({
 
         {/* reset */}
         {formType === EnumFormType.reset && (
-          <Button variant="link" size="xs" onClick={switchToReset}>
+          <Button variant="link" size="xs" onClick={switchToForm}>
             Never mind
           </Button>
         )}

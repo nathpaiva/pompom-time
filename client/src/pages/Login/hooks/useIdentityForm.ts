@@ -1,13 +1,13 @@
 import { useToast } from '@chakra-ui/react'
 import {
   Dispatch,
-  FormEvent,
   RefObject,
   useCallback,
   useEffect,
   useRef,
   useState,
 } from 'react'
+import { UseFormReset } from 'react-hook-form'
 import { useIdentityContext } from 'react-netlify-identity'
 
 import { IMAGE_CONTAINER_WIDTH_SIZE } from '../constants'
@@ -16,12 +16,20 @@ import { EnumFormType } from '../types'
 export interface TUseIdentityForm {
   isLoggedIn: boolean
   containerRef: RefObject<HTMLDivElement>
-  onChangeHandle: (e: FormEvent<HTMLInputElement>) => void
-  onSubmit: (e: FormEvent<HTMLFormElement>) => void
+  onSubmit: (e: IFormInput, reset: UseFormReset<IFormInput>) => void
   setFormTypeOpened: Dispatch<React.SetStateAction<EnumFormType>>
-  onSubmitRecoverPassword: (e: FormEvent<HTMLFormElement>) => void
+  onSubmitRecoverPassword: (
+    e: IFormInput,
+    reset: UseFormReset<IFormInput>,
+  ) => void
   formTypeOpened: EnumFormType
   showPage: boolean
+}
+
+export interface IFormInput {
+  email?: string
+  password?: string
+  fullName?: string
 }
 
 export const useIdentityForm = (): TUseIdentityForm => {
@@ -63,17 +71,9 @@ export const useIdentityForm = (): TUseIdentityForm => {
    * @param e: FormEvent<HTMLFormElement>
    * @returns user authenticated
    */
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const { id } = e.target as HTMLFormElement & { id: EnumFormType }
-
-    if (formTypeOpened !== id) {
-      setFormTypeOpened(id)
-      return
-    }
-
+  const onSubmit = (formData: IFormInput, reset: UseFormReset<IFormInput>) => {
     async function _submit() {
-      const { email, password, fullName } = inputFormData
+      const { email, password, fullName } = formData
 
       try {
         if (!email || !password) {
@@ -81,7 +81,7 @@ export const useIdentityForm = (): TUseIdentityForm => {
         }
 
         const actionToSubmit =
-          id === EnumFormType.login
+          formTypeOpened === EnumFormType.login
             ? async () => await loginUser(email, password)
             : async () =>
                 await signupUser(email, password, {
@@ -94,9 +94,11 @@ export const useIdentityForm = (): TUseIdentityForm => {
           : 'Hey there'
 
         const toastMessage =
-          id === EnumFormType.login
+          formTypeOpened === EnumFormType.login
             ? `${greetName}. Welcome back to Pompom time`
             : `${greetName}. Welcome to Pompom time`
+
+        reset()
 
         toast({
           title: toastMessage,
@@ -120,11 +122,12 @@ export const useIdentityForm = (): TUseIdentityForm => {
    *
    * @param e: FormEvent<HTMLFormElement>
    */
-  const onSubmitRecoverPassword = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
+  const onSubmitRecoverPassword = (
+    formData: IFormInput,
+    reset: UseFormReset<IFormInput>,
+  ) => {
     async function _submit() {
-      const { email } = inputFormData
+      const { email } = formData
 
       try {
         if (!email) {
@@ -133,6 +136,7 @@ export const useIdentityForm = (): TUseIdentityForm => {
 
         await requestPasswordRecovery(email)
         setFormTypeOpened(EnumFormType.login)
+        reset()
         toast({
           title: 'The email has been sent',
           status: 'info',
@@ -149,19 +153,6 @@ export const useIdentityForm = (): TUseIdentityForm => {
     }
 
     _submit()
-  }
-
-  /**
-   * Handle with the input state
-   *
-   * @param e: FormEvent<HTMLInputElement>
-   */
-  const onChangeHandle = (e: FormEvent<HTMLInputElement>) => {
-    const { name, value } = e.currentTarget
-    setInputFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }))
   }
 
   /**
@@ -203,7 +194,6 @@ export const useIdentityForm = (): TUseIdentityForm => {
   return {
     isLoggedIn: isLoggedIn && isConfirmedUser,
     containerRef,
-    onChangeHandle,
     onSubmit,
     setFormTypeOpened,
     onSubmitRecoverPassword,

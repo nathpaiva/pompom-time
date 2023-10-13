@@ -6,14 +6,10 @@ import { IMAGE_CONTAINER_WIDTH_SIZE_PX } from './constants'
 import { useIdentityForm } from './hooks'
 import { EnumFormType } from './types'
 
-// TODO:
-// - Add input validation
-// - add input hints
 export const Login = () => {
   const {
     isLoggedIn,
     containerRef,
-    onChangeHandle,
     onSubmit,
     setFormTypeOpened,
     onSubmitRecoverPassword,
@@ -40,11 +36,9 @@ export const Login = () => {
       <FormComponent
         // {/* register form */}
         formTitle="Sign up"
-        onChangeHandle={onChangeHandle}
         formType={EnumFormType.register}
         onSubmit={onSubmit}
         formIsHidden={formTypeOpened === EnumFormType.register}
-        // formTypeOpened
       />
 
       <Center
@@ -63,11 +57,10 @@ export const Login = () => {
       <FormComponent
         // {/* login form */}
         formTitle="Log in"
-        onChangeHandle={onChangeHandle}
         formType={EnumFormType.login}
         onSubmit={onSubmit}
         formIsHidden={formTypeOpened === EnumFormType.login}
-        switchToReset={() => {
+        switchToForm={() => {
           setFormTypeOpened(EnumFormType.reset)
         }}
       />
@@ -75,16 +68,18 @@ export const Login = () => {
       <FormComponent
         // {/* reset form */}
         formTitle="Recover password"
-        onChangeHandle={onChangeHandle}
         formType={EnumFormType.reset}
         onSubmit={onSubmitRecoverPassword}
         formIsHidden={formTypeOpened === EnumFormType.reset}
-        switchToReset={() => {
+        switchToForm={() => {
           setFormTypeOpened(EnumFormType.login)
         }}
       />
 
-      <FormMainActions formFocus={formTypeOpened} />
+      <FormMainActions
+        formFocus={formTypeOpened}
+        switchToForm={setFormTypeOpened}
+      />
     </Box>
   )
 }
