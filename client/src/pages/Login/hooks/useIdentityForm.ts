@@ -1,42 +1,40 @@
 import { useToast } from '@chakra-ui/react'
-import {
-  Dispatch,
-  RefObject,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
-import { UseFormReset } from 'react-hook-form'
-import { useIdentityContext } from 'react-netlify-identity'
+import { useMutation } from '@tanstack/react-query'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { User, useIdentityContext } from 'react-netlify-identity'
 
 import { IMAGE_CONTAINER_WIDTH_SIZE } from '../constants'
 import { EnumFormType } from '../types'
-
-export interface TUseIdentityForm {
-  isLoggedIn: boolean
-  containerRef: RefObject<HTMLDivElement>
-  onSubmit: (e: IFormInput, reset: UseFormReset<IFormInput>) => void
-  setFormTypeOpened: Dispatch<React.SetStateAction<EnumFormType>>
-  onSubmitRecoverPassword: (
-    e: IFormInput,
-    reset: UseFormReset<IFormInput>,
-  ) => void
-  formTypeOpened: EnumFormType
-  showPage: boolean
-}
-
-export interface IFormInput {
-  email?: string
-  password?: string
-  fullName?: string
-}
+import { FormSetupFields, TUseIdentityForm } from './types'
 
 export const useIdentityForm = (): TUseIdentityForm => {
+  // create the register to each form
+  const {
+    handleSubmit: handleSubmitLoginForm,
+    register: registerInputLoginForm,
+    formState: { errors: errorsLoginForm },
+    reset: resetLoginForm,
+  } = useForm<FormSetupFields>()
+  const {
+    handleSubmit: handleSubmitRegisterForm,
+    register: registerInputRegisterForm,
+    formState: { errors: errorsRegisterForm },
+    reset: resetRegisterForm,
+  } = useForm<FormSetupFields>()
+  const {
+    handleSubmit: handleSubmitResetForm,
+    register: registerInputResetForm,
+    formState: { errors: errorsResetForm },
+    reset: resetResetForm,
+  } = useForm<FormSetupFields>()
   // this is state is to manage the time to render the form
   // so the calculation can happen to focus on login form
   // TODO: take a look to see if this is the best approach
   const [shouldShowPage, setShouldShowPage] = useState(false)
+  // init toast
+  const toast = useToast()
+
   // get initial credentials from netlify identity
   const {
     loginUser,
@@ -46,8 +44,102 @@ export const useIdentityForm = (): TUseIdentityForm => {
     isConfirmedUser,
   } = useIdentityContext()
 
-  // init toast
-  const toast = useToast()
+  /**
+   * Login or Register an user
+   *
+   * @param formData: FormSetupFields
+   * @returns user authenticated
+   */
+  const { mutate: mutateLoginOrRegister } = useMutation<
+    User,
+    Error,
+    FormSetupFields
+  >({
+    mutationFn: async (formData) => {
+      const { email, password } = formData[formTypeOpened]
+
+      if (!email || !password) {
+        throw new Error('Email and password are required')
+      }
+
+      const actionToSubmit =
+        formTypeOpened === EnumFormType.login
+          ? async () => await loginUser(email, password)
+          : async () =>
+              await signupUser(email, password, {
+                full_name: formData.register.fullName,
+              })
+
+      const user = await actionToSubmit()
+      if (!user) {
+        return Promise.reject(new Error('Error on mutation'))
+      }
+
+      return Promise.resolve(user)
+    },
+    onSuccess: (user) => {
+      const greetName = user.user_metadata
+        ? `Hi ${user.user_metadata.full_name}`
+        : 'Hey there'
+
+      const toastMessage =
+        formTypeOpened === EnumFormType.login
+          ? `${greetName}. Welcome back to Pompom time`
+          : `${greetName}. The email confirmation was sent. Please confirm before continuing.`
+
+      resetLoginForm()
+      resetRegisterForm()
+
+      toast({
+        title: toastMessage,
+        status: 'success',
+        isClosable: true,
+      })
+    },
+    onError: (error) => {
+      toast({
+        title: error.message,
+        status: 'error',
+        isClosable: true,
+      })
+    },
+  })
+
+  /**
+   * Request the access recovery of the user
+   *
+   * @param formData: FormSetupFields
+   */
+  const { mutate: mutateResetForm } = useMutation<void, Error, FormSetupFields>(
+    {
+      mutationFn: async (formData) => {
+        const { email } = formData[formTypeOpened]
+
+        if (!email) {
+          return Promise.reject(new Error('Email is required'))
+        }
+
+        await requestPasswordRecovery(email)
+      },
+      onSuccess: () => {
+        setFormTypeOpened(EnumFormType.login)
+        resetResetForm()
+        toast({
+          title: 'The email has been sent',
+          status: 'info',
+          isClosable: true,
+        })
+      },
+      onError: (err) => {
+        toast({
+          title: err.message,
+          status: 'error',
+          isClosable: true,
+        })
+      },
+    },
+  )
+
   /**
    * create container ref to have the div width
    * so can use to calculate the transform to move each children
@@ -57,103 +149,6 @@ export const useIdentityForm = (): TUseIdentityForm => {
   const [formTypeOpened, setFormTypeOpened] = useState<EnumFormType>(
     EnumFormType.login,
   )
-  // state to manage the inputs
-  const [inputFormData, setInputFormData] = useState({
-    email: undefined,
-    password: undefined,
-    fullName: undefined,
-  })
-
-  /**
-   * Login or Create an user
-   * If the form isn't focus only changes the form type
-   *
-   * @param e: FormEvent<HTMLFormElement>
-   * @returns user authenticated
-   */
-  const onSubmit = (formData: IFormInput, reset: UseFormReset<IFormInput>) => {
-    async function _submit() {
-      const { email, password, fullName } = formData
-
-      try {
-        if (!email || !password) {
-          throw new Error('Email and password are required')
-        }
-
-        const actionToSubmit =
-          formTypeOpened === EnumFormType.login
-            ? async () => await loginUser(email, password)
-            : async () =>
-                await signupUser(email, password, {
-                  full_name: fullName,
-                })
-
-        const user = await actionToSubmit()
-        const greetName = user?.user_metadata
-          ? `Hi ${user.user_metadata.full_name}`
-          : 'Hey there'
-
-        const toastMessage =
-          formTypeOpened === EnumFormType.login
-            ? `${greetName}. Welcome back to Pompom time`
-            : `${greetName}. Welcome to Pompom time`
-
-        reset()
-
-        toast({
-          title: toastMessage,
-          status: 'success',
-          isClosable: true,
-        })
-      } catch (err) {
-        toast({
-          title: (err as Error).message,
-          status: 'error',
-          isClosable: true,
-        })
-      }
-    }
-
-    _submit()
-  }
-
-  /**
-   * Request the access recovery of the user
-   *
-   * @param e: FormEvent<HTMLFormElement>
-   */
-  const onSubmitRecoverPassword = (
-    formData: IFormInput,
-    reset: UseFormReset<IFormInput>,
-  ) => {
-    async function _submit() {
-      const { email } = formData
-
-      try {
-        if (!email) {
-          throw new Error('Email is required')
-        }
-
-        await requestPasswordRecovery(email)
-        setFormTypeOpened(EnumFormType.login)
-        reset()
-        toast({
-          title: 'The email has been sent',
-          status: 'info',
-          isClosable: true,
-        })
-        // TODO: clean form after submit
-      } catch (err) {
-        toast({
-          title: (err as Error).message,
-          status: 'error',
-          isClosable: true,
-        })
-      }
-    }
-
-    _submit()
-  }
 
   /**
    * Moves the form position after the form type has changed
@@ -194,10 +189,27 @@ export const useIdentityForm = (): TUseIdentityForm => {
   return {
     isLoggedIn: isLoggedIn && isConfirmedUser,
     containerRef,
-    onSubmit,
+    onSubmit: mutateLoginOrRegister,
     setFormTypeOpened,
-    onSubmitRecoverPassword,
+    onSubmitRecoverPassword: mutateResetForm,
     formTypeOpened,
     showPage: shouldShowPage,
+    formSetup: {
+      login: {
+        handleSubmit: handleSubmitLoginForm,
+        registerInput: registerInputLoginForm,
+        errors: errorsLoginForm,
+      },
+      register: {
+        handleSubmit: handleSubmitRegisterForm,
+        registerInput: registerInputRegisterForm,
+        errors: errorsRegisterForm,
+      },
+      reset: {
+        handleSubmit: handleSubmitResetForm,
+        registerInput: registerInputResetForm,
+        errors: errorsResetForm,
+      },
+    },
   }
 }

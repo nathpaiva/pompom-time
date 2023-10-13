@@ -15,6 +15,7 @@ export const Login = () => {
     onSubmitRecoverPassword,
     formTypeOpened,
     showPage,
+    formSetup,
   } = useIdentityForm()
 
   if (isLoggedIn) {
@@ -38,7 +39,8 @@ export const Login = () => {
         formTitle="Sign up"
         formType={EnumFormType.register}
         onSubmit={onSubmit}
-        formIsHidden={formTypeOpened === EnumFormType.register}
+        formIsHidden={formTypeOpened !== EnumFormType.register}
+        formSetup={formSetup[EnumFormType.register]}
       />
 
       <Center
@@ -59,10 +61,11 @@ export const Login = () => {
         formTitle="Log in"
         formType={EnumFormType.login}
         onSubmit={onSubmit}
-        formIsHidden={formTypeOpened === EnumFormType.login}
+        formIsHidden={formTypeOpened !== EnumFormType.login}
         switchToForm={() => {
           setFormTypeOpened(EnumFormType.reset)
         }}
+        formSetup={formSetup[EnumFormType.login]}
       />
 
       <FormComponent
@@ -70,10 +73,11 @@ export const Login = () => {
         formTitle="Recover password"
         formType={EnumFormType.reset}
         onSubmit={onSubmitRecoverPassword}
-        formIsHidden={formTypeOpened === EnumFormType.reset}
+        formIsHidden={formTypeOpened !== EnumFormType.reset}
         switchToForm={() => {
           setFormTypeOpened(EnumFormType.login)
         }}
+        formSetup={formSetup[EnumFormType.reset]}
       />
 
       <FormMainActions

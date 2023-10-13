@@ -78,9 +78,9 @@ describe('Page::Login', () => {
       render(<Login />, { initialEntries: '/login' })
 
       const { loginForm } = expectForms({
-        loginForm: true,
-        registerForm: false,
-        resetForm: false,
+        loginForm: false,
+        registerForm: true,
+        resetForm: true,
       })
 
       // check if the form has the title
@@ -126,9 +126,9 @@ describe('Page::Login', () => {
 
       // get each form and check if only login is visible
       const { loginForm, resetForm } = expectForms({
-        loginForm: true,
-        registerForm: false,
-        resetForm: false,
+        loginForm: false,
+        registerForm: true,
+        resetForm: true,
       })
 
       // get forgotButton and move to reset form
@@ -137,21 +137,21 @@ describe('Page::Login', () => {
       await act(() => fireEvent.click(forgotButton))
 
       // check if login is not visible and register is visible
-      expect(loginForm).toHaveAttribute('aria-hidden', 'false')
-      expect(resetForm).toHaveAttribute('aria-hidden', 'true')
+      expect(loginForm).toHaveAttribute('aria-hidden', 'true')
+      expect(resetForm).toHaveAttribute('aria-hidden', 'false')
 
       // check if are able to back to login form
       const neverMindButton = screen.getByText('Never mind')
       expect(neverMindButton).toBeVisible()
       await act(() => fireEvent.click(neverMindButton))
 
-      expect(loginForm).toHaveAttribute('aria-hidden', 'true')
-      expect(resetForm).toHaveAttribute('aria-hidden', 'false')
+      expect(loginForm).toHaveAttribute('aria-hidden', 'false')
+      expect(resetForm).toHaveAttribute('aria-hidden', 'true')
 
       // than back to reset and call the reset function
       await act(() => fireEvent.click(forgotButton))
-      expect(loginForm).toHaveAttribute('aria-hidden', 'false')
-      expect(resetForm).toHaveAttribute('aria-hidden', 'true')
+      expect(loginForm).toHaveAttribute('aria-hidden', 'true')
+      expect(resetForm).toHaveAttribute('aria-hidden', 'false')
 
       // check if the form has the title
       const recoverPassFormTitle = screen.getByText('Recover password')
@@ -198,9 +198,9 @@ describe('Page::Login', () => {
 
       // get each form and check if only login is visible
       const { loginForm, registerForm } = expectForms({
-        loginForm: true,
-        registerForm: false,
-        resetForm: false,
+        loginForm: false,
+        registerForm: true,
+        resetForm: true,
       })
 
       const _buttonToRegister = screen.queryAllByText('Register')
@@ -215,8 +215,8 @@ describe('Page::Login', () => {
       await act(() => fireEvent.click(buttonToRegister))
 
       // check if login is not visible and register is visible
-      expect(loginForm).toHaveAttribute('aria-hidden', 'false')
-      expect(registerForm).toHaveAttribute('aria-hidden', 'true')
+      expect(loginForm).toHaveAttribute('aria-hidden', 'true')
+      expect(registerForm).toHaveAttribute('aria-hidden', 'false')
 
       // check if the form has the title
       const signUpFormTitle = screen.getByText('Sign up')
@@ -260,7 +260,9 @@ describe('Page::Login', () => {
       )
 
       expect(
-        screen.getByText(`Hi ${userDataMock.fullName}. Welcome to Pompom time`),
+        screen.getByText(
+          `Hi ${userDataMock.fullName}. The email confirmation was sent. Please confirm before continuing.`,
+        ),
       ).toBeTruthy()
     })
   })
