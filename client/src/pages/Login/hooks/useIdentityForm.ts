@@ -1,38 +1,29 @@
 import { useToast } from '@chakra-ui/react'
-import {
-  Dispatch,
-  RefObject,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
-import { UseFormReset } from 'react-hook-form'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useIdentityContext } from 'react-netlify-identity'
 
 import { IMAGE_CONTAINER_WIDTH_SIZE } from '../constants'
 import { EnumFormType } from '../types'
-
-export interface TUseIdentityForm {
-  isLoggedIn: boolean
-  containerRef: RefObject<HTMLDivElement>
-  onSubmit: (e: IFormInput, reset: UseFormReset<IFormInput>) => void
-  setFormTypeOpened: Dispatch<React.SetStateAction<EnumFormType>>
-  onSubmitRecoverPassword: (
-    e: IFormInput,
-    reset: UseFormReset<IFormInput>,
-  ) => void
-  formTypeOpened: EnumFormType
-  showPage: boolean
-}
-
-export interface IFormInput {
-  email?: string
-  password?: string
-  fullName?: string
-}
+import { FormSetupFields, TUseIdentityForm } from './types'
 
 export const useIdentityForm = (): TUseIdentityForm => {
+  // create the register to each form
+  const {
+    handleSubmit: handleSubmitLoginForm,
+    register: registerInputLoginForm,
+    formState: { errors: errorsLoginForm },
+  } = useForm<FormSetupFields>()
+  const {
+    handleSubmit: handleSubmitRegisterForm,
+    register: registerInputRegisterForm,
+    formState: { errors: errorsRegisterForm },
+  } = useForm<FormSetupFields>()
+  const {
+    handleSubmit: handleSubmitResetForm,
+    register: registerInputResetForm,
+    formState: { errors: errorsResetForm },
+  } = useForm<FormSetupFields>()
   // this is state is to manage the time to render the form
   // so the calculation can happen to focus on login form
   // TODO: take a look to see if this is the best approach
@@ -57,12 +48,6 @@ export const useIdentityForm = (): TUseIdentityForm => {
   const [formTypeOpened, setFormTypeOpened] = useState<EnumFormType>(
     EnumFormType.login,
   )
-  // state to manage the inputs
-  const [inputFormData, setInputFormData] = useState({
-    email: undefined,
-    password: undefined,
-    fullName: undefined,
-  })
 
   /**
    * Login or Create an user
@@ -71,11 +56,15 @@ export const useIdentityForm = (): TUseIdentityForm => {
    * @param e: FormEvent<HTMLFormElement>
    * @returns user authenticated
    */
-  const onSubmit = (formData: IFormInput, reset: UseFormReset<IFormInput>) => {
+  const onSubmit = (
+    formData: FormSetupFields,
+    // reset: UseFormReset<ILoginForm | IRegisterForm>,
+  ) => {
     async function _submit() {
-      const { email, password, fullName } = formData
-
+      const { email, password } = formData[formTypeOpened]
+      // formData
       try {
+        // if (formData.)
         if (!email || !password) {
           throw new Error('Email and password are required')
         }
@@ -85,7 +74,7 @@ export const useIdentityForm = (): TUseIdentityForm => {
             ? async () => await loginUser(email, password)
             : async () =>
                 await signupUser(email, password, {
-                  full_name: fullName,
+                  full_name: formData.register.fullName,
                 })
 
         const user = await actionToSubmit()
@@ -98,7 +87,7 @@ export const useIdentityForm = (): TUseIdentityForm => {
             ? `${greetName}. Welcome back to Pompom time`
             : `${greetName}. Welcome to Pompom time`
 
-        reset()
+        // reset()
 
         toast({
           title: toastMessage,
@@ -123,20 +112,20 @@ export const useIdentityForm = (): TUseIdentityForm => {
    * @param e: FormEvent<HTMLFormElement>
    */
   const onSubmitRecoverPassword = (
-    formData: IFormInput,
-    reset: UseFormReset<IFormInput>,
+    formData: FormSetupFields,
+    // reset: UseFormReset<IResetForm>,
   ) => {
     async function _submit() {
-      const { email } = formData
+      // const { email } = formData
 
       try {
-        if (!email) {
+        if (!formData.reset.email) {
           throw new Error('Email is required')
         }
 
-        await requestPasswordRecovery(email)
+        await requestPasswordRecovery(formData.reset.email)
         setFormTypeOpened(EnumFormType.login)
-        reset()
+        // reset()
         toast({
           title: 'The email has been sent',
           status: 'info',
@@ -191,6 +180,31 @@ export const useIdentityForm = (): TUseIdentityForm => {
     setShouldShowPage(true)
   }, [])
 
+  // function testParam<T extends EnumFormType>(param: T) {
+  //   if (param === EnumFormType.login) {
+  //     return {
+  //       handleSubmit: handleSubmitLoginForm,
+  //       registerInput: registerInputLoginForm,
+  //       errors: errorsLoginForm,
+  //     }
+  //   }
+  //   if (param === EnumFormType.register) {
+  //     return {
+  //       handleSubmit: handleSubmitRegisterForm,
+  //       registerInput: registerInputRegisterForm,
+  //       errors: errorsRegisterForm,
+  //     }
+  //   }
+
+  //   return {
+  //     handleSubmit: handleSubmitResetForm,
+  //     registerInput: registerInputResetForm,
+  //     errors: errorsResetForm,
+  //   }
+  // }
+
+  // testParam(EnumFormType.login)
+
   return {
     isLoggedIn: isLoggedIn && isConfirmedUser,
     containerRef,
@@ -199,5 +213,23 @@ export const useIdentityForm = (): TUseIdentityForm => {
     onSubmitRecoverPassword,
     formTypeOpened,
     showPage: shouldShowPage,
+    // formSetup: testParam,
+    formSetup: {
+      login: {
+        handleSubmit: handleSubmitLoginForm,
+        registerInput: registerInputLoginForm,
+        errors: errorsLoginForm,
+      },
+      register: {
+        handleSubmit: handleSubmitRegisterForm,
+        registerInput: registerInputRegisterForm,
+        errors: errorsRegisterForm,
+      },
+      reset: {
+        handleSubmit: handleSubmitResetForm,
+        registerInput: registerInputResetForm,
+        errors: errorsResetForm,
+      },
+    },
   }
 }

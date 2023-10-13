@@ -11,14 +11,15 @@ import {
   SystemStyleObject,
 } from '@chakra-ui/react'
 import { useState } from 'react'
-import { UseFormReset, useForm } from 'react-hook-form'
 
 import { IMAGE_CONTAINER_WIDTH_SIZE_PX } from '../../constants'
-import { IFormInput } from '../../hooks'
+import { TUseIdentityForm } from '../../hooks/types'
 import { EnumFormType } from '../../types'
 
 export interface IFormComponentPropsCommon {
-  onSubmit: (e: IFormInput, reset: UseFormReset<IFormInput>) => void
+  onSubmit:
+    | TUseIdentityForm['onSubmit']
+    | TUseIdentityForm['onSubmitRecoverPassword']
   formTitle: string
   sxContainer?: SystemStyleObject
   sxForm?: SystemStyleObject
@@ -28,22 +29,26 @@ export interface IFormComponentPropsCommon {
 interface TLoginForm {
   formType: EnumFormType.login
   switchToForm: () => void
+  formSetup: TUseIdentityForm['formSetup'][EnumFormType.login]
 }
+
 interface TRegisterForm {
   formType: EnumFormType.register
   switchToForm?: never
+  formSetup: TUseIdentityForm['formSetup'][EnumFormType.register]
 }
 
 interface TResetForm {
   formType: EnumFormType.reset
   switchToForm: () => void
+  formSetup: TUseIdentityForm['formSetup'][EnumFormType.reset]
 }
 
 type IFormComponentProps = IFormComponentPropsCommon &
   (TLoginForm | TRegisterForm | TResetForm)
 
 // TODO: organize the code to group by form type
-export const FormComponent = ({
+export function FormComponent({
   formType,
   onSubmit,
   switchToForm,
@@ -51,13 +56,8 @@ export const FormComponent = ({
   sxContainer,
   sxForm,
   formIsHidden,
-}: IFormComponentProps) => {
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    reset,
-  } = useForm<IFormInput>()
+  formSetup,
+}: IFormComponentProps) {
   const [show, setShow] = useState(false)
   const handleClick = () => setShow(!show)
 
@@ -68,9 +68,10 @@ export const FormComponent = ({
 
   return (
     <Card
+      key={formType}
       as="form"
       onSubmit={(event) => {
-        handleSubmit((_event) => onSubmit(_event, reset))(event)
+        formSetup.handleSubmit(onSubmit)(event)
       }}
       sx={{
         minHeight: '500px',
@@ -112,19 +113,21 @@ export const FormComponent = ({
             as="fieldset"
             display="grid"
             variant="floating"
-            isInvalid={!!errors.fullName}
+            isInvalid={!!formSetup.errors?.[formType]?.fullName}
           >
             <Input
               type="name"
               placeholder=" "
               data-testid={`${formType}-fullName`}
               // eslint-disable-next-line react/jsx-props-no-spreading
-              {...register('fullName', {
+              {...formSetup.registerInput(`${formType}.fullName`, {
                 required: 'Name is required',
               })}
             />
             <FormLabel>Name</FormLabel>
-            <FormErrorMessage>{errors.fullName?.message}</FormErrorMessage>
+            <FormErrorMessage>
+              {formSetup.errors?.[formType]?.fullName?.message}
+            </FormErrorMessage>
           </FormControl>
         )}
 
@@ -133,19 +136,21 @@ export const FormComponent = ({
           as="fieldset"
           display="grid"
           variant="floating"
-          isInvalid={!!errors.email}
+          isInvalid={!!formSetup.errors?.[formType]?.email?.message}
         >
           <Input
             type="email"
             data-testid={`${formType}-email`}
             placeholder=" "
             // eslint-disable-next-line react/jsx-props-no-spreading
-            {...register('email', {
+            {...formSetup.registerInput(`${formType}.email`, {
               required: 'Email is required',
             })}
           />
           <FormLabel>Email</FormLabel>
-          <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+          <FormErrorMessage>
+            {formSetup.errors?.[formType]?.email?.message}
+          </FormErrorMessage>
         </FormControl>
 
         {/* login & register  */}
@@ -154,7 +159,7 @@ export const FormComponent = ({
             as="fieldset"
             display="grid"
             variant="floating"
-            isInvalid={!!errors.password}
+            isInvalid={!!formSetup.errors?.[formType]?.password}
           >
             <InputGroup size="md">
               <Input
@@ -163,7 +168,7 @@ export const FormComponent = ({
                 placeholder=" "
                 data-testid={`${formType}-password`}
                 // eslint-disable-next-line react/jsx-props-no-spreading
-                {...register('password', {
+                {...formSetup.registerInput(`${formType}.password`, {
                   required: 'password is required',
                 })}
               />
@@ -195,23 +200,23 @@ export const FormComponent = ({
                 Forgot Password
               </Button>
             )}
-            <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
+            <FormErrorMessage>
+              {formSetup.errors?.[formType]?.password?.message}
+            </FormErrorMessage>
           </FormControl>
         )}
         {/* actions */}
 
         {/* reset */}
         {formType === EnumFormType.reset && (
-          <Button type="submit" form={formType} colorScheme="purple">
-            Send recovery email
-          </Button>
-        )}
-
-        {/* reset */}
-        {formType === EnumFormType.reset && (
-          <Button variant="link" size="xs" onClick={switchToForm}>
-            Never mind
-          </Button>
+          <>
+            <Button type="submit" form={formType} colorScheme="purple">
+              Send recovery email
+            </Button>
+            <Button variant="link" size="xs" onClick={switchToForm}>
+              Never mind
+            </Button>
+          </>
         )}
       </Card>
     </Card>
