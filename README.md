@@ -33,6 +33,30 @@ Create a `.env` file based on the contents of `.env.template`, customizing value
 - VITE_IDENTITY_URL: is the app URL
 - HASURA_API_GRAPHQL_ENDPOINT: is the API graphql from Hasura
 
+The following postgres env is created with docker.
+
+- POSTGRES_USER: postgres config
+- POSTGRES_PASS: postgres config
+- POSTGRES_DBNAME: postgres config
+
+- PG_DATABASE_URL: postgres://<user>:<pass>@<host:5432>/<db_name>
+- HASURA_GRAPHQL_DATABASE_URL: postgres://<user>:<pass>@<host:5432>/<db_name>
+
+[Hasura config](https://hasura.io/docs/latest/deployment/graphql-engine-flags/reference/)
+
+- HASURA_GRAPHQL_ENABLE_CONSOLE
+- HASURA_GRAPHQL_DEV_MODE
+- HASURA_GRAPHQL_ENABLED_LOG_TYPES
+- HASURA_GRAPHQL_ADMIN_SECRET
+
+The following configs are used to setup the Hasura and are referent to the `hasura-pompom` folder:
+
+- HASURA_GRAPHQL_METADATA_DIRECTORY
+- HASURA_GRAPHQL_MIGRATIONS_DIRECTORY
+- HASURA_GRAPHQL_SEEDS_DIRECTORY
+
+This project uses a submodule to set up the Hasura. In order to have the migrations, seeds and metadata you should request the GitHub key to the codeowner of this project so you will able to fetch the private submodule.
+
 ## Before starting the project you must install the dependencies:
 
 ```bash
@@ -51,6 +75,10 @@ But if is the first time you are running locally, we also have to create the "wo
 
 ```bash
 hasura migrate apply --envfile .env --database-name default
+```
+
+```bash
+hasura seeds apply --envfile .env --database-name default
 ```
 
 ```bash
