@@ -142,6 +142,9 @@ export function FormComponent({
             type="email"
             data-testid={`${formType}-email`}
             placeholder=" "
+            autoComplete={
+              formType !== EnumFormType.register ? 'new-email' : 'current-email'
+            }
             // eslint-disable-next-line react/jsx-props-no-spreading
             {...formSetup.registerInput(`${formType}.email`, {
               required: 'Email is required',
@@ -163,6 +166,11 @@ export function FormComponent({
           >
             <InputGroup size="md">
               <Input
+                autoComplete={
+                  formType === EnumFormType.login
+                    ? 'current-password'
+                    : 'new-password'
+                }
                 pr="4.5rem"
                 type={show ? 'text' : 'password'}
                 placeholder=" "

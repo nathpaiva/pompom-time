@@ -1,5 +1,4 @@
 import { Box, Center } from '@chakra-ui/react'
-import { Navigate } from 'react-router-dom'
 
 import { FormComponent, FormMainActions, Greet } from './components'
 import { IMAGE_CONTAINER_WIDTH_SIZE_PX } from './constants'
@@ -8,7 +7,6 @@ import { EnumFormType } from './types'
 
 export const Login = () => {
   const {
-    isLoggedIn,
     containerRef,
     onSubmit,
     setFormTypeOpened,
@@ -17,10 +15,6 @@ export const Login = () => {
     showPage,
     formSetup,
   } = useIdentityForm()
-
-  if (isLoggedIn) {
-    return <Navigate to="/admin/workout" />
-  }
 
   return (
     <Box

@@ -176,7 +176,9 @@ describe('Page::Login', () => {
       })
 
       expect(requestPasswordRecovery).toHaveBeenCalledWith(userDataMock.email)
-      expect(screen.getByText('The email has been sent')).toBeTruthy()
+      expect(
+        screen.getByText('We will send you an email to reset your password.'),
+      ).toBeTruthy()
     })
 
     it('should render the login form and move to register and create a new user', async () => {
