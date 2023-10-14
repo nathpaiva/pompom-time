@@ -39,7 +39,6 @@ interface IResetFormConfig {
 }
 
 export interface TUseIdentityForm {
-  // isLoggedIn: boolean
   containerRef: RefObject<HTMLDivElement>
   onSubmit: (e: FormSetupFields) => void
   setFormTypeOpened: Dispatch<React.SetStateAction<EnumFormType>>
