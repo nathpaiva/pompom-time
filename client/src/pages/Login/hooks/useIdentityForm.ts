@@ -3,12 +3,14 @@ import { useMutation } from '@tanstack/react-query'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { User, useIdentityContext } from 'react-netlify-identity'
+import { useNavigate } from 'react-router-dom'
 
 import { IMAGE_CONTAINER_WIDTH_SIZE } from '../constants'
 import { EnumFormType } from '../types'
 import { FormSetupFields, TUseIdentityForm } from './types'
 
 export const useIdentityForm = (): TUseIdentityForm => {
+  const navigate = useNavigate()
   // create the register to each form
   const {
     handleSubmit: handleSubmitLoginForm,
@@ -95,6 +97,10 @@ export const useIdentityForm = (): TUseIdentityForm => {
         status: 'success',
         isClosable: true,
       })
+
+      if (formTypeOpened === EnumFormType.login) {
+        navigate('/admin/workout')
+      }
     },
     onError: (error) => {
       toast({
@@ -125,7 +131,7 @@ export const useIdentityForm = (): TUseIdentityForm => {
         setFormTypeOpened(EnumFormType.login)
         resetResetForm()
         toast({
-          title: 'The email has been sent',
+          title: 'We will send you an email to reset your password.',
           status: 'info',
           isClosable: true,
         })
@@ -183,11 +189,15 @@ export const useIdentityForm = (): TUseIdentityForm => {
   }, [moveToFormType])
 
   useEffect(() => {
+    if (isLoggedIn && isConfirmedUser) {
+      navigate('/admin/workout')
+    }
+
     setShouldShowPage(true)
-  }, [])
+  }, [isConfirmedUser, isLoggedIn, navigate])
 
   return {
-    isLoggedIn: isLoggedIn && isConfirmedUser,
+    // isLoggedIn: isLoggedIn && isConfirmedUser,
     containerRef,
     onSubmit: mutateLoginOrRegister,
     setFormTypeOpened,
