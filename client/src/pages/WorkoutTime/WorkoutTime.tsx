@@ -2,51 +2,8 @@ import { Box, Button, Heading, Spinner, Text } from '@chakra-ui/react'
 
 import { Workouts } from '../../../../serverless/generated/graphql/GraphQLSchema'
 import { useGetWorkoutById } from '../../hooks'
+import { animationByWorkoutType } from './animationTime'
 import { usePulse } from './hooks'
-import type { TWorkoutAnimation } from './types'
-
-const animationByWorkoutType: TWorkoutAnimation = {
-  strength: {
-    animation: '750ms infinite alternate bounce',
-    keyframes: {
-      '@keyframes bounce': {
-        '0%': {
-          transform: 'translateY(100%)',
-        },
-        '20%': {
-          transform: 'translateY(100%)',
-        },
-        '50%': {
-          transform: 'translateY(0%)',
-        },
-        '100%': {
-          transform: 'translateY(0%)',
-        },
-      },
-    },
-  },
-  pulse: {
-    animation: '250ms infinite alternate-reverse pulse',
-    keyframes: {
-      '@keyframes pulse': {
-        '0%': {
-          width: '30%',
-        },
-        '100%': {
-          width: '150px',
-        },
-      },
-    },
-  },
-  intensity: {
-    animation: '',
-    keyframes: {},
-  },
-  resistance: {
-    animation: '',
-    keyframes: {},
-  },
-}
 
 export const WorkoutTime = () => {
   const { data, isLoading } = useGetWorkoutById<Workouts>()
@@ -69,12 +26,12 @@ export const WorkoutTime = () => {
   })
   const isShouldStartWorkout = !isCountingDown && !isResting && !isPulsing
 
-  const textToShow = isShouldStartWorkout
-    ? `Start your workout`
+  const counterTime = isShouldStartWorkout
+    ? ` `
     : isCountingDown
-    ? `will start in: ${countingDownInterval}`
+    ? countingDownInterval // counting interval
     : isResting
-    ? `resting ${restingInterval}`
+    ? restingInterval // resting interval
     : pulseInterval
 
   if (isLoading) {
@@ -99,7 +56,13 @@ export const WorkoutTime = () => {
         borderRadius="md"
         mx="auto"
         position="relative"
+        gridTemplateRows="40px 1fr"
       >
+        {isShouldStartWorkout && <Text>Start workout</Text>}
+        {isCountingDown && <Text>The workout will start in:</Text>}
+        {isResting && <Text>Resting time:</Text>}
+        {isPulsing && <Text>Workout:</Text>}
+
         <Box
           w="150px"
           h="150px"
@@ -121,8 +84,8 @@ export const WorkoutTime = () => {
               : {}),
           }}
         >
-          <Text variant="span" fontSize="2xl">
-            {textToShow}
+          <Text variant="span" fontSize="2xl" textAlign="center">
+            {counterTime}
           </Text>
         </Box>
 
@@ -134,15 +97,15 @@ export const WorkoutTime = () => {
           height="auto"
         >
           <Button
-            isDisabled={isPulsing || isResting}
+            isDisabled={isPulsing || isResting || isCountingDown}
             onClick={handleStartStopPulse}
             colorScheme="purple"
           >
-            Start pulse
+            Start workout
           </Button>
 
           <Button
-            isDisabled={!isPulsing || isResting}
+            isDisabled={!isPulsing || isResting || isCountingDown}
             onClick={handleStartStopPulse}
             colorScheme="pink"
           >
