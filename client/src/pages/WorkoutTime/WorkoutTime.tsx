@@ -67,6 +67,15 @@ export const WorkoutTime = () => {
     sets: data?.goal_per_day,
     variety: data?.variety,
   })
+  const isShouldStartWorkout = !isCountingDown && !isResting && !isPulsing
+
+  const textToShow = isShouldStartWorkout
+    ? `Start your workout`
+    : isCountingDown
+    ? `will start in: ${countingDownInterval}`
+    : isResting
+    ? `resting ${restingInterval}`
+    : pulseInterval
 
   if (isLoading) {
     return <Spinner />
@@ -89,26 +98,7 @@ export const WorkoutTime = () => {
         border="2px"
         borderRadius="md"
         mx="auto"
-        sx={{
-          position: 'relative',
-          '::after': {
-            content: `" "`,
-            position: 'absolute',
-            width: '100%',
-            height: '90%',
-            animation: isCountingDown ? 'blinking 1s infinite .1s' : undefined,
-            opacity: isCountingDown ? 1 : 0,
-            transition: 'opacity .5s',
-          },
-          '@keyframes blinking': {
-            '0%': {
-              backgroundColor: '#b794f4',
-            },
-            '100%': {
-              backgroundColor: '#44337a',
-            },
-          },
-        }}
+        position="relative"
       >
         <Box
           w="150px"
@@ -120,8 +110,6 @@ export const WorkoutTime = () => {
           display="flex"
           justifyContent="center"
           alignItems="center"
-          opacity={isPulsing || isResting ? 1 : 0}
-          transition="opacity .5s"
           animation={
             isPulsing && data?.variety
               ? animationByWorkoutType[data.variety].animation
@@ -133,24 +121,10 @@ export const WorkoutTime = () => {
               : {}),
           }}
         >
-          {!isResting && (
-            <Text variant="span" fontSize="2xl">
-              pulse {pulseInterval}
-            </Text>
-          )}
-          {isResting && (
-            <Text variant="span" fontSize="2xl">
-              resting {restingInterval}
-            </Text>
-          )}
+          <Text variant="span" fontSize="2xl">
+            {textToShow}
+          </Text>
         </Box>
-
-        <Text variant="span" fontSize="2xl" zIndex="9999">
-          {isCountingDown && <> will start in: {countingDownInterval}</>}
-          {!isCountingDown && !isResting && !isPulsing && (
-            <> Start your workout</>
-          )}
-        </Text>
 
         <Box
           display="grid"
