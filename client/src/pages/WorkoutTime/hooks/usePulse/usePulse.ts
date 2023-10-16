@@ -133,7 +133,6 @@ export const usePulse: TUsePulse = ({
         setIsPulsing((prev) => !prev)
         setCounter((prev) => prev + 1)
 
-        // callFunctionToRest(pulseTimer)
         return
       }
 
