@@ -1,4 +1,11 @@
-import { Box, Button, Heading, Spinner, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Heading,
+  Spinner,
+  Text,
+  VisuallyHidden,
+} from '@chakra-ui/react'
 
 import { Workouts } from '../../../../serverless/generated/graphql/GraphQLSchema'
 import { useGetWorkoutById } from '../../hooks'
@@ -27,12 +34,12 @@ export const WorkoutTime = () => {
   const isShouldStartWorkout = !isCountingDown && !isResting && !isPulsing
 
   const counterTime = isShouldStartWorkout
-    ? ` `
+    ? ''
     : isCountingDown
     ? countingDownInterval // counting interval
     : isResting
     ? restingInterval // resting interval
-    : pulseInterval
+    : pulseInterval // pulsing interval
 
   if (isLoading) {
     return <Spinner />
@@ -43,7 +50,7 @@ export const WorkoutTime = () => {
       <Heading>
         {data?.name}: {data?.variety}
       </Heading>
-      Workout: {counter} / {data?.goal_per_day}
+
       <Box
         display="grid"
         rowGap="5"
@@ -57,6 +64,16 @@ export const WorkoutTime = () => {
         mx="auto"
         position="relative"
         gridTemplateRows="40px 1fr"
+        sx={{
+          '@keyframes blinking': {
+            '0%': {
+              backgroundColor: 'pink.200',
+            },
+            '100%': {
+              backgroundColor: 'yellow.400',
+            },
+          },
+        }}
       >
         {isShouldStartWorkout && <Text>Start workout</Text>}
         {isCountingDown && <Text>The workout will start in:</Text>}
@@ -66,15 +83,19 @@ export const WorkoutTime = () => {
         <Box
           w="150px"
           h="150px"
-          // change color to each state
-          bgGradient="radial(gray.300, yellow.400, pink.200)"
+          bgGradient={
+            isPulsing ? 'radial(gray.300, yellow.400, pink.200)' : 'none'
+          }
+          bgColor="pink.200"
           borderRadius={100}
           margin="auto"
           display="flex"
           justifyContent="center"
           alignItems="center"
           animation={
-            isPulsing && data?.variety
+            isCountingDown
+              ? '1s blinking .1s infinite'
+              : isPulsing && data?.variety
               ? animationByWorkoutType[data.variety].animation
               : ''
           }
@@ -87,6 +108,42 @@ export const WorkoutTime = () => {
           <Text variant="span" fontSize="2xl" textAlign="center">
             {counterTime}
           </Text>
+        </Box>
+
+        <Text align="center">
+          Workout: {counter} / {data?.goal_per_day}
+        </Text>
+
+        <Box
+          as="ul"
+          display="flex"
+          justifyContent="center"
+          gap="10px"
+          flexWrap="wrap"
+        >
+          {Array.from(Array(20), (_, index) => ++index).map((item) => {
+            return (
+              <Box
+                key={item}
+                as="li"
+                height="10px"
+                width="10px"
+                bgColor={
+                  (pulseInterval === item || pulseInterval > item) && isPulsing
+                    ? 'pink'
+                    : 'transparent'
+                }
+                border={
+                  pulseInterval !== item || pulseInterval < item || !isPulsing
+                    ? '1px solid pink'
+                    : ''
+                }
+                borderRadius="100%"
+              >
+                <VisuallyHidden>{item}</VisuallyHidden>
+              </Box>
+            )
+          })}
         </Box>
 
         <Box
