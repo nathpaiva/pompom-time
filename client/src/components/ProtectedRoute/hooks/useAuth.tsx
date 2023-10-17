@@ -14,7 +14,7 @@ export const useAuth = (): {
   const checkAuth = useCallback(async () => {
     try {
       if (!isConfirmedUser) {
-        throw new Error('Please confirm your resitration')
+        throw new Error('Please confirm your registration')
       }
 
       if (!user?.token?.expires_at) {
@@ -58,7 +58,8 @@ export const useAuth = (): {
 
   useEffect(() => {
     checkAuth()
-  }, [checkAuth])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return {
     isLoggedIn,
