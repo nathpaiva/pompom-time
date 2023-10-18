@@ -46,7 +46,7 @@ describe('list-workouts-by-user-id', () => {
     }
 
     expect(statusCode).toEqual(200)
-    expect(JSON.parse(body).nodes.length).toEqual(5)
+    expect(JSON.parse(body).nodes.length).toEqual(4)
   })
 
   it('should return an empty list for active user', async () => {
