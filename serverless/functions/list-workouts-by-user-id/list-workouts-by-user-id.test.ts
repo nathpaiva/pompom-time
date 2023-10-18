@@ -29,7 +29,7 @@ describe('list-workouts-by-user-id', () => {
     expect(JSON.parse(body).error).toEqual('You must be authenticated')
   })
 
-  it('should return a list for active user', async () => {
+  it('should return an workout list for an active user', async () => {
     const { statusCode, body } = await listWorkoutsByUserId(
       _req,
       createMockContext({
@@ -46,7 +46,7 @@ describe('list-workouts-by-user-id', () => {
     }
 
     expect(statusCode).toEqual(200)
-    expect(JSON.parse(body).nodes.length).toEqual(4)
+    expect(JSON.parse(body).nodes.length).toEqual(5)
   })
 
   it('should return an empty list for active user', async () => {
