@@ -20,10 +20,7 @@ interface IUseListByUserId<T> {
  *  isLoading: boolean, error: Error | null, data: T[], isError: boolean, isSuccess: boolean
  * }
  */
-export function useListByUserId<T>(
-  callback: (data: T) => void,
-  workout_name?: string,
-): IUseListByUserId<T> {
+export function useListByUserId<T>(workout_name?: string): IUseListByUserId<T> {
   const { authedFetch, user, getFreshJWT } = useIdentityContext()
   const toast = useToast()
 
@@ -67,12 +64,6 @@ export function useListByUserId<T>(
       }
     },
   })
-
-  useEffect(() => {
-    if (isSuccess && !isLoading) {
-      callback(data)
-    }
-  }, [isSuccess, isLoading, data, callback])
 
   useEffect(() => {
     if (isError && error?.message) {

@@ -17,20 +17,15 @@ import {
   Switch,
   useToast,
 } from '@chakra-ui/react'
-import { type Dispatch } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 import { Workouts } from '../../../../../../serverless/generated/graphql/GraphQLSchema'
 import { TAddWorkoutVariable, useAddWorkoutByUserId } from '../../../../hooks'
 import { Variety_Enum } from '../../../WorkoutTime/types'
 
-interface IAddWorkout {
-  setWorkouts: Dispatch<React.SetStateAction<Workouts[]>>
-}
-
 type IFormInput = TAddWorkoutVariable
 
-export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
+export const AddWorkout = () => {
   const {
     register,
     handleSubmit,
@@ -47,7 +42,6 @@ export const AddWorkout = ({ setWorkouts }: IAddWorkout) => {
       /* c8 ignore next */
       if (!data) return
 
-      setWorkouts((prev) => [...prev, data])
       toast({
         status: 'success',
         title: `Added workout: ${data.name}`,
