@@ -75,6 +75,7 @@ export const WorkoutTime = () => {
           },
         }}
       >
+        {/* create a component */}
         {isShouldStartWorkout && <Text>Start workout</Text>}
         {isCountingDown && <Text>The workout will start in:</Text>}
         {isResting && <Text>Resting time:</Text>}

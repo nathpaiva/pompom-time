@@ -60,6 +60,8 @@ const mockUser = () => {
       isLoggedIn: true,
       authedFetch: {
         get: vi.fn(),
+        delete: vi.fn(),
+        post: vi.fn(),
       },
     },
     invalidUserMocked: {

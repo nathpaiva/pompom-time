@@ -2,7 +2,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, RenderOptions } from '@testing-library/react'
 import React, { ReactElement } from 'react'
-import { MemoryRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import createFetchMock from 'vitest-fetch-mock'
 
 /**
@@ -24,12 +24,14 @@ const WrapTestWithProviders = ({
   children: React.ReactNode
   initialEntries?: string
 }) => {
+  window.history.pushState({}, 'Test page', initialEntries)
+
   return (
-    <MemoryRouter initialEntries={[initialEntries]}>
+    <BrowserRouter window={window}>
       <QueryClientProvider client={queryClient}>
         <ChakraProvider>{children}</ChakraProvider>
       </QueryClientProvider>
-    </MemoryRouter>
+    </BrowserRouter>
   )
 }
 
