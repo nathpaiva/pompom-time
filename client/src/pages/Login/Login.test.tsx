@@ -4,6 +4,7 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
 } from '@utils/test'
 
 import { Login } from './Login'
@@ -49,10 +50,10 @@ describe('Page::Login', () => {
   })
 
   describe('when the user is authenticated', () => {
-    // TODO: review the redirect
-    it.skip('should redirect to the workout page', () => {
+    it('should redirect to the workout page', () => {
       vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         isLoggedIn: true,
+        isConfirmedUser: true,
         logoutUser,
         loginUser,
         signupUser,

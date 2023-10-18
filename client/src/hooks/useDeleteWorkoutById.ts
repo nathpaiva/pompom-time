@@ -1,7 +1,6 @@
 import { useToast } from '@chakra-ui/react'
 import { UseMutationOptions, useMutation } from '@tanstack/react-query'
-
-import { useHeadersCommonSetup } from './useHeadersCommonSetup'
+import { useIdentityContext } from 'react-netlify-identity'
 
 /**
  *
@@ -15,32 +14,27 @@ export function useDeleteWorkoutById<T, V extends { id: string }>({
   onSuccess?: UseMutationOptions<T, Error, V>['onSuccess']
   onSettled?: UseMutationOptions<T, Error, V>['onSettled']
 }) {
-  const headers = useHeadersCommonSetup()
+  const { authedFetch } = useIdentityContext()
   const toast = useToast()
 
   return useMutation<T, Error, V>({
     mutationFn: async ({ id }) => {
       try {
-        if (!headers) {
-          throw new Error('You are not authenticated')
-        }
-
-        const _response = await fetch(
+        const _response = await authedFetch.delete(
           '/.netlify/functions/delete-workout-by-id',
           {
             method: 'DELETE',
-            headers,
             body: JSON.stringify({
               id,
             }),
           },
         )
 
-        if (_response.status !== 200) {
-          throw new Error(`Error: ${_response.statusText}`)
+        if (_response?.error) {
+          throw new Error(_response.error)
         }
 
-        return _response.json()
+        return _response
       } catch (error) {
         let message = 'Error on delete mutation'
 

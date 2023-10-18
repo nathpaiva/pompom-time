@@ -78,6 +78,3 @@ vi.mock('react-netlify-identity', () => ({
 
 export * from '@testing-library/react'
 export { _render as render, _hoisted_useIdentityContext, fetchMocker }
-// function createMemoryHistory() {
-//   throw new Error('Function not implemented.')
-// }

@@ -96,7 +96,7 @@ describe('Workout', () => {
           expect(screen.getByText('Delete workout')).toBeVisible()
         })
 
-        fetchMocker.mockResponseOnce(JSON.stringify(_workoutToDelete))
+        validUserMocked.authedFetch.delete.mockResolvedValue(_workoutToDelete)
 
         const buttonDeleteConfirmation = screen.getByText('Delete')
         expect(buttonDeleteConfirmation).toBeVisible()
@@ -143,7 +143,9 @@ describe('Workout', () => {
           expect(screen.getByText('Delete workout')).toBeVisible()
         })
 
-        fetchMocker.mockRejectedValueOnce('invalid content type')
+        validUserMocked.authedFetch.delete.mockRejectedValue(
+          'invalid content type',
+        )
 
         const buttonDeleteConfirmation = screen.getByText('Delete')
         expect(buttonDeleteConfirmation).toBeVisible()
@@ -269,6 +271,7 @@ describe('Workout', () => {
           repeat: true,
           interval: _workoutType === Variety_Enum.Resistance ? 10 : null,
         }
+
         vi.mocked(_hoisted_useIdentityContext).mockReturnValue(validUserMocked)
 
         render(<Workout />)
@@ -346,7 +349,7 @@ describe('Workout', () => {
           id: Date.now(),
           ...addNewWorkoutMock,
         }
-        fetchMocker.mockResponseOnce(JSON.stringify(dataMockReturn))
+        validUserMocked.authedFetch.post.mockResolvedValue(dataMockReturn)
 
         await waitFor(() => {
           // show the success banner
@@ -430,6 +433,51 @@ describe('Workout', () => {
         expect(
           screen.getByText('interval is required if is resistance'),
         ).toBeVisible()
+      })
+    })
+
+    it('should not add a new workout if the user is not authenticated', async () => {
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
+        ...validUserMocked,
+        user: undefined,
+      })
+
+      render(<Workout />)
+
+      // update each filed with addNewWorkoutMock
+      act(() => {
+        const addNewWorkoutMock = {
+          name: 'New Workout',
+          squeeze: 10,
+          variety: Variety_Enum.Pulse,
+          goal_per_day: 4,
+          rest: 45,
+          repeat: true,
+          interval: null,
+        }
+
+        fireEvent.change(screen.getByLabelText('Name'), {
+          target: { value: addNewWorkoutMock.name },
+        })
+        fireEvent.change(screen.getByLabelText('Squeeze'), {
+          target: { value: addNewWorkoutMock.squeeze },
+        })
+        fireEvent.change(screen.getByLabelText('Select workout variety'), {
+          target: { value: addNewWorkoutMock.variety },
+        })
+        fireEvent.change(screen.getByLabelText('# of Sets'), {
+          target: { value: addNewWorkoutMock.goal_per_day },
+        })
+        fireEvent.change(screen.getByLabelText('Rest'), {
+          target: { value: addNewWorkoutMock.rest },
+        })
+      })
+
+      const submitButton = screen.getByText('Add new workout')
+      fireEvent.click(submitButton)
+
+      await waitFor(() => {
+        expect(screen.getByText('You are not authenticated')).toBeVisible()
       })
     })
   })

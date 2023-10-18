@@ -1,8 +1,8 @@
 import { useToast } from '@chakra-ui/react'
 import { UseMutationOptions, useMutation } from '@tanstack/react-query'
+import { useIdentityContext } from 'react-netlify-identity'
 
 import { Workouts } from '../../../serverless/generated/graphql/GraphQLSchema'
-import { useHeadersCommonSetup } from './useHeadersCommonSetup'
 
 export type TAddWorkoutVariable = Partial<
   Omit<Workouts, 'created_at' | 'updated_at' | 'id' | 'user_id' | 'stop_after'>
@@ -20,30 +20,26 @@ export function useAddWorkoutByUserId<T, V extends TAddWorkoutVariable>({
   onSuccess?: UseMutationOptions<T, Error, V>['onSuccess']
   onSettled?: UseMutationOptions<T, Error, V>['onSettled']
 }) {
-  const headers = useHeadersCommonSetup()
+  const { authedFetch } = useIdentityContext()
+
   const toast = useToast()
 
   return useMutation<T, Error, V>({
     mutationFn: async (addWorkoutFormData) => {
       try {
-        if (!headers) {
-          throw new Error('You are not authenticated')
-        }
-
-        const _response = await fetch(
+        const _response = await authedFetch.post(
           '/.netlify/functions/add-workout-by-user',
           {
             method: 'POST',
-            headers,
             body: JSON.stringify(addWorkoutFormData),
           },
         )
 
-        if (_response.status !== 200) {
-          throw new Error(`Error: ${_response.statusText}`)
+        if (_response?.error) {
+          throw new Error(_response.error)
         }
 
-        return _response.json()
+        return _response
       } catch (error) {
         let message = 'Error on delete mutation'
 

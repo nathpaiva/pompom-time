@@ -22,8 +22,7 @@ describe('Page::Logout', () => {
   })
 
   describe('when the user not is authenticated', () => {
-    // TODO: review the redirect
-    it.skip('should redirect to login page', () => {
+    it('should redirect to login page', () => {
       vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         isLoggedIn: false,
       })

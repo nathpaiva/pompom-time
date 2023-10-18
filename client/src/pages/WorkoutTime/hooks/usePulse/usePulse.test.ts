@@ -3,8 +3,8 @@ import { act, renderHook, waitFor } from '@testing-library/react'
 import { mockDataResponse } from '../../../Workout/__tests__/mockDataResponse'
 import { usePulse } from './usePulse'
 
-describe('usePulse', () => {
-  it.skip('should start and stop pulse after get the limit', async () => {
+describe.skip('usePulse', () => {
+  it('should start and stop pulse after get the limit', async () => {
     const data = mockDataResponse[1]
     const { result } = renderHook(() =>
       usePulse({
@@ -46,7 +46,7 @@ describe('usePulse', () => {
     }
   })
 
-  it.skip('should start and stop pulse after call handleStartStopPulse', async () => {
+  it('should start and stop pulse after call handleStartStopPulse', async () => {
     const data = mockDataResponse[1]
     const { result } = renderHook(() =>
       usePulse({
