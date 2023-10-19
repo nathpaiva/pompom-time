@@ -13,54 +13,49 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import { debounce } from 'lodash'
-import { ChangeEvent, Dispatch, useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import { WorkoutsByUserIdQuery } from '../../../../../../serverless/functions/list-workouts-by-user-id/__generated__/list-workouts-by-user-id.graphql.generated'
-import { Workouts } from '../../../../../../serverless/generated/graphql/GraphQLSchema'
+import {
+  Workouts,
+  Workouts_Aggregate,
+} from '../../../../../../serverless/generated/graphql/GraphQLSchema'
+import { queryClient } from '../../../../config'
 import { useDeleteWorkoutById, useListByUserId } from '../../../../hooks'
 import { Dialog, useDialog } from './components/Dialog'
 
-interface IListWorkouts {
-  workouts: Workouts[]
-  setWorkouts: Dispatch<React.SetStateAction<Workouts[]>>
-}
-
-// TODO: change those components are using workouts in the state to use redux or context
-export const ListWorkouts = ({
-  workouts: _workouts,
-  setWorkouts,
-}: IListWorkouts) => {
+export const ListWorkouts = () => {
   const [workoutName, setWorkoutName] = useState<string>()
   const { isOpen, onClose, onOpen, dataOnFocus, setDataOnFocus } =
     useDialog<Workouts>()
 
   const toast = useToast()
 
-  const updateWorkoutState = (
-    data: WorkoutsByUserIdQuery['workouts_aggregate'],
-  ) => {
-    if (data.nodes) {
-      setWorkouts(data.nodes)
-    }
-  }
-
   // Query
-  const { isLoading, error } = useListByUserId(updateWorkoutState, workoutName)
+  const { isLoading, error, data } =
+    useListByUserId<Workouts_Aggregate>(workoutName)
   // Mutation
   const { mutate, isLoading: isDeleting } = useDeleteWorkoutById<
     Workouts,
     { id: Workouts['id'] }
   >({
-    onSettled(_, error, { id }) {
+    onSettled() {
       setDataOnFocus(null)
-
-      if (error) return
-      setWorkouts((prev) => {
-        return prev.filter((_workout) => _workout.id !== id)
-      })
     },
-    onSuccess(response) {
+    onSuccess(response, { id }) {
+      queryClient.setQueryData(
+        ['list-workouts-by-user-id', null],
+        (prevState: Workouts_Aggregate | undefined) => {
+          if (!prevState) {
+            return prevState
+          }
+
+          return {
+            ...prevState,
+            nodes: prevState.nodes.filter((workout) => workout.id !== id),
+          }
+        },
+      )
       toast({
         status: 'success',
         title: `Delete workout: ${response.name}`,
@@ -68,10 +63,9 @@ export const ListWorkouts = ({
     },
   })
 
-  const title =
-    _workouts?.length || typeof workoutName !== 'undefined'
-      ? 'Select workout:'
-      : `Oh no! You don't have any workout yet :(`
+  const title = data?.nodes?.length
+    ? 'Select workout:'
+    : `Oh no! You don't have any workout yet :(`
 
   const handleDeleteOpenModal = (workout: Workouts) => {
     setDataOnFocus(workout)
@@ -133,7 +127,7 @@ export const ListWorkouts = ({
           {/* TODO: add the input search */}
           {/* If the list is bigger then 5 */}
           {!isLoading &&
-            _workouts?.map((workout) => {
+            data?.nodes?.map((workout) => {
               const _isDeleting = workout.id === dataOnFocus?.id && isDeleting
 
               return (
@@ -174,7 +168,7 @@ export const ListWorkouts = ({
               )
             })}
           {typeof workoutName !== 'undefined' &&
-            !_workouts.length &&
+            !data?.nodes.length &&
             !isLoading && (
               <Heading size="sm" as="p">
                 Workout {workoutName} not found

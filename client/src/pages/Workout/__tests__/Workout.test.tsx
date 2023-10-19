@@ -1,7 +1,6 @@
 import {
   _hoisted_useIdentityContext,
   act,
-  fetchMocker,
   fireEvent,
   render,
   screen,
@@ -18,9 +17,6 @@ import {
 
 describe('Workout', () => {
   const { validUserMocked } = mockUser()
-  beforeEach(() => {
-    fetchMocker.resetMocks()
-  })
 
   afterEach(() => {
     vi.resetAllMocks()
@@ -262,6 +258,9 @@ describe('Workout', () => {
   describe('AddWorkout', () => {
     Object.values(Variety_Enum).forEach((_workoutType) => {
       it(`should add a new workout successfully with ${_workoutType} type`, async () => {
+        // setup initial data
+        validUserMocked.authedFetch.get.mockResolvedValue(newMockDataResponse)
+
         const addNewWorkoutMock = {
           name: 'New Workout',
           squeeze: 10,
@@ -352,6 +351,7 @@ describe('Workout', () => {
         validUserMocked.authedFetch.post.mockResolvedValue(dataMockReturn)
 
         await waitFor(() => {
+          expect(true).toBeTruthy()
           // show the success banner
           expect(
             screen.getByText(`Added workout: ${addNewWorkoutMock.name}`),
@@ -367,6 +367,7 @@ describe('Workout', () => {
     })
 
     it('should not add a new workout if is missing to add a required field', async () => {
+      validUserMocked.authedFetch.get.mockResolvedValue(newMockDataResponse)
       vi.mocked(_hoisted_useIdentityContext).mockReturnValue(validUserMocked)
 
       render(<Workout />)
@@ -437,6 +438,7 @@ describe('Workout', () => {
     })
 
     it('should not add a new workout if the user is not authenticated', async () => {
+      validUserMocked.authedFetch.get.mockResolvedValue(newMockDataResponse)
       vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         ...validUserMocked,
         user: undefined,

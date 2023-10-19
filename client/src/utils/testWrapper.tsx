@@ -1,21 +1,10 @@
 import { ChakraProvider } from '@chakra-ui/react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { render, RenderOptions } from '@testing-library/react'
 import React, { ReactElement } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import createFetchMock from 'vitest-fetch-mock'
 
-/**
- * set queries retry to false to test easily errors
- * we can change it to be dynamically
- */
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-    },
-  },
-})
+import { queryClient } from '../config'
 
 const WrapTestWithProviders = ({
   children,
@@ -65,9 +54,6 @@ export function createFetchResponse<T>(data: T, status = 200) {
   }
 }
 
-const fetchMocker = createFetchMock(vi)
-fetchMocker.enableMocks()
-
 const { _hoisted_useIdentityContext } = vi.hoisted(() => {
   return { _hoisted_useIdentityContext: vi.fn() }
 })
@@ -77,4 +63,4 @@ vi.mock('react-netlify-identity', () => ({
 }))
 
 export * from '@testing-library/react'
-export { _render as render, _hoisted_useIdentityContext, fetchMocker }
+export { _render as render, _hoisted_useIdentityContext }
