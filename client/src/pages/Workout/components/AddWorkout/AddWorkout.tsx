@@ -19,7 +19,11 @@ import {
 } from '@chakra-ui/react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-import { Workouts } from '../../../../../../serverless/generated/graphql/GraphQLSchema'
+import {
+  Workouts,
+  Workouts_Aggregate,
+} from '../../../../../../serverless/generated/graphql/GraphQLSchema'
+import { queryClient } from '../../../../config'
 import { TAddWorkoutVariable, useAddWorkoutByUserId } from '../../../../hooks'
 import { Variety_Enum } from '../../../WorkoutTime/types'
 
@@ -41,6 +45,31 @@ export const AddWorkout = () => {
     onSettled(data) {
       /* c8 ignore next */
       if (!data) return
+
+      queryClient.setQueryData(
+        ['list-workouts-by-user-id', null],
+        (prevState: Workouts_Aggregate | undefined) => {
+          if (!prevState) {
+            return {
+              aggregate: {
+                // TODO: review this return
+                ...({} as any),
+                count: 1,
+              },
+              nodes: [data],
+            }
+          }
+          const count = prevState.aggregate?.count ?? 0
+
+          return {
+            aggregate: {
+              ...prevState.aggregate,
+              count: count + 1,
+            },
+            nodes: [...prevState.nodes, data],
+          }
+        },
+      )
 
       toast({
         status: 'success',
