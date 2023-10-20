@@ -17,9 +17,9 @@ import {
   Switch,
   useToast,
 } from '@chakra-ui/react'
+import { Workouts } from '@graph/types'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-import { Workouts } from '../../../../../../serverless/generated/graphql/GraphQLSchema'
 import { TAddWorkoutVariable, useAddWorkoutByUserId } from '../../../../hooks'
 import { updatesWorkoutList } from '../../../../hooks/helpers'
 import { Variety_Enum } from '../../../WorkoutTime/types'

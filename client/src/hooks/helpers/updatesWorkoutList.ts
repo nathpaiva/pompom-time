@@ -1,10 +1,8 @@
-import {
-  Workouts_Aggregate,
-  Workouts,
-} from '../../../../serverless/generated/graphql/GraphQLSchema'
+import { Workouts_Aggregate, Workouts } from '@graph/types'
+
 import { queryClient } from '../../config'
 
-export function updatesWorkoutList<T extends Workouts | string>(param: T) {
+export function updatesWorkoutList<T extends Workouts>(param: T) {
   queryClient.setQueryData<Omit<Workouts_Aggregate, 'aggregate'>>(
     ['list-workouts-by-user-id', null],
     (prevState) => {

@@ -12,14 +12,11 @@ import {
   Stack,
   useToast,
 } from '@chakra-ui/react'
+import { Workouts, Workouts_Aggregate } from '@graph/types'
 import { debounce } from 'lodash'
 import { ChangeEvent, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import {
-  Workouts,
-  Workouts_Aggregate,
-} from '../../../../../../serverless/generated/graphql/GraphQLSchema'
 import { useDeleteWorkoutById, useListByUserId } from '../../../../hooks'
 import { updatesWorkoutList } from '../../../../hooks/helpers'
 import { Dialog, useDialog } from './components/Dialog'
