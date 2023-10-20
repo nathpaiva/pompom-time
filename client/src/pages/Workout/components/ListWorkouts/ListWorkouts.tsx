@@ -20,8 +20,8 @@ import {
   Workouts,
   Workouts_Aggregate,
 } from '../../../../../../serverless/generated/graphql/GraphQLSchema'
-import { queryClient } from '../../../../config'
 import { useDeleteWorkoutById, useListByUserId } from '../../../../hooks'
+import { updatesWorkoutList } from '../../../../hooks/helpers'
 import { Dialog, useDialog } from './components/Dialog'
 
 export const ListWorkouts = () => {
@@ -43,19 +43,8 @@ export const ListWorkouts = () => {
       setDataOnFocus(null)
     },
     onSuccess(response, { id }) {
-      queryClient.setQueryData(
-        ['list-workouts-by-user-id', null],
-        (prevState: Workouts_Aggregate | undefined) => {
-          if (!prevState) {
-            return prevState
-          }
+      updatesWorkoutList(id)
 
-          return {
-            ...prevState,
-            nodes: prevState.nodes.filter((workout) => workout.id !== id),
-          }
-        },
-      )
       toast({
         status: 'success',
         title: `Delete workout: ${response.name}`,
