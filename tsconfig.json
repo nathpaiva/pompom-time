@@ -17,7 +17,8 @@
     "jsx": "react-jsx",
     "types": ["vitest/globals"],
     "paths": {
-      "@utils/test": ["./client/src/utils/testWrapper.tsx"]
+      "@utils/test": ["./client/src/utils/testWrapper.tsx"],
+      "@graph/types": ["./serverless/generated/graphql/GraphQLSchema.ts"]
     }
   },
   "include": [
