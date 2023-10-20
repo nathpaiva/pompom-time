@@ -44,9 +44,6 @@ export const mockDataResponse = [
 ] satisfies Workouts[]
 
 export const newMockDataResponse = {
-  aggregate: {
-    count: mockDataResponse.length,
-  },
   nodes: mockDataResponse,
 }
 
