@@ -14,23 +14,23 @@ import {
 } from '@chakra-ui/react'
 import { Workouts, Workouts_Aggregate } from '@graph/types'
 import { debounce } from 'lodash'
-import { ChangeEvent, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { ChangeEvent } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 
 import { useDeleteWorkoutById, useListByUserId } from '../../../../hooks'
 import { updatesWorkoutList } from '../../../../hooks/helpers'
 import { Dialog, useDialog } from './components/Dialog'
 
 export const ListWorkouts = () => {
-  const [workoutName, setWorkoutName] = useState<string>()
+  const [workoutName, setWorkoutName] = useSearchParams()
+  const workoutNameSearch = [...workoutName].flat()[workoutName.size]
   const { isOpen, onClose, onOpen, dataOnFocus, setDataOnFocus } =
     useDialog<Workouts>()
-
   const toast = useToast()
 
   // Query
   const { isLoading, error, data } =
-    useListByUserId<Workouts_Aggregate>(workoutName)
+    useListByUserId<Workouts_Aggregate>(workoutNameSearch)
   // Mutation
   const { mutate, isLoading: isDeleting } = useDeleteWorkoutById<
     Workouts,
@@ -40,7 +40,7 @@ export const ListWorkouts = () => {
       setDataOnFocus(null)
     },
     onSuccess(response, { id }) {
-      updatesWorkoutList(id)
+      updatesWorkoutList(id, workoutNameSearch)
 
       toast({
         status: 'success',
@@ -75,7 +75,7 @@ export const ListWorkouts = () => {
   // TODO: handle with pagination
   const handleOnChangeSearchByWorkoutName = debounce(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setWorkoutName(e.target.value)
+      setWorkoutName({ name: e.target.value })
     },
     500,
   )
@@ -153,11 +153,11 @@ export const ListWorkouts = () => {
                 </Skeleton>
               )
             })}
-          {typeof workoutName !== 'undefined' &&
+          {typeof workoutNameSearch !== 'undefined' &&
             !data?.nodes.length &&
             !isLoading && (
               <Heading size="sm" as="p">
-                Workout {workoutName} not found
+                Workout {workoutNameSearch} not found
               </Heading>
             )}
         </Stack>

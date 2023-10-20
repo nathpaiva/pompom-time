@@ -19,6 +19,7 @@ import {
 } from '@chakra-ui/react'
 import { Workouts } from '@graph/types'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { useSearchParams } from 'react-router-dom'
 
 import { TAddWorkoutVariable, useAddWorkoutByUserId } from '../../../../hooks'
 import { updatesWorkoutList } from '../../../../hooks/helpers'
@@ -27,6 +28,8 @@ import { Variety_Enum } from '../../../WorkoutTime/types'
 type IFormInput = TAddWorkoutVariable
 
 export const AddWorkout = () => {
+  const [searchParams] = useSearchParams()
+  const workoutNameSearch = [...searchParams].flat()[searchParams.size]
   const {
     register,
     handleSubmit,
@@ -43,7 +46,7 @@ export const AddWorkout = () => {
       /* c8 ignore next */
       if (!data) return
 
-      updatesWorkoutList(data)
+      updatesWorkoutList(data, workoutNameSearch)
 
       toast({
         status: 'success',
