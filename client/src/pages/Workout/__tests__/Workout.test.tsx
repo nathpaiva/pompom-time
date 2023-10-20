@@ -1,3 +1,4 @@
+import { Variety_Enum } from '@graph/types'
 import {
   _hoisted_useIdentityContext,
   act,
@@ -7,7 +8,6 @@ import {
   waitFor,
 } from '@utils/test'
 
-import { Variety_Enum } from '../../../../../serverless/functions/add-workout-by-user/types'
 import { Workout } from '../Workout'
 import {
   mockDataResponse,

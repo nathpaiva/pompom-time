@@ -1,5 +1,4 @@
-import { Variety_Enum } from '../../../../../serverless/functions/add-workout-by-user/types'
-import { Workouts } from '../../../../../serverless/generated/graphql/GraphQLSchema'
+import { Variety_Enum, Workouts } from '@graph/types'
 
 export const mockDataResponse = [
   {

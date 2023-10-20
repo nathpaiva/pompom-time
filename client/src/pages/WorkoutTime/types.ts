@@ -1,7 +1,4 @@
-import {
-  Variety_Enum,
-  Workouts,
-} from '../../../../serverless/generated/graphql/GraphQLSchema'
+import { Variety_Enum, Workouts } from '@graph/types'
 
 export type TWorkoutAnimation = {
   [key in Workouts['variety']]: {

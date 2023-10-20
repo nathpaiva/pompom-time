@@ -6,8 +6,8 @@ import {
   Text,
   VisuallyHidden,
 } from '@chakra-ui/react'
+import { Workouts } from '@graph/types'
 
-import { Workouts } from '../../../../serverless/generated/graphql/GraphQLSchema'
 import { useGetWorkoutById } from '../../hooks'
 import { animationByWorkoutType } from './animationTime'
 import { usePulse } from './hooks'

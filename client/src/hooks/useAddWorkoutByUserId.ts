@@ -1,8 +1,7 @@
 import { useToast } from '@chakra-ui/react'
+import { Workouts } from '@graph/types'
 import { UseMutationOptions, useMutation } from '@tanstack/react-query'
 import { useIdentityContext } from 'react-netlify-identity'
-
-import { Workouts } from '../../../serverless/generated/graphql/GraphQLSchema'
 
 export type TAddWorkoutVariable = Partial<
   Omit<Workouts, 'created_at' | 'updated_at' | 'id' | 'user_id' | 'stop_after'>
