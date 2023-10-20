@@ -15,6 +15,7 @@ export function updatesWorkoutList<T extends Workouts | string>(params: T) {
       }
 
       return {
+        ...prevState,
         nodes: [...(prevState?.nodes ?? []), params],
       }
     },
