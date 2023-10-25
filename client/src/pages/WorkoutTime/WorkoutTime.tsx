@@ -32,7 +32,7 @@ export const WorkoutTime = () => {
     variety: data?.variety,
   })
   const isShouldStartWorkout = !isCountingDown && !isResting && !isPulsing
-
+  const countList = Array.from(Array(data?.squeeze), (_, index) => ++index)
   const counterTime = isShouldStartWorkout
     ? ''
     : isCountingDown
@@ -84,9 +84,6 @@ export const WorkoutTime = () => {
         <Box
           w="150px"
           h="150px"
-          bgGradient={
-            isPulsing ? 'radial(gray.300, yellow.400, pink.200)' : 'none'
-          }
           bgColor="pink.200"
           borderRadius={100}
           margin="auto"
@@ -122,7 +119,7 @@ export const WorkoutTime = () => {
           gap="10px"
           flexWrap="wrap"
         >
-          {Array.from(Array(20), (_, index) => ++index).map((item) => {
+          {countList.map((item) => {
             return (
               <Box
                 key={item}
