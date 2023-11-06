@@ -32,7 +32,7 @@ export const ListWorkouts = () => {
   const { isLoading, error, data } =
     useListByUserId<Workouts_Aggregate>(workoutNameSearch)
   // Mutation
-  const { mutate, isLoading: isDeleting } = useDeleteWorkoutById<
+  const { mutate, isPending: isDeleting } = useDeleteWorkoutById<
     Workouts,
     { id: Workouts['id'] }
   >({
