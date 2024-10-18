@@ -27,7 +27,9 @@
     "client",
     "serverless",
     "codegen.ts",
-    "types/globals.d.ts"
+    "types/globals.d.ts",
+    "vite.config.d.ts"
   ],
+  "exclude": ["node_modules"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
