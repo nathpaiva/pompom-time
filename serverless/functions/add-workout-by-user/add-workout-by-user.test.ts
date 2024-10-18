@@ -177,7 +177,7 @@ function expectWorkoutSuccessfully(variety: Variety_Enum) {
     squeeze: 20,
     interval: 10,
     variety,
-  } as unknown as TAddWorkoutByUserMutationVariables
+  } as TAddWorkoutByUserMutationVariables
 
   return {
     globalMockData: _globalMockData,

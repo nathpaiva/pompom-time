@@ -27,7 +27,7 @@ describe('delete-workout-by-id', () => {
       squeeze: 20,
       interval: 10,
       variety: Variety_Enum.Resistance,
-    } as unknown as TAddWorkoutByUserMutationVariables
+    } as TAddWorkoutByUserMutationVariables
     const requestContext = createMockContext(_mockUserContext)
     const reqCreation = createMockHandlerEventBody<
       TAddWorkoutByUserMutationVariables,
