@@ -55,7 +55,7 @@ The following configs are used to setup the Hasura and are referent to the `hasu
 - HASURA_GRAPHQL_MIGRATIONS_DIRECTORY
 - HASURA_GRAPHQL_SEEDS_DIRECTORY
 
-This project uses a submodule to set up the Hasura. In order to have the migrations, seeds and metadata you should request the GitHub key to the codeowner of this project so you will able to fetch the private submodule.
+This project uses a submodule to set up the Hasura. In order to have the migrations, seeds and metadata you must request the GitHub key to the codeowner of this project so you will able to fetch the private submodule.
 
 ## Before starting the project you must install the dependencies:
 
@@ -71,7 +71,7 @@ This command with start the docker to create the DB and Graphql environment and 
 yarn dev
 ```
 
-But if is the first time you are running locally, we also have to create the "workouts" table. In order to do that, you can use the `hasura cli` and execute:
+But if it is the first time you run the project locally, you also must create the "workouts" table. To do that, you can use the `hasura cli` and execute:
 
 ```bash
 hasura migrate apply --envfile .env --database-name default
