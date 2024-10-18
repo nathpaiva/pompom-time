@@ -29,3 +29,9 @@ coverage
 .netlify
 .env
 .env.prod
+
+# Serverless
+serverless/vite.config.d.ts
+serverless/vite.config.js
+tsconfig.node.tsbuildinfo
+vite.config.d.ts
