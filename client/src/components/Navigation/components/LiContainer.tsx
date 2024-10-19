@@ -33,6 +33,7 @@ export const LiContainer = ({
   return (
     <Box
       as="li"
+      textAlign="center"
       sx={{
         p: '0.2rem 0.5rem',
         borderRadius: '2',

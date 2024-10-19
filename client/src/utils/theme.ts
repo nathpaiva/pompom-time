@@ -43,8 +43,9 @@ export const customVariant = extendTheme({
   styles: {
     global: {
       main: {
-        maxWidth: '1400px',
+        maxWidth: 'xl',
         margin: 'auto',
+        minHeight: '600px',
       },
       ul: {
         listStyleType: 'none',

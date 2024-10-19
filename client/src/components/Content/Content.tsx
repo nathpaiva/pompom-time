@@ -7,8 +7,9 @@ export const Content = () => {
   const { pathname } = useLocation()
 
   return (
-    <Stack p="3" as="section" spacing={3}>
+    <Stack p="3" as="section" spacing={3} minH="xl">
       <PageTitle />
+      {/* render the component from route */}
       <Outlet />
       {pathname === '/' && (
         <Stack spacing={3}>

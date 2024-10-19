@@ -4,7 +4,7 @@ import { AddWorkout, ListWorkouts } from './components'
 
 export function Workout() {
   return (
-    <Card display="grid" gridTemplateColumns="1fr 1fr" p="1rem" gap="15">
+    <Card display="grid" gridTemplateColumns="1fr" p="1rem" gap="15">
       <ListWorkouts />
 
       <AddWorkout />
