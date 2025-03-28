@@ -75,14 +75,14 @@ export const useIdentityForm = (): TUseIdentityForm => {
       return Promise.resolve(user)
     },
     onSuccess: (user) => {
-      const greetName = user.user_metadata
+      const greet = user.user_metadata
         ? `Hi ${user.user_metadata.full_name}`
         : 'Hey there'
 
       const toastMessage =
         formTypeOpened === EnumFormType.login
-          ? `${greetName}. Welcome back to Pompom time`
-          : `${greetName}. The email confirmation was sent. Please confirm before continuing.`
+          ? `${greet}. Welcome back to Pompom time`
+          : `${greet}. The email confirmation was sent. Please confirm before continuing.`
 
       resetLoginForm()
       resetRegisterForm()

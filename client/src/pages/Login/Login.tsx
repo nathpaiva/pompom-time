@@ -34,7 +34,7 @@ export const Login = () => {
             {/* login form */}
             {formTypeOpened === EnumFormType.login ? (
               <LoginForm
-                formSetup={formSetup}
+                formSetup={formSetup.login}
                 formTypeOpened={formTypeOpened}
                 setFormTypeOpened={setFormTypeOpened}
                 show={show}
@@ -55,7 +55,7 @@ export const Login = () => {
           {/* register form */}
           <TabPanel>
             <RegisterForm
-              formSetup={formSetup}
+              formSetup={formSetup.register}
               formTypeOpened={formTypeOpened}
               show={show}
               handleClick={handleClick}

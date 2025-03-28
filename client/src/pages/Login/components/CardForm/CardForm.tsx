@@ -52,15 +52,7 @@ const LABEL_COPY = {
   fullName: 'Name',
 } as Record<FieldsType, string>
 
-export const CardForm = ({
-  formSetup,
-  formTypeOpened,
-  onSubmit,
-  children,
-  formKey,
-  show,
-  handleClick,
-}: {
+export interface CardFormProps {
   formSetup: TUseIdentityForm['formSetup'][EnumFormType]
   formTypeOpened: EnumFormType
   onSubmit:
@@ -68,12 +60,28 @@ export const CardForm = ({
     | TUseIdentityForm['onSubmitRecoverPassword']
   children: React.ReactNode
   formKey: EnumFormType
+  /**
+   * this prop is used to show/hide the password
+   * @default false
+   */
   show?: boolean
+  /**
+   * this prop is a function that is called to show/hide the password
+   * @default undefined
+   */
   handleClick?: () => void
-}) => {
-  console.log(`CardForm: formKey: ${formKey}`, FORM_FIELDS[formKey])
+}
 
-  const formTypeOpenedEnum = formSetup
+export const CardForm = ({
+  formSetup: formTypeOpenedEnum,
+  formTypeOpened,
+  onSubmit,
+  children,
+  formKey,
+  show,
+  handleClick,
+}: CardFormProps) => {
+  const isFormHidden = !(formKey === formTypeOpened)
 
   return (
     <Card
@@ -83,8 +91,8 @@ export const CardForm = ({
         formTypeOpenedEnum.handleSubmit(onSubmit)(event)
       }}
       id={formKey}
-      data-testid={formKey}
-      aria-hidden={formTypeOpened !== EnumFormType.login}
+      data-testid={`form-component-${formKey}`}
+      aria-hidden={isFormHidden}
     >
       <Card
         sx={{

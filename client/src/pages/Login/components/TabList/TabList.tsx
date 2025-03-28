@@ -9,13 +9,16 @@ export const TabList = ({
 }) => (
   <UITabList>
     <Tab
+      data-testid={`${EnumFormType.login}-tab`}
       onClick={() => {
         setFormTypeOpened(EnumFormType.login)
       }}
     >
       Login
     </Tab>
+
     <Tab
+      data-testid={`${EnumFormType.register}-tab`}
       onClick={() => {
         setFormTypeOpened(EnumFormType.register)
       }}

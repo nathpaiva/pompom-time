@@ -2,7 +2,11 @@ import { Button } from '@chakra-ui/react'
 
 import { TUseIdentityForm } from '../../hooks/types'
 import { EnumFormType } from '../../types'
-import { CardForm } from '../CardForm'
+import { CardForm, CardFormProps } from '../CardForm'
+
+type RegisterFormProps = Omit<CardFormProps, 'children' | 'formKey'> & {
+  onSubmit: TUseIdentityForm['onSubmit']
+}
 
 export const RegisterForm = ({
   formSetup,
@@ -10,16 +14,10 @@ export const RegisterForm = ({
   show,
   handleClick,
   onSubmit,
-}: {
-  formSetup: TUseIdentityForm['formSetup']
-  formTypeOpened: EnumFormType
-  show: boolean
-  handleClick: () => void
-  onSubmit: TUseIdentityForm['onSubmit']
-}) => {
+}: RegisterFormProps) => {
   return (
     <CardForm
-      formSetup={formSetup[EnumFormType.register]}
+      formSetup={formSetup}
       formTypeOpened={formTypeOpened}
       onSubmit={onSubmit}
       formKey={EnumFormType.register}
