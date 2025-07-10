@@ -1,4 +1,4 @@
-import { GridItem, Stack } from '@chakra-ui/react'
+import { Grid, GridItem } from '@chakra-ui/react'
 import { useIdentityContext } from 'react-netlify-identity'
 import { useLocation } from 'react-router-dom'
 
@@ -10,8 +10,14 @@ export const Navigation = () => {
 
   return (
     <GridItem as="nav" p="3">
-      <Stack spacing={2} as="ul">
-        <LiContainer label="home" isCurrent={pathname === '/'} to="/" />
+      <Grid as="ul" templateColumns="1fr 1fr" gap="1">
+        <LiContainer
+          isAuthItem
+          label="about"
+          isCurrent={pathname === '/'}
+          to="/"
+          isToShowItem={!isLoggedIn}
+        />
 
         <LiContainer
           label="workout time"
@@ -22,20 +28,13 @@ export const Navigation = () => {
         />
 
         <LiContainer
-          label="(TBD) insights"
-          to="#"
-          isCurrent={pathname === '/#'}
-          isAuthItem
-          isToShowItem={isLoggedIn && isConfirmedUser}
-        />
-
-        <LiContainer
           label="logout"
           to="logout"
           isCurrent={pathname === '/logout'}
           isAuthItem
           isToShowItem={isLoggedIn && isConfirmedUser}
         />
+
         <LiContainer
           label="login"
           to="login"
@@ -43,7 +42,7 @@ export const Navigation = () => {
           isAuthItem
           isToShowItem={!isLoggedIn || !isConfirmedUser}
         />
-      </Stack>
+      </Grid>
     </GridItem>
   )
 }

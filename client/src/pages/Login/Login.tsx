@@ -1,83 +1,69 @@
-import { Box, Center } from '@chakra-ui/react'
+import { TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
+import { useState } from 'react'
 
-import { FormComponent, FormMainActions, Greet } from './components'
-import { IMAGE_CONTAINER_WIDTH_SIZE_PX } from './constants'
+import {
+  TabList,
+  LoginForm,
+  ResetForm,
+  RegisterForm,
+  Greet,
+} from './components'
 import { useIdentityForm } from './hooks'
 import { EnumFormType } from './types'
 
 export const Login = () => {
   const {
-    containerRef,
     onSubmit,
     setFormTypeOpened,
     onSubmitRecoverPassword,
     formTypeOpened,
-    showPage,
     formSetup,
   } = useIdentityForm()
 
+  const [show, setShow] = useState(false)
+  const handleClick = () => setShow(!show)
+
   return (
-    <Box
-      as="section"
-      position="relative"
-      sx={{
-        display: 'flex',
-        overflow: 'hidden',
-        opacity: showPage ? '1' : '0',
-        transition: 'opacity .1s 250ms',
-      }}
-      ref={containerRef}
-    >
-      <FormComponent
-        // {/* register form */}
-        formTitle="Sign up"
-        formType={EnumFormType.register}
-        onSubmit={onSubmit}
-        formIsHidden={formTypeOpened !== EnumFormType.register}
-        formSetup={formSetup[EnumFormType.register]}
-      />
+    <>
+      <Greet />
+      <Tabs variant="enclosed">
+        <TabList setFormTypeOpened={setFormTypeOpened} />
 
-      <Center
-        // {/* info component */}
-        sx={{
-          minWidth: IMAGE_CONTAINER_WIDTH_SIZE_PX,
-          transition: 'transform 250ms',
-          p: '2rem',
-        }}
-        borderRadius="sm"
-        data-move
-      >
-        <Greet />
-      </Center>
+        <TabPanels>
+          <TabPanel>
+            {/* login form */}
+            {formTypeOpened === EnumFormType.login ? (
+              <LoginForm
+                formSetup={formSetup.login}
+                formTypeOpened={formTypeOpened}
+                setFormTypeOpened={setFormTypeOpened}
+                show={show}
+                handleClick={handleClick}
+                onSubmit={onSubmit}
+              />
+            ) : (
+              // reset form
+              <ResetForm
+                formSetup={formSetup}
+                formTypeOpened={formTypeOpened}
+                changeFormType={setFormTypeOpened}
+                onSubmitRecoverPassword={onSubmitRecoverPassword}
+              />
+            )}
+          </TabPanel>
 
-      <FormComponent
-        // {/* login form */}
-        formTitle="Log in"
-        formType={EnumFormType.login}
-        onSubmit={onSubmit}
-        formIsHidden={formTypeOpened !== EnumFormType.login}
-        switchToForm={() => {
-          setFormTypeOpened(EnumFormType.reset)
-        }}
-        formSetup={formSetup[EnumFormType.login]}
-      />
-
-      <FormComponent
-        // {/* reset form */}
-        formTitle="Recover password"
-        formType={EnumFormType.reset}
-        onSubmit={onSubmitRecoverPassword}
-        formIsHidden={formTypeOpened !== EnumFormType.reset}
-        switchToForm={() => {
-          setFormTypeOpened(EnumFormType.login)
-        }}
-        formSetup={formSetup[EnumFormType.reset]}
-      />
-
-      <FormMainActions
-        formFocus={formTypeOpened}
-        switchToForm={setFormTypeOpened}
-      />
-    </Box>
+          {/* register form */}
+          <TabPanel>
+            <RegisterForm
+              formSetup={formSetup.register}
+              formTypeOpened={formTypeOpened}
+              show={show}
+              handleClick={handleClick}
+              onSubmit={onSubmit}
+            />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </>
   )
 }

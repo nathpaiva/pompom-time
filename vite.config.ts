@@ -57,7 +57,7 @@ const viteConfig = {
   test: testConfig,
   plugins: [splitVendorChunkPlugin(), react(), tsconfigPaths()],
   server: {
-    port: 4200,
+    port: 4201,
     watch: {
       usePolling: true,
     },

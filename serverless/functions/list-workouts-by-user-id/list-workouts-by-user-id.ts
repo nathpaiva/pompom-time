@@ -7,6 +7,8 @@ import {
 } from './__generated__/list-workouts-by-user-id.graphql.generated'
 import type { PromiseResponseListWorkoutsByUserId } from './types'
 
+type StatusCode = 400 | 500 | 300
+
 const listWorkoutsByUserId = async (
   {
     queryStringParameters,
@@ -47,7 +49,7 @@ const listWorkoutsByUserId = async (
       body: JSON.stringify(workouts_aggregate),
     }
   } catch (error) {
-    let statusCode: 400 | 500 | 300 = 500
+    let statusCode: StatusCode = 500
 
     const message = errorResolver(error as ClientError | ErrorHandler)
 

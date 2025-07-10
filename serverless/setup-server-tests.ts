@@ -1,3 +1,5 @@
+import { APIGatewayProxyEventHeaders } from 'aws-lambda'
+
 export function createMockHandlerEventBody<T, Q>(
   body: T,
   queryStringParameters?: Q,
@@ -6,7 +8,7 @@ export function createMockHandlerEventBody<T, Q>(
     body: JSON.stringify(body),
     headers: {
       'Content-Type': 'application/json',
-    } as any,
+    } as APIGatewayProxyEventHeaders,
     queryStringParameters: queryStringParameters ?? null,
   } as HandlerEvent<T, Q>
 }

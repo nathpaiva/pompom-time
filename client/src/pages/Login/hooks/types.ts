@@ -1,4 +1,4 @@
-import type { Dispatch, RefObject } from 'react'
+import type { Dispatch } from 'react'
 import type {
   FieldErrors,
   UseFormHandleSubmit,
@@ -10,13 +10,12 @@ import { EnumFormType } from '../types'
 interface TCommonFields {
   email?: string
   password?: string
+  fullName?: string
 }
 
 export interface FormSetupFields {
   login: TCommonFields
-  register: TCommonFields & {
-    fullName?: string
-  }
+  register: TCommonFields
   reset: TCommonFields
 }
 
@@ -39,12 +38,11 @@ interface IResetFormConfig {
 }
 
 export interface TUseIdentityForm {
-  containerRef: RefObject<HTMLDivElement>
   onSubmit: (e: FormSetupFields) => void
   setFormTypeOpened: Dispatch<React.SetStateAction<EnumFormType>>
   onSubmitRecoverPassword: (e: FormSetupFields) => void
   formTypeOpened: EnumFormType
-  showPage: boolean
+
   formSetup: {
     login: ILoginFormConfig
     register: IRegisterFormConfig

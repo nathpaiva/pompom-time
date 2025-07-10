@@ -55,7 +55,7 @@ The following configs are used to setup the Hasura and are referent to the `hasu
 - HASURA_GRAPHQL_MIGRATIONS_DIRECTORY
 - HASURA_GRAPHQL_SEEDS_DIRECTORY
 
-This project uses a submodule to set up the Hasura. In order to have the migrations, seeds and metadata you must request the GitHub key to the codeowner of this project so you will able to fetch the private submodule.
+This project uses a submodule to set up the Hasura. In order to have the migrations, seeds and metadata you must request the GitHub key to the codeowner of this project so you will able to fetch the private submodule. Check the submodule reference for more details [Submodule reference](#submodule-reference)
 
 ## Before starting the project you must install the dependencies:
 
@@ -93,4 +93,41 @@ In case you need to create a new `query` or `mutation` after the file creation y
 yarn codegen
 ```
 
+## Submodule reference
+
 ✅ Done! Enjoy the app and send new ideas.
+
+🎉 **Success!** Your private submodule is now properly set up!
+
+## What was accomplished:
+
+1. ✅ **Initialized the submodule**: `git submodule init`
+2. ✅ **Resolved the directory conflict**: Removed the existing `hasura-pompom` directory
+3. ✅ **Fetched the private submodule**: `git submodule update`
+
+## Current Status:
+
+- **Submodule status**: `c564d89bd8bd1198db1f7ebead57db5aac750ad2 hasura-pompom (heads/main)`
+- **Content available**: The `hasura-pompom` directory now contains:
+  - `metadata/` - Hasura metadata configuration
+  - `migrations/` - Database migrations
+  - `seeds/` - Database seed data
+  - `config.yaml` - Hasura configuration
+
+## Useful Commands for Future Reference:
+
+```bash
+<code_block_to_apply_changes_from>
+```
+
+## Next Steps:
+
+Now you can proceed with the Hasura setup as described in your README:
+
+1. **Set up your `.env` file** based on `.env.template`
+2. **Start the project**: `yarn dev`
+3. **Apply migrations**: `hasura migrate apply --envfile .env --database-name default`
+4. **Apply seeds**: `hasura seeds apply --envfile .env --database-name default`
+5. **Apply metadata**: `hasura metadata apply --envfile .env`
+
+Your private submodule is now ready for use! 🚀

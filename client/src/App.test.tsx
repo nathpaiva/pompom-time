@@ -12,7 +12,6 @@ const expectedCommonItems = () => {
       'The purpose is to have a place where you can control and see your progress doing pompoarism workout.',
     ),
   ).toBeTruthy()
-  expect(screen.getByText('home')).toBeVisible()
 }
 
 describe('App', () => {
@@ -30,6 +29,7 @@ describe('App', () => {
       expect(screen.getByText('logout')).not.toBeVisible()
       expect(screen.getByText('workout time')).not.toBeVisible()
       expect(screen.getByText('login')).toBeVisible()
+      expect(screen.getByText('about')).toBeVisible()
 
       expectedCommonItems()
     })
@@ -46,6 +46,7 @@ describe('App', () => {
       expect(screen.getByText('logout')).toBeVisible()
       expect(screen.getByText('workout time')).toBeVisible()
       expect(screen.getByText('login')).not.toBeVisible()
+      expect(screen.getByText('about')).not.toBeVisible()
       expectedCommonItems()
     })
   })
