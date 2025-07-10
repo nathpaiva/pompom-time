@@ -9,25 +9,8 @@ import {
   InputRightElement,
 } from '@chakra-ui/react'
 
-import { FormSetupFields, TUseIdentityForm } from '../../hooks/types'
+import type { TUseIdentityForm } from '../../hooks/types'
 import { EnumFormType } from '../../types'
-
-// const FORM_FIELDS = {
-//   [EnumFormType.login]: [
-//     'email',
-//     'password',
-//   ] as (keyof TUseIdentityForm['formSetup']['login']['registerInput'])[],
-//   [EnumFormType.register]: [
-//     'email',
-//     'password',
-//     'fullName',
-//   ] as (keyof TUseIdentityForm['formSetup']['register']['registerInput'])[],
-//   [EnumFormType.reset]: [
-//     'email',
-//   ] as (keyof TUseIdentityForm['formSetup']['reset']['registerInput'])[],
-// } as Record<EnumFormType, string[]>
-
-// import { UseFormRegister } from 'react-hook-form'
 
 type FieldsType =
   TUseIdentityForm['formSetup'][EnumFormType]['registerInput']['name']
@@ -35,10 +18,6 @@ type FieldsType =
 type FormFieldsType = {
   [key in EnumFormType]: FieldsType[]
 }
-//   [EnumFormType.login]: TUseIdentityForm['formSetup'][EnumFormType.login]['registerInput']['name'][]
-//   [EnumFormType.register]: TUseIdentityForm['formSetup'][EnumFormType.login]['registerInput']['name'][]
-//   [EnumFormType.reset]: TUseIdentityForm['formSetup'][EnumFormType.login]['registerInput']['name'][]
-// }
 
 export const FORM_FIELDS: FormFieldsType = {
   [EnumFormType.login]: ['email', 'password'],

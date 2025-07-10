@@ -4,7 +4,6 @@ import {
   fireEvent,
   render,
   screen,
-  waitFor,
 } from '@utils/test'
 
 import { Login } from './Login'
@@ -20,8 +19,6 @@ const userDataMock = {
   password: 'XXXX',
   fullName: 'User Test',
 }
-
-// TODO: preciso organizar essa function para poder resolver a tab & o form!!!
 
 async function changeTab({
   registerFormTab,
