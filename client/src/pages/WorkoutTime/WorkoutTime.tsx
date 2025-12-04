@@ -9,7 +9,7 @@ import {
 import { Workouts } from '@graph/types'
 
 import { useGetWorkoutById } from '../../hooks'
-import { animationByWorkoutType } from './animationTime'
+import { AnimatedWorkoutCircle } from './components/AnimatedWorkoutCircle'
 import { usePulse } from './hooks'
 
 export const WorkoutTime = () => {
@@ -64,49 +64,19 @@ export const WorkoutTime = () => {
         mx="auto"
         position="relative"
         gridTemplateRows="40px 1fr"
-        sx={{
-          '@keyframes blinking': {
-            '0%': {
-              backgroundColor: 'pink.200',
-            },
-            '100%': {
-              backgroundColor: 'yellow.400',
-            },
-          },
-        }}
       >
-        {/* create a component */}
         {isShouldStartWorkout && <Text>Start workout</Text>}
         {isCountingDown && <Text>The workout will start in:</Text>}
         {isResting && <Text>Resting time:</Text>}
         {isPulsing && <Text>Workout:</Text>}
 
-        <Box
-          w="150px"
-          h="150px"
-          bgColor="pink.200"
-          borderRadius={100}
-          margin="auto"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          animation={
-            isCountingDown
-              ? '1s blinking .1s infinite'
-              : isPulsing && data?.variety
-              ? animationByWorkoutType[data.variety].animation
-              : ''
-          }
-          sx={{
-            ...(isPulsing && data?.variety
-              ? animationByWorkoutType[data.variety].keyframes
-              : {}),
-          }}
-        >
-          <Text variant="span" fontSize="2xl" textAlign="center">
-            {counterTime}
-          </Text>
-        </Box>
+        <AnimatedWorkoutCircle
+          isPulsing={isPulsing}
+          isResting={isResting}
+          isCountingDown={isCountingDown}
+          workoutType={data?.variety}
+          displayTime={counterTime}
+        />
 
         <Text align="center">
           Workout: {counter} / {data?.goal_per_day}
