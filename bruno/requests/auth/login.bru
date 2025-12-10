@@ -1,0 +1,161 @@
+meta {
+  name: Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{identityBaseUrl}}/.netlify/identity/token
+  body: formUrlEncoded
+  auth: none
+}
+
+headers {
+  Content-Type: application/x-www-form-urlencoded
+}
+
+body:form-urlencoded {
+  grant_type: password
+  username: {{loginEmail}}
+  password: {{loginPassword}}
+}
+
+script:pre-request {
+  // Pre-request script runs before sending the request
+}
+
+script:post-response {
+  // Post-response script runs after receiving the response
+  // Step 1: Validate response status
+  if (res.status !== 200) {
+    console.log(`Login failed with status ${res.status}`);
+    return;
+  }
+  
+  try {
+    // Step 2: Parse response body
+    const body = res.getBody();
+    let data;
+  
+    if (typeof body === 'string') {
+      try {
+        data = JSON.parse(body);
+      } catch (e) {
+        console.log('Failed to parse response body as JSON');
+        return;
+      }
+    } else {
+      data = body;
+    }
+  
+    // Step 3: Extract and store access_token
+    if (!data || !data.access_token) {
+      console.log('No access_token found in response');
+      return;
+    }
+  
+    const authToken = data.access_token;
+  
+    // Step 4: Store authToken as both runtime and environment variable
+    bru.setVar('authToken', authToken);
+    bru.setEnvVar('authToken', authToken);
+    console.log('Auth token stored successfully');
+  
+    // Step 5: Automatically call GET /.netlify/identity/user
+    const identityBaseUrl = bru.interpolate("{{identityBaseUrl}}");
+    if (!identityBaseUrl) {
+      console.log('identityBaseUrl not found in environment variables');
+      return;
+    }
+  
+    try {
+      const userResponse = await bru.http.send({
+        method: 'GET',
+        url: `${identityBaseUrl}/.netlify/identity/user`,
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+  
+      // Step 6: Extract userId and email from user response
+      if (userResponse.status === 200) {
+        try {
+          const userBody = userResponse.body;
+          let userData;
+  
+          if (typeof userBody === 'string') {
+            userData = JSON.parse(userBody);
+          } else {
+            userData = userBody;
+          }
+  
+          // Extract id → userId
+          if (userData && userData.id) {
+            bru.setVar('userId', userData.id);
+            bru.setEnvVar('userId', userData.id);
+            console.log('User ID stored successfully');
+          } else {
+            console.log('No id field found in user response');
+          }
+  
+          // Extract email → email
+          if (userData && userData.email) {
+            bru.setVar('email', userData.email);
+            bru.setEnvVar('email', userData.email);
+            console.log('Email stored successfully');
+          } else {
+            console.log('No email field found in user response');
+          }
+        } catch (e) {
+          console.log(`Error parsing user response: ${e.message}`);
+        }
+      } else {
+        console.log(`Failed to fetch user info with status ${userResponse.status}`);
+      }
+    } catch (httpError) {
+      console.log(`Error calling /identity/user endpoint: ${httpError.message}`);
+    }
+  } catch (error) {
+    console.log(`Error in login script: ${error.message}`);
+  }
+}
+
+docs {
+  # Login
+  
+  Authenticates a user with Netlify Identity using email and password credentials.
+  
+  **Method:** POST
+  **Path:** `/.netlify/identity/token`
+  
+  **Credentials:**
+  This request uses `{{loginEmail}}` and `{{loginPassword}}` from your environment secrets.
+  
+  **Body Parameters:**
+  - `grant_type` (string, required): Must be "password"
+  - `username` (string, required): User's email address (from `{{loginEmail}}`)
+  - `password` (string, required): User's password (from `{{loginPassword}}`)
+  
+  **Automated Flow:**
+  After successful login, this request automatically:
+  
+  1. **Retrieves the JWT token** from the token endpoint response
+  2. **Calls** `GET {{identityBaseUrl}}/.netlify/identity/user` with the Bearer token
+  3. **Extracts and stores** the following values:
+     - `authToken` - The JWT access token
+     - `userId` - The user's unique ID
+     - `email` - The user's email address
+  
+  **Persistence:**
+  All three values (`authToken`, `userId`, `email`) are persisted into the selected environment as both:
+  - Runtime variables (available during the current Bruno session)
+  - Environment secret variables (saved to the environment file for reuse)
+  
+  **Usage:**
+  Once this request completes successfully, you can use `{{authToken}}`, `{{userId}}`, and `{{email}}` in any other request within the collection.
+  
+  **Setup:**
+  1. Set `loginEmail` and `loginPassword` in your environment secrets
+  2. Run this request to authenticate
+  3. All authentication values will be automatically stored and available for subsequent requests
+}

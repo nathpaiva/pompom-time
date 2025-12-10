@@ -1,0 +1,61 @@
+meta {
+  name: Add Workout By User
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/.netlify/functions/add-workout-by-user
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "user_id": "{{userId}}",
+    "workout_name": "{{workoutName}}",
+    "notes": "{{workoutNotes}}"
+  }
+}
+
+script:pre-request {
+  const authToken = bru.interpolate("{{authToken}}");
+  const userId = bru.interpolate("{{userId}}");
+
+  if (!authToken) {
+    console.log("[Add Workout By User] Missing authToken. Run the Login request first.");
+  }
+
+  if (!userId) {
+    console.log("[Add Workout By User] Missing userId. Run the Login request first.");
+  }
+}
+
+script:post-response {
+  console.log("[Add Workout By User] Response status:", res.status);
+}
+
+docs {
+  # Add Workout By User
+
+  Creates a new workout for the authenticated user using the Netlify Function `add-workout-by-user`.
+
+  **Base URL (functions):** `{{baseUrl}}`
+  **Method:** POST
+  **Path:** `/.netlify/functions/add-workout-by-user`
+
+  **Authentication:**
+  - Requires `Authorization: Bearer {{authToken}}`, populated by the Login request.
+
+  **Body Fields (example):**
+  - `user_id` — populated from `{{userId}}` returned by `/identity/user`
+  - `workout_name` — set via `{{workoutName}}` variable
+  - `notes` — optional notes via `{{workoutNotes}}`
+
+  Run **Login** first to populate `authToken` and `userId`, then use this request to add workouts.
+}
