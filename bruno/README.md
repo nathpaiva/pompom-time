@@ -83,7 +83,7 @@ If you prefer to set the token manually:
 - **Method:** POST
 - **Path:** `/.netlify/identity/token`
 - **Description:** Authenticates a user and automatically stores the JWT token and user ID
-- **Body:** JSON with `grant_type: "password"`, `username` (email), and `password`
+- **Body:** Form URL-encoded with `grant_type: "password"`, `username` (email), and `password`
 - **Automation:** After successful login, stores `authToken` and `userId` in environment variables
 
 ### Serverless Functions

@@ -20,6 +20,10 @@ body:form-urlencoded {
   password: {{loginPassword}}
 }
 
+vars:pre-request {
+  identityBaseUrl: https://pompom-time.netlify.app
+}
+
 script:pre-request {
   // Pre-request script runs before sending the request
 }
