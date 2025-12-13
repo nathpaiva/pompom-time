@@ -1,0 +1,38 @@
+meta {
+  name: Delete Workout By ID
+  type: http
+}
+
+post {
+  url: {{baseUrl}}/.netlify/functions/delete-workout-by-id
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "id": "{{workoutId}}"
+  }
+}
+
+docs {
+  # Delete Workout By ID
+
+  Deletes a workout by its ID for the authenticated user.
+
+  **Method:** POST
+  **Path:** `/.netlify/functions/delete-workout-by-id`
+
+  **Authentication:** Required (Bearer token via Authorization header)
+
+  **Body Parameters:**
+  - `id` (string, required): The ID of the workout to delete
+
+  **Response:**
+  Returns the deleted workout object on success.
+}

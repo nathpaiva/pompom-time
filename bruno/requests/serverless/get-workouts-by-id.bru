@@ -1,0 +1,31 @@
+meta {
+  name: Get Workouts By ID
+  type: http
+}
+
+get {
+  url: {{baseUrl}}/.netlify/functions/get-workouts-by-id?workout_id={{workoutId}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+}
+
+docs {
+  # Get Workouts By ID
+
+  Retrieves a workout by its ID for the authenticated user.
+
+  **Method:** GET
+  **Path:** `/.netlify/functions/get-workouts-by-id`
+
+  **Authentication:** Required (Bearer token via Authorization header)
+
+  **Query Parameters:**
+  - `workout_id` (string, required): The ID of the workout to retrieve
+
+  **Response:**
+  Returns an array of workout objects matching the ID.
+}

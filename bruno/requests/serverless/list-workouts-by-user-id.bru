@@ -1,0 +1,40 @@
+meta {
+  name: List Workouts By User ID
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/.netlify/functions/list-workouts-by-user-id?workout_name={{workoutName}}
+  body: none
+  auth: none
+}
+
+params:query {
+  workout_name: {{workoutName}}
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+}
+
+vars:pre-request {
+  workoutName: 
+}
+
+docs {
+  # List Workouts By User ID
+  
+  Lists workouts for the authenticated user, optionally filtered by workout name.
+  
+  **Method:** GET
+  **Path:** `/.netlify/functions/list-workouts-by-user-id`
+  
+  **Authentication:** Required (Bearer token via Authorization header)
+  
+  **Query Parameters:**
+  - `workout_name` (string, optional): Filter workouts by name (partial match, case-insensitive). If omitted, returns all workouts for the user.
+  
+  **Response:**
+  Returns workout aggregate data including count and workout list (limited to 5 results).
+}
