@@ -7,14 +7,10 @@ import {
 } from '../../constants'
 import { type TUsePulse, Variety_Enum } from './types'
 
-export const usePulse: TUsePulse = ({
-  interval,
-  squeeze,
-  repeat,
-  rest,
-  sets,
-  variety,
-}) => {
+export const usePulse: TUsePulse = (data) => {
+  const { interval, squeeze, repeat, rest, variety } = data ?? {}
+  const sets = data?.goal_per_day
+
   const { _PULSE_INTERVAL, _PULSE_LIMIT, _REST, _REPEAT, _SETS } =
     useMemo(() => {
       return {
@@ -113,6 +109,7 @@ export const usePulse: TUsePulse = ({
 
       _pulseIntervalRef.current = undefined
       setPulseInterval(_pulseInterval.current)
+      setIsPulsing(false)
       return
     }
 
@@ -148,9 +145,14 @@ export const usePulse: TUsePulse = ({
   }, [pulseTimer])
 
   const handleStartStopPulse = useCallback(() => {
+    if (isPulsing) {
+      pulseTimer()
+      return
+    }
+
     setIsCountingDown((prev) => !prev)
     countingDownTimer(start)
-  }, [countingDownTimer, start])
+  }, [isPulsing, pulseTimer, countingDownTimer, start])
 
   useEffect(() => {
     if (!counter || !_REPEAT || !_REST || !_SETS) return
