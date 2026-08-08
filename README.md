@@ -93,41 +93,60 @@ In case you need to create a new `query` or `mutation` after the file creation y
 yarn codegen
 ```
 
-## Submodule reference
+## Project structure
 
-✅ Done! Enjoy the app and send new ideas.
+- `client/` — the React app (pages, components, hooks)
+- `serverless/` — Netlify Functions that talk to Hasura
+- `hasura-pompom/` — Hasura config, migrations, and seeds (private submodule, see below)
+- `e2e/` — Playwright end-to-end tests
+- `bruno/` — Bruno API collection to call the serverless functions directly
 
-🎉 **Success!** Your private submodule is now properly set up!
+## Tests
 
-## What was accomplished:
-
-1. ✅ **Initialized the submodule**: `git submodule init`
-2. ✅ **Resolved the directory conflict**: Removed the existing `hasura-pompom` directory
-3. ✅ **Fetched the private submodule**: `git submodule update`
-
-## Current Status:
-
-- **Submodule status**: `c564d89bd8bd1198db1f7ebead57db5aac750ad2 hasura-pompom (heads/main)`
-- **Content available**: The `hasura-pompom` directory now contains:
-  - `metadata/` - Hasura metadata configuration
-  - `migrations/` - Database migrations
-  - `seeds/` - Database seed data
-  - `config.yaml` - Hasura configuration
-
-## Useful Commands for Future Reference:
+Unit and component tests (client and serverless) run with [Vitest](https://vitest.dev/):
 
 ```bash
-<code_block_to_apply_changes_from>
+yarn test              # client tests, single run
+yarn test:watch        # client tests, watch mode
+yarn test:coverage     # client tests with coverage
+
+yarn test:serverless          # serverless tests, single run
+yarn test:serverless:watch    # serverless tests, watch mode
+yarn test:serverless:coverage # serverless tests with coverage
 ```
 
-## Next Steps:
+### End-to-end tests
 
-Now you can proceed with the Hasura setup as described in your README:
+End-to-end tests use [Playwright](https://playwright.dev/) and take a full-page screenshot in every test as visual proof. Playwright starts the app itself (`yarn dev`, so Docker must be running) and waits for it to be ready.
 
-1. **Set up your `.env` file** based on `.env.template`
-2. **Start the project**: `yarn dev`
-3. **Apply migrations**: `hasura migrate apply --envfile .env --database-name default`
-4. **Apply seeds**: `hasura seeds apply --envfile .env --database-name default`
-5. **Apply metadata**: `hasura metadata apply --envfile .env`
+1. Copy `e2e/env.e2e.example` to `.env.e2e.local` (repo root) and fill in a real test user from the Netlify Identity instance the app points to (`VITE_IDENTITY_URL`)
+2. Run the suite:
 
-Your private submodule is now ready for use! 🚀
+```bash
+yarn test:e2e         # run all e2e tests
+yarn test:e2e:ui      # run with the Playwright UI, step by step
+yarn test:e2e:report  # open the HTML report from the last run
+```
+
+Screenshots are saved to `e2e/screenshots/` (gitignored).
+
+## Lint and build
+
+```bash
+yarn lint    # type-check + eslint, client and serverless
+yarn format  # eslint --fix, client and serverless
+yarn build   # type-check + vite build
+```
+
+## API requests with Bruno
+
+The `bruno/` folder has a ready-to-use [Bruno](https://www.usebruno.com/) collection to call every serverless function directly, including a login request that stores the auth token automatically. See [bruno/README.md](bruno/README.md) for setup.
+
+## Submodule reference
+
+This project uses a git submodule (`hasura-pompom`) for Hasura metadata, migrations, and seeds. You need access from the codeowner to fetch it.
+
+```bash
+git submodule init
+git submodule update
+```
