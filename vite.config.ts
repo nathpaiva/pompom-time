@@ -19,7 +19,7 @@ const testConfig = {
       import.meta.url,
     ).pathname,
   },
-  exclude: [...configDefaults.exclude, 'serverless'],
+  exclude: [...configDefaults.exclude, 'serverless', 'e2e'],
   coverage: {
     provider: 'v8',
     include: ['client/src/**/*'],

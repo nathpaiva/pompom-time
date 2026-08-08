@@ -30,6 +30,11 @@ coverage
 .env
 .env.prod
 
+# Playwright
+/test-results/
+/playwright-report/
+e2e/screenshots/
+
 # Serverless
 serverless/vite.config.d.ts
 serverless/vite.config.js
