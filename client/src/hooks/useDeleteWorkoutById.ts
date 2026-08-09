@@ -2,7 +2,7 @@ import { useToast } from '@chakra-ui/react'
 import { UseMutationOptions, useMutation } from '@tanstack/react-query'
 import { useIdentityContext } from 'react-netlify-identity'
 
-import { normalizeError, toastOnError } from './helpers'
+import { IResponseWithError, normalizeError, toastOnError } from './helpers'
 
 /**
  *
@@ -22,7 +22,7 @@ export function useDeleteWorkoutById<T, V extends { id: string }>({
   return useMutation<T, Error, V>({
     mutationFn: async ({ id }) => {
       try {
-        const _response = await authedFetch.delete(
+        const _response = (await authedFetch.delete(
           '/.netlify/functions/delete-workout-by-id',
           {
             method: 'DELETE',
@@ -30,7 +30,7 @@ export function useDeleteWorkoutById<T, V extends { id: string }>({
               id,
             }),
           },
-        )
+        )) as T & IResponseWithError
 
         if (_response?.error) {
           throw new Error(_response.error)
