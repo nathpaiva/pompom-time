@@ -6,6 +6,10 @@ module.exports = {
   plugins: ['@tanstack/query'],
   rules: {
     '@tanstack/query/exhaustive-deps': 'error',
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+    ],
   },
   parserOptions: {
     ecmaFeatures: {
