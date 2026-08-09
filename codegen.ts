@@ -35,6 +35,10 @@ const config: CodegenConfig = {
         skipTypename: false,
         dedupeFragments: true,
         exportFragmentSpreadSubTypes: true,
+        scalars: {
+          uuid: 'string',
+          timestamptz: 'string',
+        },
       },
     },
     '': {
@@ -50,7 +54,6 @@ const config: CodegenConfig = {
             content: '/* eslint-disable */',
           },
         },
-        'typescript',
         'typescript-operations',
         'typed-document-node',
       ],
@@ -62,6 +65,10 @@ const config: CodegenConfig = {
         dedupeFragments: true,
         exportFragmentSpreadSubTypes: true,
         documentMode: 'documentNode',
+        scalars: {
+          uuid: 'string',
+          timestamptz: 'string',
+        },
       },
     },
   },

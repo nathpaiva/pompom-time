@@ -11,14 +11,21 @@ export const errorResolver = (error: ClientError | ErrorHandler | IError) => {
     return error.message
   }
 
-  if (!error?.cause || !Array.isArray(error.cause)) {
-    return error.message ? error.message : 'Sorry, something is going wrong'
+  const cause = (error as IError)?.cause
+  const causes = Array.isArray(cause)
+    ? cause
+    : cause && 'data' in cause
+      ? cause.data
+      : undefined
+
+  if (!causes) {
+    return error?.message ? error.message : 'Sorry, something is going wrong'
   }
 
   let count = 0
   let message = ''
-  while (count < error.cause.length) {
-    const _cause = error.cause[count]
+  while (count < causes.length) {
+    const _cause = causes[count]
     // check if the message from interval has undefined, if so the entire body is invalid, so the code goes to the next message and show it
     if (_cause.message && !_cause.message.split(' ').includes('undefined')) {
       message = _cause.message

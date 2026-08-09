@@ -1,4 +1,4 @@
-import { Workouts } from './__generated__/delete-workout-by-id.graphql.generated'
+import { Workouts } from '@graph/types'
 
 export type TSuccessResponse = Pick<
   Workouts,

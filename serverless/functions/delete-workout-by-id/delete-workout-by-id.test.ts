@@ -73,7 +73,7 @@ describe('delete-workout-by-id', () => {
       null
     >(
       {
-        id: Date.now(),
+        id: String(Date.now()),
       },
       null,
     )
@@ -98,9 +98,13 @@ describe('delete-workout-by-id', () => {
     }
 
     const requestContext = createMockContext(_mockUserContext)
+    const _req = createMockHandlerEventBody<
+      DeleteWorkoutByIdMutationVariables,
+      null
+    >({} as DeleteWorkoutByIdMutationVariables, null)
 
     const { statusCode, body } = await deleteWorkoutById(
-      {} as any,
+      { ..._req, queryStringParameters: {} },
       requestContext,
     )
     if (statusCode === 200) {

@@ -1,8 +1,6 @@
-import {
-  AddWorkoutByUserMutationVariables,
-  Workouts,
-  Variety_Enum,
-} from './__generated__/add-workout-by-user.graphql.generated'
+import { Variety_Enum, Workouts } from '@graph/types'
+
+import { AddWorkoutByUserMutationVariables } from './__generated__/add-workout-by-user.graphql.generated'
 
 interface TAddWorkoutStrengthPulseIntensity {
   variety: Exclude<Variety_Enum, Variety_Enum.Resistance>

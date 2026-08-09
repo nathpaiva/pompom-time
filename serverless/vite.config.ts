@@ -1,4 +1,5 @@
 import { defineConfig, type UserConfig } from 'vite'
+import tsconfigPaths from 'vite-tsconfig-paths'
 import type { InlineConfig } from 'vitest'
 import { configDefaults } from 'vitest/config'
 
@@ -7,6 +8,7 @@ interface VitestConfigExport extends UserConfig {
 }
 
 const viteConfig = {
+  plugins: [tsconfigPaths()],
   test: {
     globals: true,
     clearMocks: true,

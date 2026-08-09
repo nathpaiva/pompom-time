@@ -1,3 +1,3 @@
-import { Workouts } from './__generated__/get-workouts-by-id.graphql.generated'
+import { Workouts } from '@graph/types'
 
 export type PromiseResponseGetWorkoutById = Promise<HandlerResponse<Workouts[]>>
