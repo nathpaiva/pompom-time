@@ -10,12 +10,12 @@ interface IUserContext {
 type Context = Omit<NtlHandlerContext, 'clientContext' | 'identity'> & {
   clientContext?:
     IUserContext | (NtlHandlerContext['clientContext'] & IUserContext)
-  identity?: Record<string, any>
+  identity?: NtlHandlerContext['identity']
 }
 
 type LambdaContext = Omit<LLambdaContext, 'clientContext' | 'identity'> & {
   clientContext?: IUserContext & NtlHandlerContext['clientContext']
-  identity?: Record<string, any>
+  identity?: NtlHandlerContext['identity']
 }
 
 type HandlerEvent<T, Q> = Omit<

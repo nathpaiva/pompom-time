@@ -1,4 +1,8 @@
-import { APIGatewayProxyEventHeaders } from 'aws-lambda'
+import {
+  APIGatewayProxyEventHeaders,
+  ClientContextClient,
+  ClientContextEnv,
+} from 'aws-lambda'
 
 export function createMockHandlerEventBody<T, Q>(
   body: T,
@@ -26,9 +30,8 @@ export function createMockContext(clientContext?: IUserContext) {
     identity: undefined,
     clientContext: {
       ...clientContext,
-      // TODO: change this to remove the any
-      env: {} as any,
-      client: {} as any,
+      env: {} as ClientContextEnv,
+      client: {} as ClientContextClient,
     },
     getRemainingTimeInMillis: () => 0,
     done: () => null,
