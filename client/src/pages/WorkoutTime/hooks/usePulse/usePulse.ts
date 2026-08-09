@@ -31,18 +31,19 @@ export const usePulse: TUsePulse = (data) => {
   // workout
   const [isPulsing, setIsPulsing] = useState(false)
   const [pulseInterval, setPulseInterval] = useState(1)
-  const _pulseIntervalRef = useRef<NodeJS.Timeout>()
+  const _pulseIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const _pulseInterval = useRef(1)
   // rest
   const [isResting, setIsResting] = useState(false)
   const [restingInterval, setRestingInterval] = useState(_REST ?? 0)
-  const _restingIntervalRef = useRef<NodeJS.Timeout>()
+  const _restingIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const _restingInterval = useRef(_REST ?? 0)
   // workout will start
   const [isCountingDown, setIsCountingDown] = useState(false)
   const [countingDownInterval, setCountingDownInterval] = useState(3)
-  const _countingDownIntervalRef = useRef<NodeJS.Timeout>()
+  const _countingDownIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const _countingDownInterval = useRef(3)
+  const _handleStartStopPulseRef = useRef<(() => void) | undefined>(undefined)
 
   const countingDownTimer = useCallback((callback: () => void) => {
     _countingDownIntervalRef.current = setInterval(() => {
@@ -67,6 +68,11 @@ export const usePulse: TUsePulse = (data) => {
   const restingTimer = useCallback(
     (callback: () => void) => {
       if (!_REST) return
+
+      // seed the countdown with the current rest value before starting
+      _restingInterval.current = _REST
+      setRestingInterval(_REST)
+
       // start resting
       _restingIntervalRef.current = setInterval(() => {
         /**
@@ -93,6 +99,22 @@ export const usePulse: TUsePulse = (data) => {
       }, PULSE_INTERVAL_RESTING)
     },
     [_REST],
+  )
+
+  const advanceSet = useCallback(
+    (nextCounter: number) => {
+      if (!nextCounter || !_REPEAT || !_REST || !_SETS) return
+
+      if (nextCounter < _SETS) {
+        setIsResting((prev) => !prev)
+        restingTimer(() => _handleStartStopPulseRef.current?.())
+      }
+
+      if (nextCounter === _SETS) {
+        setCounter(0)
+      }
+    },
+    [_REPEAT, _REST, _SETS, restingTimer],
   )
 
   const pulseTimer = useCallback(() => {
@@ -128,7 +150,11 @@ export const usePulse: TUsePulse = (data) => {
         _pulseIntervalRef.current = undefined
         setPulseInterval(_pulseInterval.current)
         setIsPulsing((prev) => !prev)
-        setCounter((prev) => prev + 1)
+        setCounter((prev) => {
+          const next = prev + 1
+          advanceSet(next)
+          return next
+        })
 
         return
       }
@@ -137,7 +163,7 @@ export const usePulse: TUsePulse = (data) => {
       _pulseInterval.current += 1
       setPulseInterval(_pulseInterval.current)
     }, _PULSE_INTERVAL)
-  }, [isPulsing, _PULSE_INTERVAL, _PULSE_LIMIT])
+  }, [isPulsing, _PULSE_INTERVAL, _PULSE_LIMIT, advanceSet])
 
   const start = useCallback(() => {
     setIsPulsing((prev) => !prev)
@@ -155,28 +181,8 @@ export const usePulse: TUsePulse = (data) => {
   }, [isPulsing, pulseTimer, countingDownTimer, start])
 
   useEffect(() => {
-    if (!counter || !_REPEAT || !_REST || !_SETS) return
-
-    if (
-      counter < _SETS &&
-      !_restingIntervalRef.current &&
-      !_pulseIntervalRef.current
-    ) {
-      setIsResting((prev) => !prev)
-      restingTimer(handleStartStopPulse)
-    }
-
-    if (counter === _SETS) {
-      setCounter(0)
-    }
-  }, [counter, _SETS, _REPEAT, _REST, restingTimer, handleStartStopPulse])
-
-  useEffect(() => {
-    if (_REST) {
-      setRestingInterval(_REST)
-      _restingInterval.current = _REST
-    }
-  }, [_REST])
+    _handleStartStopPulseRef.current = handleStartStopPulse
+  }, [handleStartStopPulse])
 
   return {
     pulseInterval,
