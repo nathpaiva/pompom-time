@@ -3,7 +3,7 @@ import { Workouts } from '@graph/types'
 import { UseMutationOptions, useMutation } from '@tanstack/react-query'
 import { useIdentityContext } from 'react-netlify-identity'
 
-import { IResponseWithError, normalizeError, toastOnError } from './helpers'
+import { hasErrorShape, normalizeError, toastOnError } from './helpers'
 
 export type TAddWorkoutVariable = Partial<
   Omit<Workouts, 'created_at' | 'updated_at' | 'id' | 'user_id' | 'stop_after'>
@@ -28,19 +28,19 @@ export function useAddWorkoutByUserId<T, V extends TAddWorkoutVariable>({
   return useMutation<T, Error, V>({
     mutationFn: async (addWorkoutFormData) => {
       try {
-        const _response = (await authedFetch.post(
+        const _response = await authedFetch.post(
           '/.netlify/functions/add-workout-by-user',
           {
             method: 'POST',
             body: JSON.stringify(addWorkoutFormData),
           },
-        )) as T & IResponseWithError
+        )
 
-        if (_response?.error) {
+        if (hasErrorShape(_response) && _response.error) {
           throw new Error(_response.error)
         }
 
-        return _response
+        return _response as T
       } catch (error) {
         return Promise.reject(normalizeError(error, 'Error on add workout'))
       }
