@@ -22,11 +22,15 @@ export function useListByUserId<T>(workout_name?: string): IUseListByUserId<T> {
     T,
     Error,
     T,
-    (string | undefined)[]
+    (string | number | null | undefined)[]
   >({
-    queryKey: ['list-workouts-by-user-id', workout_name],
+    queryKey: [
+      'list-workouts-by-user-id',
+      workout_name ?? null,
+      user?.token.expires_at,
+    ],
     queryFn: async ({ queryKey }) => {
-      const [_, param] = queryKey
+      const [, param] = queryKey
       const searchBy = param ? `?workout_name=${param}` : ''
 
       try {

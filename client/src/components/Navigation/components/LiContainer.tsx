@@ -40,8 +40,8 @@ export const LiContainer = ({
         ...(isAuthItem && isToShowItem
           ? { display: 'block' }
           : isAuthItem && !isToShowItem
-          ? { display: 'none' }
-          : { display: 'block' }),
+            ? { display: 'none' }
+            : { display: 'block' }),
 
         ...(isCurrent && highlightSx),
 

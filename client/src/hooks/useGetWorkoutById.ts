@@ -25,9 +25,9 @@ export function useGetWorkoutById<T>(): IUseListByUserId<T> {
     T,
     Error,
     T,
-    (string | undefined)[]
+    (string | number | undefined)[]
   >({
-    queryKey: ['get-workouts-by-id', workout_id],
+    queryKey: ['get-workouts-by-id', workout_id, user?.token.expires_at],
     enabled: !!workout_id,
     queryFn: async () => {
       try {

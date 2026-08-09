@@ -9,8 +9,7 @@ interface IUserContext {
 
 type Context = Omit<NtlHandlerContext, 'clientContext' | 'identity'> & {
   clientContext?:
-    | IUserContext
-    | (NtlHandlerContext['clientContext'] & IUserContext)
+    IUserContext | (NtlHandlerContext['clientContext'] & IUserContext)
   identity?: Record<string, any>
 }
 

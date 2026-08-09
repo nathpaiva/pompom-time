@@ -30,10 +30,10 @@ export const WorkoutTime = () => {
   const counterTime = isShouldStartWorkout
     ? ''
     : isCountingDown
-    ? countingDownInterval // counting interval
-    : isResting
-    ? restingInterval // resting interval
-    : pulseInterval // pulsing interval
+      ? countingDownInterval // counting interval
+      : isResting
+        ? restingInterval // resting interval
+        : pulseInterval // pulsing interval
 
   if (isLoading) {
     return <Spinner />
@@ -88,8 +88,8 @@ export const WorkoutTime = () => {
             isCountingDown
               ? '1s blinking .1s infinite'
               : isPulsing && data?.variety
-              ? animationByWorkoutType[data.variety].animation
-              : ''
+                ? animationByWorkoutType[data.variety].animation
+                : ''
           }
           sx={{
             ...(isPulsing && data?.variety
