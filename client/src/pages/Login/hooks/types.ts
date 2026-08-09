@@ -20,19 +20,19 @@ export interface FormSetupFields {
 }
 
 interface ILoginFormConfig {
-  handleSubmit: UseFormHandleSubmit<FormSetupFields, undefined>
+  handleSubmit: UseFormHandleSubmit<FormSetupFields>
   registerInput: UseFormRegister<FormSetupFields>
   errors: FieldErrors<FormSetupFields>
 }
 
 interface IRegisterFormConfig {
-  handleSubmit: UseFormHandleSubmit<FormSetupFields, undefined>
+  handleSubmit: UseFormHandleSubmit<FormSetupFields>
   registerInput: UseFormRegister<FormSetupFields>
   errors: FieldErrors<FormSetupFields>
 }
 
 interface IResetFormConfig {
-  handleSubmit: UseFormHandleSubmit<FormSetupFields, undefined>
+  handleSubmit: UseFormHandleSubmit<FormSetupFields>
   registerInput: UseFormRegister<FormSetupFields>
   errors: FieldErrors<FormSetupFields>
 }

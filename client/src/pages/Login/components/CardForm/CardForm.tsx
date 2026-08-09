@@ -35,8 +35,7 @@ export interface CardFormProps {
   formSetup: TUseIdentityForm['formSetup'][EnumFormType]
   formTypeOpened: EnumFormType
   onSubmit:
-    | TUseIdentityForm['onSubmit']
-    | TUseIdentityForm['onSubmitRecoverPassword']
+    TUseIdentityForm['onSubmit'] | TUseIdentityForm['onSubmitRecoverPassword']
   children: React.ReactNode
   formKey: EnumFormType
   /**

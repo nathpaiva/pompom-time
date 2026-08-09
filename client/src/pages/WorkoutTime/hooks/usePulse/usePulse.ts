@@ -17,8 +17,8 @@ export const usePulse: TUsePulse = (data) => {
         _PULSE_INTERVAL: !variety
           ? PULSE_INTERVAL_FALLBACK
           : variety === Variety_Enum.Resistance && interval
-          ? interval * 1000
-          : intervalByWorkoutType[variety],
+            ? interval * 1000
+            : intervalByWorkoutType[variety],
         _PULSE_LIMIT: squeeze,
         _REST: rest,
         _REPEAT: repeat,

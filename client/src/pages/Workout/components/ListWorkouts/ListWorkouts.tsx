@@ -15,6 +15,7 @@ import {
 import { Workouts, Workouts_Aggregate } from '@graph/types'
 import { debounce } from 'lodash'
 import { ChangeEvent } from 'react'
+import { useIdentityContext } from 'react-netlify-identity'
 import { Link, useSearchParams } from 'react-router-dom'
 
 import { useDeleteWorkoutById, useListByUserId } from '../../../../hooks'
@@ -27,6 +28,7 @@ export const ListWorkouts = () => {
   const { isOpen, onClose, onOpen, dataOnFocus, setDataOnFocus } =
     useDialog<Workouts>()
   const toast = useToast()
+  const { user } = useIdentityContext()
 
   // Query
   const { isLoading, error, data } =
@@ -40,7 +42,7 @@ export const ListWorkouts = () => {
       setDataOnFocus(null)
     },
     onSuccess(response, { id }) {
-      updatesWorkoutList(id, workoutNameSearch)
+      updatesWorkoutList(id, workoutNameSearch, user?.token.expires_at)
 
       toast({
         status: 'success',

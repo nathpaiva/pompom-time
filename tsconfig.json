@@ -22,14 +22,12 @@
     }
   },
   "include": [
-    "vite.config.ts",
     ".eslintrc.cjs",
     "client",
     "serverless",
     "codegen.ts",
-    "types/globals.d.ts",
-    "vite.config.d.ts"
+    "types/globals.d.ts"
   ],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "vite.config.ts", "serverless/vite.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

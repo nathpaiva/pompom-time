@@ -5,9 +5,10 @@ import { queryClient } from '../../config'
 export function updatesWorkoutList<T extends Workouts>(
   param: T,
   param2?: string,
+  tokenExpiresAt?: number,
 ) {
   queryClient.setQueryData<Omit<Workouts_Aggregate, 'aggregate'>>(
-    ['list-workouts-by-user-id', param2 ?? null],
+    ['list-workouts-by-user-id', param2 ?? null, tokenExpiresAt],
     (prevState) => {
       if (typeof param === 'string') {
         const myResult = prevState?.nodes.filter(

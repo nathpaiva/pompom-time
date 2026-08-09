@@ -19,6 +19,7 @@ import {
 } from '@chakra-ui/react'
 import { Workouts } from '@graph/types'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { useIdentityContext } from 'react-netlify-identity'
 import { useSearchParams } from 'react-router-dom'
 
 import { TAddWorkoutVariable, useAddWorkoutByUserId } from '../../../../hooks'
@@ -40,13 +41,14 @@ export const AddWorkout = () => {
   const isResistance = watch('variety') === Variety_Enum.Resistance
 
   const toast = useToast()
+  const { user } = useIdentityContext()
 
   const { mutate } = useAddWorkoutByUserId<Workouts, TAddWorkoutVariable>({
     onSettled(data) {
       /* c8 ignore next */
       if (!data) return
 
-      updatesWorkoutList(data, workoutNameSearch)
+      updatesWorkoutList(data, workoutNameSearch, user?.token.expires_at)
 
       toast({
         status: 'success',
@@ -198,7 +200,7 @@ export const AddWorkout = () => {
                 required: isResistance
                   ? 'interval is required if is resistance'
                   : undefined,
-                deps: 'type',
+                deps: 'variety',
                 valueAsNumber: true,
               })}
             />
