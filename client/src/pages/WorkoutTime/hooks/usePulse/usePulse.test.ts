@@ -30,7 +30,8 @@ describe('usePulse', () => {
 
     // should be started
     expect(result.current.isPulsing).toBeTruthy()
-    act(() => vi.advanceTimersByTime(5000))
+    // advance exactly through the pulse cycle (squeeze * pulse interval)
+    act(() => vi.advanceTimersByTime(data.squeeze * 500))
     expect(result.current.isPulsing).toBeFalsy()
     expect(result.current.pulseInterval).toEqual(1)
 
