@@ -23,14 +23,8 @@ export const WorkoutTime = () => {
     restingInterval,
     isCountingDown,
     countingDownInterval,
-  } = usePulse({
-    interval: data?.interval ?? null,
-    squeeze: data?.squeeze,
-    repeat: data?.repeat,
-    rest: data?.rest,
-    sets: data?.goal_per_day,
-    variety: data?.variety,
-  })
+  } = usePulse(data)
+
   const isShouldStartWorkout = !isCountingDown && !isResting && !isPulsing
   const countList = Array.from(Array(data?.squeeze), (_, index) => ++index)
   const counterTime = isShouldStartWorkout

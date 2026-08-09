@@ -1,4 +1,5 @@
-import { Variety_Enum } from '../../types'
+import { Variety_Enum } from '../../../../../../serverless/functions/delete-workout-by-id/__generated__/delete-workout-by-id.graphql.generated'
+import { Workouts } from '../../../../../../serverless/functions/delete-workout-by-id/types'
 
 interface IUsePulse {
   pulseInterval: number
@@ -11,15 +12,6 @@ interface IUsePulse {
   countingDownInterval: number
 }
 
-interface IUsePulseParams {
-  interval: number | null
-  squeeze?: number
-  repeat?: boolean
-  rest?: number
-  sets?: number
-  variety?: Variety_Enum
-}
-
-export type TUsePulse = (param: IUsePulseParams) => IUsePulse
+export type TUsePulse = (param?: Workouts) => IUsePulse
 
 export { Variety_Enum }

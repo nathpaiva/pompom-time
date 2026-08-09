@@ -4,11 +4,9 @@ import { Content, Navigation } from './components'
 
 export function App() {
   return (
-    <>
-      <Grid templateColumns="1fr" gap={6}>
-        <Content />
-        <Navigation />
-      </Grid>
-    </>
+    <Grid templateColumns="1fr" gap={6}>
+      <Content />
+      <Navigation />
+    </Grid>
   )
 }
