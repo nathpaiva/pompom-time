@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 
-import { hasErrorShape, IUseListByUserId, normalizeError } from './helpers'
+import { assertNoErrorShape, IUseListByUserId, normalizeError } from './helpers'
 
 /**
  *
@@ -46,11 +46,7 @@ export function useListByUserId<T>(workout_name?: string): IUseListByUserId<T> {
           `/.netlify/functions/list-workouts-by-user-id${searchBy}`,
         )
 
-        if (hasErrorShape(response) && response.error) {
-          throw new Error(response.error)
-        }
-
-        return response as T
+        return assertNoErrorShape<T>(response)
       } catch (error) {
         return Promise.reject(normalizeError(error, 'Error on request'))
       }

@@ -2,7 +2,7 @@ import { useToast } from '@chakra-ui/react'
 import { UseMutationOptions, useMutation } from '@tanstack/react-query'
 import { useIdentityContext } from 'react-netlify-identity'
 
-import { hasErrorShape, normalizeError, toastOnError } from './helpers'
+import { assertNoErrorShape, normalizeError, toastOnError } from './helpers'
 
 /**
  *
@@ -32,11 +32,7 @@ export function useDeleteWorkoutById<T, V extends { id: string }>({
           },
         )
 
-        if (hasErrorShape(_response) && _response.error) {
-          throw new Error(_response.error)
-        }
-
-        return _response as T
+        return assertNoErrorShape<T>(_response)
       } catch (error) {
         return Promise.reject(normalizeError(error, 'Error on delete mutation'))
       }

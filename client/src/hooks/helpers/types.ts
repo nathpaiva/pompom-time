@@ -20,5 +20,5 @@ export interface IUseListByUserId<T> {
  * throwing. Used to type-check `response?.error` without an `as any` cast.
  */
 export interface IResponseWithError {
-  error?: string
+  error?: unknown
 }
