@@ -1,9 +1,10 @@
+import { Workouts } from '@graph/types'
+
 import {
   createMockContext,
   createMockHandlerEventBody,
 } from '../../setup-server-tests'
 import { cleanupDbAfterTest } from '../../utils/cleanupDbAfterTest'
-import { Workouts } from './__generated__/add-workout-by-user.graphql.generated'
 import {
   Variety_Enum,
   TAddWorkoutByUserMutationVariables,

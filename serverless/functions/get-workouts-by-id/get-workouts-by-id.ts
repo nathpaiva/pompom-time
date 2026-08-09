@@ -10,7 +10,7 @@ import type { PromiseResponseGetWorkoutById } from './types'
 const getWorkoutsById = async (
   event: HandlerEvent<
     unknown,
-    Pick<GetWorkoutByIdQueryVariables, 'workout_id'>
+    Partial<Pick<GetWorkoutByIdQueryVariables, 'workout_id'>>
   >,
   { clientContext }: Context,
 ): PromiseResponseGetWorkoutById => {
@@ -23,10 +23,19 @@ const getWorkoutsById = async (
       })
     }
 
+    const workout_id = event.queryStringParameters?.workout_id
+
+    if (!workout_id) {
+      throw new ErrorHandler({
+        message: 'workout_id is required',
+        status: 300,
+      })
+    }
+
     const { workouts } = await request({
       variables: {
         user_id: clientContext.user.email,
-        workout_id: event.queryStringParameters?.workout_id,
+        workout_id,
       },
       document: GetWorkoutByIdDocument,
       ...config,

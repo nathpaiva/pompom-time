@@ -1,3 +1,4 @@
+import { Variety_Enum } from '@graph/types'
 import middy from '@middy/core'
 import httpErrorHandler from '@middy/http-error-handler'
 import jsonBodyParser from '@middy/http-json-body-parser'
@@ -9,7 +10,6 @@ import { ErrorHandler, errorResolver, graphQLClientConfig } from '../../utils'
 import {
   AddWorkoutByUserDocument,
   AddWorkoutByUserMutationVariables,
-  Variety_Enum,
 } from './__generated__/add-workout-by-user.graphql.generated'
 import { bodySchema } from './bodySchema'
 import {

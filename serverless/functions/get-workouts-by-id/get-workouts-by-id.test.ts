@@ -10,7 +10,7 @@ import { handler as getWorkoutsById } from './get-workouts-by-id'
 describe('get-workouts-by-id', () => {
   const _req = createMockHandlerEventBody<
     HandlerEvent['body'],
-    Pick<GetWorkoutByIdQueryVariables, 'workout_id'>
+    Partial<Pick<GetWorkoutByIdQueryVariables, 'workout_id'>>
   >(null, {
     workout_id: undefined,
   })
@@ -66,13 +66,11 @@ describe('get-workouts-by-id', () => {
     )
 
     if (statusCode === 200) {
-      expect(statusCode).toEqual(500)
+      expect(statusCode).toEqual(300)
       return
     }
 
-    expect(statusCode).toEqual(500)
-    expect(JSON.parse(body).error).toEqual(
-      'expecting a value for non-nullable variable: "workout_id"',
-    )
+    expect(statusCode).toEqual(300)
+    expect(JSON.parse(body).error).toEqual('workout_id is required')
   })
 })

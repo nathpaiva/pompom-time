@@ -69,7 +69,7 @@ interface ICause {
 }
 
 interface IError extends Omit<Error, 'cause'> {
-  cause?: ICause[] | ICause
+  cause?: { package: string; data: ICause[] } | ICause[]
   message?: string
   statusCode?: number
 }

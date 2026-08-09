@@ -2,7 +2,7 @@ import { Workouts_Aggregate, Workouts } from '@graph/types'
 
 import { queryClient } from '../../config'
 
-export function updatesWorkoutList<T extends Workouts>(
+export function updatesWorkoutList<T extends Workouts | string>(
   param: T,
   param2?: string,
   tokenExpiresAt?: number,
