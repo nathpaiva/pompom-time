@@ -2,6 +2,8 @@ import { useToast } from '@chakra-ui/react'
 import { UseMutationOptions, useMutation } from '@tanstack/react-query'
 import { useIdentityContext } from 'react-netlify-identity'
 
+import { normalizeError, toastOnError } from './helpers'
+
 /**
  *
  * @param param0 { access_token: string, onSuccess: '@tanstack/react-query', onSettled: '@tanstack/react-query' }
@@ -36,28 +38,13 @@ export function useDeleteWorkoutById<T, V extends { id: string }>({
 
         return _response
       } catch (error) {
-        let message = 'Error on delete mutation'
-
-        if (error instanceof Error) {
-          message = error.message
-        }
-
-        return Promise.reject(new Error(message))
+        return Promise.reject(normalizeError(error, 'Error on delete mutation'))
       }
     },
     onSettled,
     onSuccess,
     onError(error) {
-      let message = 'Error on delete mutation'
-
-      if (error instanceof Error) {
-        message = error.message
-      }
-
-      toast({
-        status: 'error',
-        title: message,
-      })
+      toastOnError(toast, normalizeError(error, 'Error on delete mutation'))
     },
   })
 }

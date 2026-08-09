@@ -4,13 +4,7 @@ import { useEffect } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 import { useNavigate, useParams } from 'react-router-dom'
 
-interface IUseListByUserId<T> {
-  isLoading: boolean
-  error: Error | null
-  data?: T
-  isError: boolean
-  isSuccess: boolean
-}
+import { IResponseWithError, IUseListByUserId, normalizeError } from './helpers'
 
 /**
  *
@@ -31,9 +25,9 @@ export function useGetWorkoutById<T>(): IUseListByUserId<T> {
     T,
     Error,
     T,
-    (string | undefined)[]
+    (string | number | undefined)[]
   >({
-    queryKey: ['get-workouts-by-id', workout_id],
+    queryKey: ['get-workouts-by-id', workout_id, user?.token.expires_at],
     enabled: !!workout_id,
     queryFn: async () => {
       try {
@@ -47,10 +41,10 @@ export function useGetWorkoutById<T>(): IUseListByUserId<T> {
 
         const response = (await authedFetch.get(
           `/.netlify/functions/get-workouts-by-id?workout_id=${workout_id}`,
-        )) as T
+        )) as T & IResponseWithError
 
-        if ((response as any)?.error) {
-          throw new Error((response as any).error)
+        if (response?.error) {
+          throw new Error(response.error)
         }
 
         if (Array.isArray(response)) {
@@ -59,13 +53,7 @@ export function useGetWorkoutById<T>(): IUseListByUserId<T> {
 
         return response
       } catch (error) {
-        let message = 'Error on request'
-
-        if (error instanceof Error) {
-          message = error.message
-        }
-
-        return Promise.reject(new Error(message))
+        return Promise.reject(normalizeError(error, 'Error on request'))
       }
     },
   })

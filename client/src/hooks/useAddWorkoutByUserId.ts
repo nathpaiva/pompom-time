@@ -3,6 +3,8 @@ import { Workouts } from '@graph/types'
 import { UseMutationOptions, useMutation } from '@tanstack/react-query'
 import { useIdentityContext } from 'react-netlify-identity'
 
+import { normalizeError, toastOnError } from './helpers'
+
 export type TAddWorkoutVariable = Partial<
   Omit<Workouts, 'created_at' | 'updated_at' | 'id' | 'user_id' | 'stop_after'>
 >
@@ -40,28 +42,13 @@ export function useAddWorkoutByUserId<T, V extends TAddWorkoutVariable>({
 
         return _response
       } catch (error) {
-        let message = 'Error on delete mutation'
-
-        if (error instanceof Error) {
-          message = error.message
-        }
-
-        return Promise.reject(new Error(message))
+        return Promise.reject(normalizeError(error, 'Error on add workout'))
       }
     },
     onSettled,
     onSuccess,
     onError(error) {
-      let message = 'Error on add workout'
-
-      if (error instanceof Error) {
-        message = error.message
-      }
-
-      toast({
-        status: 'error',
-        title: message,
-      })
+      toastOnError(toast, normalizeError(error, 'Error on add workout'))
     },
   })
 }

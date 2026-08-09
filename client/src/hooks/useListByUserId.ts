@@ -3,13 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 
-interface IUseListByUserId<T> {
-  isLoading: boolean
-  error: Error | null
-  data?: T
-  isError: boolean
-  isSuccess: boolean
-}
+import { IResponseWithError, IUseListByUserId, normalizeError } from './helpers'
 
 /**
  *
@@ -46,21 +40,15 @@ export function useListByUserId<T>(workout_name?: string): IUseListByUserId<T> {
 
         const response = (await authedFetch.get(
           `/.netlify/functions/list-workouts-by-user-id${searchBy}`,
-        )) as T
+        )) as T & IResponseWithError
 
-        if ((response as any)?.error) {
-          throw new Error((response as any).error)
+        if (response?.error) {
+          throw new Error(response.error)
         }
 
         return response
       } catch (error) {
-        let message = 'Error on request'
-
-        if (error instanceof Error) {
-          message = error.message
-        }
-
-        return Promise.reject(new Error(message))
+        return Promise.reject(normalizeError(error, 'Error on request'))
       }
     },
   })
