@@ -3,6 +3,38 @@ import { useEffect } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 import { useNavigate } from 'react-router-dom'
 
+type THandleAuthError = (params: {
+  error: unknown
+  isConfirmedUser: boolean
+  logoutUser: ReturnType<typeof useIdentityContext>['logoutUser']
+  navigate: ReturnType<typeof useNavigate>
+  toast: ReturnType<typeof useToast>
+}) => Promise<void>
+
+const handleAuthError: THandleAuthError = async ({
+  error,
+  isConfirmedUser,
+  logoutUser,
+  navigate,
+  toast,
+}) => {
+  let message = 'Error on token'
+
+  if (error instanceof Error) {
+    message = error.message
+  }
+
+  toast({
+    status: 'error',
+    title: message,
+  })
+
+  if (isConfirmedUser) {
+    await logoutUser()
+  }
+  navigate('/login')
+}
+
 export const useAuth = (): {
   isLoggedIn: boolean
 } => {
@@ -32,21 +64,13 @@ export const useAuth = (): {
 
         await getFreshJWT()
       } catch (error) {
-        let message = 'Error on token'
-
-        if (error instanceof Error) {
-          message = error.message
-        }
-
-        toast({
-          status: 'error',
-          title: message,
+        await handleAuthError({
+          error,
+          isConfirmedUser,
+          logoutUser,
+          navigate,
+          toast,
         })
-
-        if (isConfirmedUser) {
-          await logoutUser()
-        }
-        navigate('/login')
       }
     }
 
