@@ -1,5 +1,4 @@
-import { Variety_Enum } from '../../../../../../serverless/functions/delete-workout-by-id/__generated__/delete-workout-by-id.graphql.generated'
-import { Workouts } from '../../../../../../serverless/functions/delete-workout-by-id/types'
+import { Variety_Enum, Workouts } from '@graph/types'
 
 interface IUsePulse {
   pulseInterval: number
