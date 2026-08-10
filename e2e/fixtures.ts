@@ -20,7 +20,7 @@ export const test = base.extend<Fixtures>({
       await page.goto('/login')
       await page.getByTestId('login-email').fill(email)
       await page.getByTestId('login-password').fill(password)
-      await page.getByRole('button', { name: 'Login' }).click()
+      await page.getByRole('button', { name: 'Sign in' }).click()
       await page.waitForURL('**/admin/workout')
     })
   },
