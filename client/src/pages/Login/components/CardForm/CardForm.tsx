@@ -80,7 +80,7 @@ export const CardForm = ({
           gap: '20px',
           boxShadow: 'none',
           label: {
-            backgroundColor: 'var(--chakra-colors-chakra-body-bg)',
+            backgroundColor: 'pompom.inset',
           },
         }}
         variant="unstyled"
