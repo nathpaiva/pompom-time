@@ -1,7 +1,7 @@
-import { DeleteIcon } from '@chakra-ui/icons'
-import { Link as ChakraLink } from '@chakra-ui/react'
+import { AddIcon, CloseIcon } from '@chakra-ui/icons'
 import {
-  ButtonGroup,
+  Box,
+  Button,
   Card,
   FormControl,
   FormLabel,
@@ -10,6 +10,8 @@ import {
   Input,
   Skeleton,
   Stack,
+  Tag,
+  Text,
   useToast,
 } from '@chakra-ui/react'
 import { Workouts, Workouts_Aggregate } from '@graph/types'
@@ -20,6 +22,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 
 import { useDeleteWorkoutById, useListByUserId } from '../../../../hooks'
 import { updatesWorkoutList } from '../../../../hooks/helpers'
+import { pompomGlowShadow, varietyColorMap } from '../../../../utils'
 import { Dialog, useDialog } from './components/Dialog'
 
 export const ListWorkouts = () => {
@@ -83,6 +86,8 @@ export const ListWorkouts = () => {
   )
 
   const _isLoading = typeof workoutName === 'undefined' ? isLoading : false
+  const isSearching = typeof workoutNameSearch !== 'undefined'
+  const savedWorkoutsCount = data?.nodes?.length ?? 0
 
   return (
     <>
@@ -97,60 +102,111 @@ export const ListWorkouts = () => {
 
       <Card variant="unstyled" p="1rem" minHeight="500px" rowGap="15px">
         <Skeleton isLoaded={!_isLoading}>
-          <Heading size="md">
+          <Heading
+            fontFamily="heading"
+            fontWeight="700"
+            fontSize="22px"
+            color="pompom.text"
+          >
             {!error ? title : "Sorry we could't load your workouts"}
           </Heading>
+          {!error && !isSearching && (
+            <Text fontFamily="body" fontSize="13px" color="pompom.textMuted">
+              {savedWorkoutsCount} saved workouts
+            </Text>
+          )}
         </Skeleton>
 
         <FormControl as="fieldset" display="grid" variant="floating">
           <Input
             type="name"
-            placeholder=" "
+            placeholder="Search workout"
+            border="none"
+            borderRadius="pompomPill"
+            bg="pompom.searchBg"
+            px="16px"
+            py="14px"
+            fontFamily="body"
             onChange={handleOnChangeSearchByWorkoutName}
           />
-          <FormLabel>Search</FormLabel>
+          <FormLabel srOnly>Search</FormLabel>
         </FormControl>
 
         <Stack spacing={5}>
-          {/* TODO: add the input search */}
-          {/* If the list is bigger then 5 */}
           {!isLoading &&
             data?.nodes?.map((workout) => {
               const _isDeleting = workout.id === dataOnFocus?.id && isDeleting
+              const varietyColor = varietyColorMap[workout.variety]
 
               return (
                 <Skeleton isLoaded={!_isDeleting} key={workout.id}>
                   <Card
                     display="grid"
-                    p="2"
-                    gridTemplateColumns="50% 1fr 90px"
-                    alignItems="center"
-                    alignContent="center"
+                    p="4"
+                    gap="2"
+                    bg="pompom.inset"
+                    borderRadius="pompomCard"
+                    boxShadow="none"
                   >
-                    <span>{workout.name}</span>
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Text
+                        fontFamily="heading"
+                        fontWeight="700"
+                        fontSize="15px"
+                        color="pompom.text"
+                      >
+                        {workout.name}
+                      </Text>
 
-                    {/* TODO: change text to use icon */}
-                    <span>{workout.variety}</span>
+                      <Tag
+                        borderRadius="pompomPill"
+                        bg={varietyColor.background}
+                        color={varietyColor.text}
+                        fontFamily="heading"
+                        fontWeight="700"
+                        fontSize="11px"
+                        textTransform="uppercase"
+                        px="3"
+                      >
+                        {workout.variety}
+                      </Tag>
+                    </Box>
 
-                    <ButtonGroup>
-                      <ChakraLink
+                    <Text
+                      fontFamily="body"
+                      fontSize="12px"
+                      color="pompom.textMuted"
+                    >
+                      {workout.goal_per_day} sets · {workout.squeeze}x
+                    </Text>
+
+                    <Box display="flex" gap="2" mt="2">
+                      <Button
                         as={Link}
                         to={`start/${workout.id}`}
-                        alignSelf="center"
+                        borderRadius="pompomPill"
+                        bg="pompom.primary"
+                        color="white"
+                        fontFamily="heading"
+                        fontWeight="700"
+                        _hover={{ bg: 'pompom.primary' }}
                       >
                         Start
-                      </ChakraLink>
+                      </Button>
 
                       <IconButton
-                        size="sm"
-                        colorScheme="red"
-                        width="max-content"
+                        borderRadius="full"
                         variant="outline"
+                        borderColor="pompom.border"
                         aria-label={`Delete ${workout.name} workout`}
-                        icon={<DeleteIcon />}
+                        icon={<CloseIcon boxSize="3" />}
                         onClick={() => handleDeleteOpenModal(workout)}
                       />
-                    </ButtonGroup>
+                    </Box>
                   </Card>
                 </Skeleton>
               )
@@ -164,6 +220,22 @@ export const ListWorkouts = () => {
             )}
         </Stack>
       </Card>
+
+      <IconButton
+        as={Link}
+        to="/admin/workout/new"
+        aria-label="Add new workout"
+        icon={<AddIcon />}
+        position="fixed"
+        bottom="6"
+        right="6"
+        borderRadius="full"
+        boxSize="56px"
+        bg="pompom.primary"
+        color="white"
+        boxShadow={pompomGlowShadow('#655D8A')}
+        _hover={{ bg: 'pompom.primary' }}
+      />
     </>
   )
 }
