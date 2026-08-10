@@ -1,5 +1,5 @@
-export * from './About'
 export * from './Login'
 export * from './Logout'
+export * from './Welcome'
 export * from './Workout'
 export * from './WorkoutTime'

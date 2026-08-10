@@ -12,14 +12,6 @@ export const Navigation = () => {
     <GridItem as="nav" p="3">
       <Grid as="ul" templateColumns="1fr 1fr" gap="1">
         <LiContainer
-          isAuthItem
-          label="about"
-          isCurrent={pathname === '/'}
-          to="/"
-          isToShowItem={!isLoggedIn}
-        />
-
-        <LiContainer
           label="workout time"
           to="admin/workout"
           isCurrent={!pathname.indexOf('/admin/workout')}

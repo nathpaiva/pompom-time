@@ -1,7 +1,7 @@
 import { Stack } from '@chakra-ui/react'
 import { Outlet, useLocation } from 'react-router-dom'
 
-import { About } from '../../pages'
+import { Welcome } from '../../pages'
 import { PageTitle } from '../PageTitle'
 
 export const Content = () => {
@@ -12,7 +12,7 @@ export const Content = () => {
       <PageTitle />
       {/* render the component from route */}
       <Outlet />
-      {pathname === '/' && <About />}
+      {pathname === '/' && <Welcome />}
     </Stack>
   )
 }
