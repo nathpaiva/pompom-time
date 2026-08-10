@@ -1,5 +1,6 @@
-import { AddIcon } from '@chakra-ui/icons'
+import { ArrowBackIcon } from '@chakra-ui/icons'
 import {
+  Box,
   Button,
   Card,
   CardBody,
@@ -9,10 +10,10 @@ import {
   FormErrorMessage,
   FormLabel,
   Heading,
+  IconButton,
   Input,
   InputGroup,
   InputRightAddon,
-  Select,
   Stack,
   Switch,
   useToast,
@@ -20,10 +21,11 @@ import {
 import { Workouts } from '@graph/types'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useIdentityContext } from 'react-netlify-identity'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 
 import { TAddWorkoutVariable, useAddWorkoutByUserId } from '../../hooks'
 import { updatesWorkoutList } from '../../hooks/helpers'
+import { varietyColorMap } from '../../utils'
 import { Variety_Enum } from '../WorkoutTime/types'
 
 type IFormInput = TAddWorkoutVariable
@@ -35,10 +37,12 @@ export const AddWorkout = () => {
     register,
     handleSubmit,
     watch,
+    setValue,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<IFormInput>()
   const isResistance = watch('variety') === Variety_Enum.Resistance
+  const selectedVariety = watch('variety')
 
   const toast = useToast()
   const { user } = useIdentityContext()
@@ -88,20 +92,42 @@ export const AddWorkout = () => {
         handleSubmit(onSubmit, onInvalid)(event)
       }}
     >
-      <Heading size="md">Create a new workout:</Heading>
+      <Box display="flex" alignItems="center" gap="3">
+        <IconButton
+          as={Link}
+          to="/admin/workout"
+          aria-label="Back"
+          icon={<ArrowBackIcon />}
+          variant="ghost"
+        />
+        <Heading
+          fontFamily="heading"
+          fontWeight="700"
+          fontSize="20px"
+          color="pompom.text"
+        >
+          New workout
+        </Heading>
+      </Box>
 
       <CardBody>
         <Stack spacing={5}>
           {/* workout name */}
-          <FormControl
-            as="fieldset"
-            display="grid"
-            variant="floating"
-            isInvalid={!!errors.name}
-          >
+          <FormControl as="fieldset" display="grid" isInvalid={!!errors.name}>
+            <FormLabel
+              fontFamily="body"
+              fontWeight="700"
+              fontSize="13px"
+              color="pompom.text"
+            >
+              Workout name
+            </FormLabel>
             <Input
               type="name"
-              placeholder=" "
+              border="1.5px solid"
+              borderColor="pompom.border"
+              borderRadius="pompomInput"
+              fontFamily="body"
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...register('name', {
                 required: 'Workout name is required',
@@ -111,7 +137,6 @@ export const AddWorkout = () => {
                 },
               })}
             />
-            <FormLabel>Name</FormLabel>
             <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
           </FormControl>
 
@@ -120,22 +145,56 @@ export const AddWorkout = () => {
             isInvalid={!!errors.variety}
             as="fieldset"
             display="grid"
-            variant="floating"
           >
-            <Select
-              placeholder="Select workout variety"
+            <FormLabel
+              fontFamily="body"
+              fontWeight="700"
+              fontSize="13px"
+              color="pompom.text"
+            >
+              Workout type
+            </FormLabel>
+            <input
+              type="hidden"
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...register('variety', {
                 required: 'Workout variety is required',
               })}
-            >
-              {Object.keys(Variety_Enum).map((wType) => (
-                <option key={wType} value={Variety_Enum[wType]}>
-                  {wType}
-                </option>
-              ))}
-            </Select>
-            <FormLabel>Select workout variety</FormLabel>
+            />
+            <Box display="flex" flexWrap="wrap" gap="2">
+              {Object.values(Variety_Enum).map((wType) => {
+                const isActive = selectedVariety === wType
+                const varietyColor = varietyColorMap[wType]
+
+                return (
+                  <Button
+                    key={wType}
+                    type="button"
+                    aria-label={`Select ${wType} workout type`}
+                    aria-pressed={isActive}
+                    onClick={() =>
+                      setValue('variety', wType, { shouldValidate: true })
+                    }
+                    borderRadius="pompomPill"
+                    fontFamily="heading"
+                    fontWeight="700"
+                    fontSize="13px"
+                    textTransform="capitalize"
+                    bg={isActive ? varietyColor.background : 'transparent'}
+                    color={isActive ? varietyColor.text : 'pompom.text'}
+                    border="1.5px solid"
+                    borderColor={
+                      isActive ? varietyColor.background : 'pompom.border'
+                    }
+                    _hover={{
+                      bg: isActive ? varietyColor.background : 'transparent',
+                    }}
+                  >
+                    {wType}
+                  </Button>
+                )
+              })}
+            </Box>
             <FormErrorMessage>{errors.variety?.message}</FormErrorMessage>
           </FormControl>
 
@@ -143,19 +202,31 @@ export const AddWorkout = () => {
           <FormControl
             as="fieldset"
             display="grid"
-            variant="floating"
             isInvalid={!!errors.goal_per_day}
           >
-            <Input
-              type="number"
-              placeholder=" "
-              // eslint-disable-next-line react/jsx-props-no-spreading
-              {...register('goal_per_day', {
-                required: '# of sets is required',
-                valueAsNumber: true,
-              })}
-            />
-            <FormLabel># of Sets</FormLabel>
+            <FormLabel
+              fontFamily="body"
+              fontWeight="700"
+              fontSize="13px"
+              color="pompom.text"
+            >
+              Number of sets
+            </FormLabel>
+            <InputGroup>
+              <Input
+                type="number"
+                border="1.5px solid"
+                borderColor="pompom.border"
+                borderRadius="pompomInput"
+                fontFamily="body"
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                {...register('goal_per_day', {
+                  required: '# of sets is required',
+                  valueAsNumber: true,
+                })}
+              />
+              <InputRightAddon>sets</InputRightAddon>
+            </InputGroup>
             <FormErrorMessage>{errors.goal_per_day?.message}</FormErrorMessage>
           </FormControl>
 
@@ -163,13 +234,23 @@ export const AddWorkout = () => {
           <FormControl
             as="fieldset"
             display="grid"
-            variant="floating"
             isInvalid={!!errors.squeeze}
           >
+            <FormLabel
+              fontFamily="body"
+              fontWeight="700"
+              fontSize="13px"
+              color="pompom.text"
+            >
+              Contractions per set
+            </FormLabel>
             <InputGroup>
               <Input
                 type="number"
-                placeholder=" "
+                border="1.5px solid"
+                borderColor="pompom.border"
+                borderRadius="pompomInput"
+                fontFamily="body"
                 // eslint-disable-next-line react/jsx-props-no-spreading
                 {...register('squeeze', {
                   required: 'Squeeze is required',
@@ -177,7 +258,6 @@ export const AddWorkout = () => {
                 })}
               />
               <InputRightAddon>x</InputRightAddon>
-              <FormLabel>Squeeze</FormLabel>
             </InputGroup>
             <FormErrorMessage>{errors.squeeze?.message}</FormErrorMessage>
           </FormControl>
@@ -186,48 +266,61 @@ export const AddWorkout = () => {
           <FormControl
             isInvalid={!!errors.interval}
             as="fieldset"
-            display="grid"
-            variant="floating"
-            sx={{
-              display: isResistance ? 'grid' : 'none',
-            }}
+            display={isResistance ? 'grid' : 'none'}
           >
-            <Input
-              type="number"
-              placeholder=" "
-              // eslint-disable-next-line react/jsx-props-no-spreading
-              {...register('interval', {
-                required: isResistance
-                  ? 'interval is required if is resistance'
-                  : undefined,
-                deps: 'variety',
-                valueAsNumber: true,
-              })}
-            />
-            <FormLabel>hold up to</FormLabel>
+            <FormLabel
+              fontFamily="body"
+              fontWeight="700"
+              fontSize="13px"
+              color="pompom.text"
+            >
+              Hold for
+            </FormLabel>
+            <InputGroup>
+              <Input
+                type="number"
+                border="1.5px solid"
+                borderColor="pompom.border"
+                borderRadius="pompomInput"
+                fontFamily="body"
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                {...register('interval', {
+                  required: isResistance
+                    ? 'interval is required if is resistance'
+                    : undefined,
+                  deps: 'variety',
+                  valueAsNumber: true,
+                })}
+              />
+              <InputRightAddon>sec</InputRightAddon>
+            </InputGroup>
             <FormErrorMessage>{errors.interval?.message}</FormErrorMessage>
           </FormControl>
 
           {/* rest */}
-          <FormControl
-            as="fieldset"
-            display="grid"
-            variant="floating"
-            isInvalid={!!errors.rest}
-          >
+          <FormControl as="fieldset" display="grid" isInvalid={!!errors.rest}>
+            <FormLabel
+              fontFamily="body"
+              fontWeight="700"
+              fontSize="13px"
+              color="pompom.text"
+            >
+              Rest between sets
+            </FormLabel>
             <InputGroup>
               <Input
                 type="number"
-                placeholder=" "
+                border="1.5px solid"
+                borderColor="pompom.border"
+                borderRadius="pompomInput"
+                fontFamily="body"
                 // eslint-disable-next-line react/jsx-props-no-spreading
                 {...register('rest', {
                   required: 'Rest time is required',
                   valueAsNumber: true,
                 })}
               />
-              {/* TODO: change label to be sec */}
-              <InputRightAddon>s</InputRightAddon>
-              <FormLabel>Rest</FormLabel>
+              <InputRightAddon>sec</InputRightAddon>
             </InputGroup>
             <FormErrorMessage>{errors.rest?.message}</FormErrorMessage>
           </FormControl>
@@ -237,17 +330,27 @@ export const AddWorkout = () => {
             as="fieldset"
             display="grid"
             id="repeat"
-            gridTemplateColumns="max-content max-content"
+            gridTemplateColumns="1fr max-content"
             columnGap="2"
             alignItems="center"
           >
-            <FormLabel m="0" w="max-content">
+            <FormLabel
+              m="0"
+              fontFamily="body"
+              fontWeight="700"
+              fontSize="14px"
+              color="pompom.text"
+            >
               Start next set automatically
             </FormLabel>
             <Switch
-              colorScheme="pink"
               // eslint-disable-next-line react/jsx-props-no-spreading
               {...register('repeat')}
+              sx={{
+                'span.chakra-switch__track[data-checked]': {
+                  backgroundColor: 'pompom.tertiary',
+                },
+              }}
             />
           </FormControl>
         </Stack>
@@ -256,15 +359,18 @@ export const AddWorkout = () => {
       <Divider />
 
       <CardFooter>
-        {/* TODO: disable button if is adding a new data */}
         <Button
-          rightIcon={<AddIcon />}
-          colorScheme="purple"
-          width="max-content"
           type="submit"
+          borderRadius="pompomPill"
+          bg="pompom.tertiary"
+          color="white"
+          fontFamily="heading"
+          fontWeight="700"
+          w="full"
           isLoading={isSubmitting}
+          _hover={{ bg: 'pompom.tertiary' }}
         >
-          Add new workout
+          Create workout
         </Button>
       </CardFooter>
     </Card>
