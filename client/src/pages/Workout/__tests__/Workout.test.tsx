@@ -100,7 +100,7 @@ describe('Workout', () => {
         fireEvent.click(buttonDeleteConfirmation)
 
         await waitFor(() => {
-          expect(deleteWorkoutAction()).not.toBeVisible()
+          expect(deleteWorkoutAction()).not.toBeInTheDocument()
 
           expect(
             screen.getByText(`Delete workout: ${_workoutToDelete.name}`),
