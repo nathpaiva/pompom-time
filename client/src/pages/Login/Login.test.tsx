@@ -169,7 +169,7 @@ describe('Page::Login', () => {
       })
 
       // get forgotButton and move to reset form
-      const forgotButtonElement = () => screen.getByText('Forgot Password')
+      const forgotButtonElement = () => screen.getByText('Forgot password')
       expect(forgotButtonElement()).toBeVisible()
       await act(() => fireEvent.click(forgotButtonElement()))
 
@@ -247,9 +247,9 @@ describe('Page::Login', () => {
       })
 
       const registerForm = registerFormComponent()
-      const createButton = () => screen.queryAllByText('Create')
+      const createButton = () => screen.queryAllByText('Create new account')
       const buttonToRegister = createButton().find(
-        (item) => item.textContent === 'Create',
+        (item) => item.textContent === 'Create new account',
       )
 
       expect(createButton().length).toEqual(1)

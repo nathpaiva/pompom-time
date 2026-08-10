@@ -22,12 +22,24 @@ export const ResetForm = ({
       onSubmit={onSubmitRecoverPassword}
       formKey={EnumFormType.reset}
     >
-      <Button type="submit" form={EnumFormType.reset} colorScheme="purple">
+      <Button
+        type="submit"
+        form={EnumFormType.reset}
+        borderRadius="pompomPill"
+        bg="pompom.primary"
+        color="white"
+        fontFamily="heading"
+        fontWeight="700"
+        _hover={{ bg: 'pompom.primary' }}
+      >
         Send recovery email
       </Button>
       <Button
         variant="link"
         size="xs"
+        fontFamily="heading"
+        fontWeight="700"
+        color="pompom.primary"
         onClick={() => {
           changeFormType(EnumFormType.login)
         }}

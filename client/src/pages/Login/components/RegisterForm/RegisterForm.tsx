@@ -25,8 +25,17 @@ export const RegisterForm = ({
       handleClick={handleClick}
     >
       {/* actions */}
-      <Button type="submit" form={EnumFormType.register} colorScheme="purple">
-        Create
+      <Button
+        type="submit"
+        form={EnumFormType.register}
+        borderRadius="pompomPill"
+        variant="outline"
+        borderColor="pompom.primary"
+        color="pompom.primary"
+        fontFamily="heading"
+        fontWeight="700"
+      >
+        Create new account
       </Button>
     </CardForm>
   )
