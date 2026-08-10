@@ -16,13 +16,22 @@ describe('App', () => {
       vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
         isLoggedIn: false,
       })
-      render(<App />)
+      render(<App />, { initialEntries: '/admin/workout' })
 
       expect(screen.getByText('logout')).not.toBeVisible()
       expect(screen.getByText('workout time')).not.toBeVisible()
       expect(screen.getByText('login')).toBeVisible()
 
       expectedCommonItems()
+    })
+
+    it('should not render the top nav on "/" or "/login"', () => {
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
+        isLoggedIn: false,
+      })
+      render(<App />, { initialEntries: '/' })
+
+      expect(screen.queryByText('login')).toBeNull()
     })
 
     it('should render Welcome on "/"', () => {
@@ -62,6 +71,20 @@ describe('App', () => {
       render(<App />)
 
       expect(screen.queryByText('pompom')).toBeNull()
+    })
+
+    it('should still render the top nav on "/" and "/login"', () => {
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
+        isLoggedIn: true,
+        isConfirmedUser: true,
+      })
+
+      const { unmount } = render(<App />, { initialEntries: '/' })
+      expect(screen.getByText('workout time')).toBeVisible()
+      unmount()
+
+      render(<App />, { initialEntries: '/login' })
+      expect(screen.getByText('workout time')).toBeVisible()
     })
   })
 
