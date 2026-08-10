@@ -4,14 +4,12 @@ import { App } from './App'
 
 const expectedCommonItems = () => {
   expect(screen.getByText('Pompom time')).toBeVisible()
-  expect(
-    screen.getByText(`This app is still under construction.`),
-  ).toBeVisible()
+  expect(screen.getByText('pompom')).toBeVisible()
   expect(
     screen.getByText(
-      'The purpose is to have a place where you can control and see your progress doing pompoarism workout.',
+      'Get to know, strengthen, and track your pelvic floor, at your own pace.',
     ),
-  ).toBeTruthy()
+  ).toBeVisible()
 }
 
 describe('App', () => {
@@ -29,7 +27,6 @@ describe('App', () => {
       expect(screen.getByText('logout')).not.toBeVisible()
       expect(screen.getByText('workout time')).not.toBeVisible()
       expect(screen.getByText('login')).toBeVisible()
-      expect(screen.getByText('about')).toBeVisible()
 
       expectedCommonItems()
     })
@@ -46,7 +43,6 @@ describe('App', () => {
       expect(screen.getByText('logout')).toBeVisible()
       expect(screen.getByText('workout time')).toBeVisible()
       expect(screen.getByText('login')).not.toBeVisible()
-      expect(screen.getByText('about')).not.toBeVisible()
       expectedCommonItems()
     })
   })
