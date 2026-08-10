@@ -74,15 +74,16 @@ export const CardForm = ({
     >
       <Card
         sx={{
-          width: '70%',
+          width: '100%',
           mx: 'auto',
-          p: '2rem',
+          p: 0,
           gap: '20px',
+          boxShadow: 'none',
           label: {
             backgroundColor: 'var(--chakra-colors-chakra-body-bg)',
           },
         }}
-        variant="outline"
+        variant="unstyled"
       >
         {FORM_FIELDS[formKey].map((field) => {
           let errorMessage
@@ -119,10 +120,24 @@ export const CardForm = ({
                   data-testid={`${formKey}-${field}`}
                   placeholder=" "
                   autoComplete={`current-${field}`}
+                  border="1.5px solid"
+                  borderColor="pompom.border"
+                  borderRadius="pompomInput"
+                  bg="pompom.inset"
+                  px="16px"
+                  py="14px"
+                  fontFamily="body"
                   // eslint-disable-next-line react/jsx-props-no-spreading
                   {...registerFiled}
                 />
-                <FormLabel>{LABEL_COPY[field]}</FormLabel>
+                <FormLabel
+                  fontFamily="body"
+                  fontWeight="700"
+                  fontSize="13px"
+                  color="pompom.text"
+                >
+                  {LABEL_COPY[field]}
+                </FormLabel>
                 {field === 'password' && (
                   <InputRightElement width="4.5rem">
                     <Button

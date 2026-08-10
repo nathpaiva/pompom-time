@@ -1,4 +1,4 @@
-import { Button } from '@chakra-ui/react'
+import { Button, Flex } from '@chakra-ui/react'
 
 import { TUseIdentityForm } from '../../hooks/types'
 import { EnumFormType } from '../../types'
@@ -26,19 +26,33 @@ export const LoginForm = ({
     handleClick={handleClick}
   >
     {/* actions */}
-    <Button type="submit" form={formTypeOpened} colorScheme="purple">
-      Login
-    </Button>
+    <Flex justify="flex-end">
+      <Button
+        variant="link"
+        onClick={() => {
+          setFormTypeOpened(EnumFormType.reset)
+        }}
+        size="xs"
+        fontFamily="heading"
+        fontWeight="700"
+        fontSize="13px"
+        color="pompom.primary"
+      >
+        Forgot password
+      </Button>
+    </Flex>
 
-    {/* if is login should show recover pass button */}
     <Button
-      variant="link"
-      onClick={() => {
-        setFormTypeOpened(EnumFormType.reset)
-      }}
-      size="xs"
+      type="submit"
+      form={formTypeOpened}
+      borderRadius="pompomPill"
+      bg="pompom.primary"
+      color="white"
+      fontFamily="heading"
+      fontWeight="700"
+      _hover={{ bg: 'pompom.primary' }}
     >
-      Forgot Password
+      Sign in
     </Button>
   </CardForm>
 )

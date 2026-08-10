@@ -2,19 +2,33 @@ import { TabList as UITabList, Tab } from '@chakra-ui/react'
 
 import { EnumFormType } from '../../types'
 
+const tabStyles = {
+  fontFamily: 'heading',
+  fontWeight: '700',
+  fontSize: '14px',
+  color: 'pompom.textMuted',
+  border: 'none',
+  borderBottom: '2.5px solid transparent',
+  _selected: {
+    color: 'pompom.primary',
+    borderColor: 'pompom.primary',
+  },
+}
+
 export const TabList = ({
   setFormTypeOpened,
 }: {
   setFormTypeOpened: React.Dispatch<React.SetStateAction<EnumFormType>>
 }) => (
-  <UITabList>
+  <UITabList border="none">
     <Tab
       data-testid={`${EnumFormType.login}-tab`}
       onClick={() => {
         setFormTypeOpened(EnumFormType.login)
       }}
+      sx={tabStyles}
     >
-      Login
+      Sign in
     </Tab>
 
     <Tab
@@ -22,8 +36,9 @@ export const TabList = ({
       onClick={() => {
         setFormTypeOpened(EnumFormType.register)
       }}
+      sx={tabStyles}
     >
-      Register
+      Sign up
     </Tab>
   </UITabList>
 )

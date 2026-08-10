@@ -1,12 +1,21 @@
-import { Heading, Text } from '@chakra-ui/react'
+import { Heading, Stack, Text } from '@chakra-ui/react'
 
 export const Greet = () => {
   return (
-    <div>
-      <Heading as="h2">Hey there,</Heading>
+    <Stack spacing={1} mb={4}>
+      <Heading
+        as="h2"
+        fontFamily="heading"
+        fontWeight="700"
+        fontSize="24px"
+        color="pompom.text"
+      >
+        Welcome back
+      </Heading>
 
-      <Text>Welcome to Pompom time!</Text>
-      <Text>Please log in to get started on your journey to pompom time.</Text>
-    </div>
+      <Text fontFamily="body" fontSize="14px" color="pompom.textMuted">
+        Sign in to continue your workouts
+      </Text>
+    </Stack>
   )
 }
