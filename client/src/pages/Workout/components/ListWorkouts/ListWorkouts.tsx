@@ -86,6 +86,7 @@ export const ListWorkouts = () => {
   )
 
   const _isLoading = typeof workoutName === 'undefined' ? isLoading : false
+  const isSearching = typeof workoutNameSearch !== 'undefined'
   const savedWorkoutsCount = data?.nodes?.length ?? 0
 
   return (
@@ -109,7 +110,7 @@ export const ListWorkouts = () => {
           >
             {!error ? title : "Sorry we could't load your workouts"}
           </Heading>
-          {!error && (
+          {!error && !isSearching && (
             <Text fontFamily="body" fontSize="13px" color="pompom.textMuted">
               {savedWorkoutsCount} saved workouts
             </Text>
@@ -128,7 +129,7 @@ export const ListWorkouts = () => {
             fontFamily="body"
             onChange={handleOnChangeSearchByWorkoutName}
           />
-          <FormLabel display="none">Search</FormLabel>
+          <FormLabel srOnly>Search</FormLabel>
         </FormControl>
 
         <Stack spacing={5}>

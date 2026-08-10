@@ -119,6 +119,37 @@ describe('Page::AddWorkout', () => {
     })
   })
 
+  it('should show an error toast if the user is not authenticated', async () => {
+    vi.mocked(_hoisted_useIdentityContext).mockReturnValue(validUserMocked)
+    validUserMocked.authedFetch.post.mockRejectedValue(
+      new Error('You are not authenticated'),
+    )
+
+    render(<AddWorkout />)
+
+    fireEvent.change(screen.getByLabelText('Name'), {
+      target: { value: 'New Workout' },
+    })
+    fireEvent.change(screen.getByLabelText('Squeeze'), {
+      target: { value: 10 },
+    })
+    fireEvent.change(screen.getByLabelText('Select workout variety'), {
+      target: { value: Variety_Enum.Pulse },
+    })
+    fireEvent.change(screen.getByLabelText('# of Sets'), {
+      target: { value: 4 },
+    })
+    fireEvent.change(screen.getByLabelText('Rest'), {
+      target: { value: 45 },
+    })
+
+    fireEvent.click(screen.getByText('Add new workout'))
+
+    await waitFor(() => {
+      expect(screen.getByText('You are not authenticated')).toBeVisible()
+    })
+  })
+
   it('should not add a new workout if is missing to add a required field', async () => {
     vi.mocked(_hoisted_useIdentityContext).mockReturnValue(validUserMocked)
 
