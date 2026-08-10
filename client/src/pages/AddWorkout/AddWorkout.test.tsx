@@ -38,23 +38,25 @@ describe('Page::AddWorkout', () => {
       render(<AddWorkout />)
 
       // find form and button action
-      const submitButton = screen.getByText('Add new workout')
-      expect(screen.getByText('Create a new workout:')).toBeVisible()
+      const submitButton = screen.getByText('Create workout')
+      expect(screen.getByText('New workout')).toBeVisible()
       expect(submitButton).toBeVisible()
 
       // get each field and test each one
-      const fieldName = screen.getByLabelText('Name')
-      const fieldSqueeze = screen.getByLabelText('Squeeze')
-      const fieldType = screen.getByLabelText('Select workout variety')
-      const fieldInterval = screen.getByLabelText('hold up to')
-      const fieldGolPerDay = screen.getByLabelText('# of Sets')
-      const fieldRest = screen.getByLabelText('Rest')
+      const fieldName = screen.getByLabelText('Workout name')
+      const fieldSqueeze = screen.getByLabelText('Contractions per set')
+      const chipType = screen.getByLabelText(
+        `Select ${_workoutType} workout type`,
+      )
+      const fieldInterval = screen.getByLabelText('Hold for')
+      const fieldGolPerDay = screen.getByLabelText('Number of sets')
+      const fieldRest = screen.getByLabelText('Rest between sets')
       const fieldRepeat = screen.getByLabelText('Start next set automatically')
 
       // Test each field with default values
       expect(fieldName).toHaveValue('')
       expect(fieldSqueeze).toHaveValue(null)
-      expect(fieldType).toHaveValue('')
+      expect(chipType).toHaveAttribute('aria-pressed', 'false')
       // should not render interval if the type is not resistance
       expect(fieldInterval).toHaveValue(null)
       expect(fieldInterval).not.toBeVisible()
@@ -71,9 +73,7 @@ describe('Page::AddWorkout', () => {
         fireEvent.change(fieldSqueeze, {
           target: { value: addNewWorkoutMock.squeeze },
         })
-        fireEvent.change(fieldType, {
-          target: { value: addNewWorkoutMock.variety },
-        })
+        fireEvent.click(chipType)
         fireEvent.change(fieldGolPerDay, {
           target: { value: addNewWorkoutMock.goal_per_day },
         })
@@ -84,7 +84,7 @@ describe('Page::AddWorkout', () => {
 
         expect(fieldName).toHaveValue(addNewWorkoutMock.name)
         expect(fieldSqueeze).toHaveValue(addNewWorkoutMock.squeeze)
-        expect(fieldType).toHaveValue(addNewWorkoutMock.variety)
+        expect(chipType).toHaveAttribute('aria-pressed', 'true')
 
         if (_workoutType !== Variety_Enum.Resistance) {
           expect(fieldInterval).not.toBeVisible()
@@ -127,23 +127,23 @@ describe('Page::AddWorkout', () => {
 
     render(<AddWorkout />)
 
-    fireEvent.change(screen.getByLabelText('Name'), {
+    fireEvent.change(screen.getByLabelText('Workout name'), {
       target: { value: 'New Workout' },
     })
-    fireEvent.change(screen.getByLabelText('Squeeze'), {
+    fireEvent.change(screen.getByLabelText('Contractions per set'), {
       target: { value: 10 },
     })
-    fireEvent.change(screen.getByLabelText('Select workout variety'), {
-      target: { value: Variety_Enum.Pulse },
-    })
-    fireEvent.change(screen.getByLabelText('# of Sets'), {
+    fireEvent.click(
+      screen.getByLabelText(`Select ${Variety_Enum.Pulse} workout type`),
+    )
+    fireEvent.change(screen.getByLabelText('Number of sets'), {
       target: { value: 4 },
     })
-    fireEvent.change(screen.getByLabelText('Rest'), {
+    fireEvent.change(screen.getByLabelText('Rest between sets'), {
       target: { value: 45 },
     })
 
-    fireEvent.click(screen.getByText('Add new workout'))
+    fireEvent.click(screen.getByText('Create workout'))
 
     await waitFor(() => {
       expect(screen.getByText('You are not authenticated')).toBeVisible()
@@ -156,23 +156,21 @@ describe('Page::AddWorkout', () => {
     render(<AddWorkout />)
 
     // find form and button action
-    const submitButton = screen.getByText('Add new workout')
-    expect(screen.getByText('Create a new workout:')).toBeVisible()
+    const submitButton = screen.getByText('Create workout')
+    expect(screen.getByText('New workout')).toBeVisible()
     expect(submitButton).toBeVisible()
 
     // get each field and test each one
-    const fieldName = screen.getByLabelText('Name')
-    const fieldSqueeze = screen.getByLabelText('Squeeze')
-    const fieldType = screen.getByLabelText('Select workout variety')
-    const fieldInterval = screen.getByLabelText('hold up to')
-    const fieldGolPerDay = screen.getByLabelText('# of Sets')
-    const fieldRest = screen.getByLabelText('Rest')
+    const fieldName = screen.getByLabelText('Workout name')
+    const fieldSqueeze = screen.getByLabelText('Contractions per set')
+    const fieldInterval = screen.getByLabelText('Hold for')
+    const fieldGolPerDay = screen.getByLabelText('Number of sets')
+    const fieldRest = screen.getByLabelText('Rest between sets')
     const fieldRepeat = screen.getByLabelText('Start next set automatically')
 
     // Test each field with default values
     expect(fieldName).toHaveValue('')
     expect(fieldSqueeze).toHaveValue(null)
-    expect(fieldType).toHaveValue('')
     // should not render interval if the type is not resistance
     expect(fieldInterval).toHaveValue(null)
     expect(fieldInterval).not.toBeVisible()
@@ -202,11 +200,11 @@ describe('Page::AddWorkout', () => {
     })
 
     // change workout variety to resistance to test the interval validation
-    act(() => {
-      fireEvent.change(fieldType, {
-        target: { value: Variety_Enum.Resistance },
-      })
+    fireEvent.click(
+      screen.getByLabelText(`Select ${Variety_Enum.Resistance} workout type`),
+    )
 
+    await waitFor(() => {
       expect(fieldInterval).toBeVisible()
     })
 
