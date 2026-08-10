@@ -1,3 +1,4 @@
+export * from './AddWorkout'
 export * from './Login'
 export * from './Logout'
 export * from './Welcome'

@@ -22,9 +22,9 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { useIdentityContext } from 'react-netlify-identity'
 import { useSearchParams } from 'react-router-dom'
 
-import { TAddWorkoutVariable, useAddWorkoutByUserId } from '../../../../hooks'
-import { updatesWorkoutList } from '../../../../hooks/helpers'
-import { Variety_Enum } from '../../../WorkoutTime/types'
+import { TAddWorkoutVariable, useAddWorkoutByUserId } from '../../hooks'
+import { updatesWorkoutList } from '../../hooks/helpers'
+import { Variety_Enum } from '../WorkoutTime/types'
 
 type IFormInput = TAddWorkoutVariable
 
