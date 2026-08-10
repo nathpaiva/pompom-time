@@ -17,9 +17,21 @@ describe('Content', () => {
     expect(screen.getByText('pompom')).toBeVisible()
   })
 
-  it('should not render Welcome on "/" when the user is logged in', () => {
+  it('should render Welcome on "/" when the user is logged in but not confirmed', () => {
     vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
       isLoggedIn: true,
+      isConfirmedUser: false,
+    })
+
+    render(<Content />, { initialEntries: '/' })
+
+    expect(screen.getByText('pompom')).toBeVisible()
+  })
+
+  it('should not render Welcome on "/" when the user is logged in and confirmed', () => {
+    vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
+      isLoggedIn: true,
+      isConfirmedUser: true,
     })
 
     render(<Content />, { initialEntries: '/' })

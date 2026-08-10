@@ -7,14 +7,14 @@ import { PageTitle } from '../PageTitle'
 
 export const Content = () => {
   const { pathname } = useLocation()
-  const { isLoggedIn } = useIdentityContext()
+  const { isLoggedIn, isConfirmedUser } = useIdentityContext()
 
   return (
     <Stack p="3" as="section" spacing={3} minH="xl">
       <PageTitle />
       {/* render the component from route */}
       <Outlet />
-      {pathname === '/' && !isLoggedIn && <Welcome />}
+      {pathname === '/' && !(isLoggedIn && isConfirmedUser) && <Welcome />}
     </Stack>
   )
 }

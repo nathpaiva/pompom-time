@@ -64,4 +64,16 @@ describe('App', () => {
       expect(screen.queryByText('pompom')).toBeNull()
     })
   })
+
+  describe('user logged in but not confirmed', () => {
+    it('should render Welcome on "/"', () => {
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
+        isLoggedIn: true,
+        isConfirmedUser: false,
+      })
+      render(<App />)
+
+      expect(screen.getByText('pompom')).toBeVisible()
+    })
+  })
 })
