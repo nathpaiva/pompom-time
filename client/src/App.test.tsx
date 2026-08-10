@@ -4,12 +4,6 @@ import { App } from './App'
 
 const expectedCommonItems = () => {
   expect(screen.getByText('Pompom time')).toBeVisible()
-  expect(screen.getByText('pompom')).toBeVisible()
-  expect(
-    screen.getByText(
-      'Get to know, strengthen, and track your pelvic floor, at your own pace.',
-    ),
-  ).toBeVisible()
 }
 
 describe('App', () => {
@@ -30,6 +24,20 @@ describe('App', () => {
 
       expectedCommonItems()
     })
+
+    it('should render Welcome on "/"', () => {
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
+        isLoggedIn: false,
+      })
+      render(<App />)
+
+      expect(screen.getByText('pompom')).toBeVisible()
+      expect(
+        screen.getByText(
+          'Get to know, strengthen, and track your pelvic floor, at your own pace.',
+        ),
+      ).toBeVisible()
+    })
   })
 
   describe('user logged in', () => {
@@ -44,6 +52,16 @@ describe('App', () => {
       expect(screen.getByText('workout time')).toBeVisible()
       expect(screen.getByText('login')).not.toBeVisible()
       expectedCommonItems()
+    })
+
+    it('should not render Welcome on "/"', () => {
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
+        isLoggedIn: true,
+        isConfirmedUser: true,
+      })
+      render(<App />)
+
+      expect(screen.queryByText('pompom')).toBeNull()
     })
   })
 })
