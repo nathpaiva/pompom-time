@@ -202,6 +202,8 @@ function expectWorkoutSuccessfully(variety: Variety_Enum) {
       }
 
       const workout = JSON.parse(body as Stringified<Workouts>)
+      // `Workouts['id']` is a GraphQL `uuid` scalar, codegen maps it to `any`.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       workoutsIdToCleanUp.push(workout.id)
 
       Object.keys(workout).forEach((key) => {

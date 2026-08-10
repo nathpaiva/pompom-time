@@ -98,6 +98,9 @@ describe('delete-workout-by-id', () => {
     }
 
     const requestContext = createMockContext(_mockUserContext)
+    // `as` is required here: the handler's event type expects `id` to
+    // always be present, but this test intentionally sends a body missing
+    // it to simulate an inconsistent request.
     const _req = createMockHandlerEventBody<
       DeleteWorkoutByIdMutationVariables,
       null

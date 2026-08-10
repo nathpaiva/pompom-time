@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useIdentityContext } from 'react-netlify-identity'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { IResponseWithError, IUseListByUserId, normalizeError } from './helpers'
+import { assertNoErrorShape, IUseListByUserId, normalizeError } from './helpers'
 
 /**
  *
@@ -39,19 +39,17 @@ export function useGetWorkoutById<T>(): IUseListByUserId<T> {
           await getFreshJWT()
         }
 
-        const response = (await authedFetch.get(
+        const response = await authedFetch.get(
           `/.netlify/functions/get-workouts-by-id?workout_id=${workout_id}`,
-        )) as T & IResponseWithError
+        )
 
-        if (response?.error) {
-          throw new Error(response.error)
+        const checkedResponse = assertNoErrorShape<T | T[]>(response)
+
+        if (Array.isArray(checkedResponse)) {
+          return checkedResponse[0]
         }
 
-        if (Array.isArray(response)) {
-          return response[0]
-        }
-
-        return response
+        return checkedResponse
       } catch (error) {
         return Promise.reject(normalizeError(error, 'Error on request'))
       }

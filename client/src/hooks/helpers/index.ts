@@ -1,3 +1,5 @@
+export * from './assertNoErrorShape'
+export * from './hasErrorShape'
 export * from './normalizeError'
 export * from './toastOnError'
 export * from './types'
