@@ -72,6 +72,20 @@ describe('App', () => {
 
       expect(screen.queryByText('pompom')).toBeNull()
     })
+
+    it('should still render the top nav on "/" and "/login"', () => {
+      vi.mocked(_hoisted_useIdentityContext).mockReturnValue({
+        isLoggedIn: true,
+        isConfirmedUser: true,
+      })
+
+      const { unmount } = render(<App />, { initialEntries: '/' })
+      expect(screen.getByText('workout time')).toBeVisible()
+      unmount()
+
+      render(<App />, { initialEntries: '/login' })
+      expect(screen.getByText('workout time')).toBeVisible()
+    })
   })
 
   describe('user logged in but not confirmed', () => {
