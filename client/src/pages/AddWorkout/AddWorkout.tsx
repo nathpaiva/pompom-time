@@ -147,6 +147,7 @@ export const AddWorkout = () => {
             display="grid"
           >
             <FormLabel
+              id="variety-label"
               fontFamily="body"
               fontWeight="700"
               fontSize="13px"
@@ -161,7 +162,13 @@ export const AddWorkout = () => {
                 required: 'Workout variety is required',
               })}
             />
-            <Box display="flex" flexWrap="wrap" gap="2">
+            <Box
+              role="group"
+              aria-labelledby="variety-label"
+              display="flex"
+              flexWrap="wrap"
+              gap="2"
+            >
               {Object.values(Variety_Enum).map((wType) => {
                 const isActive = selectedVariety === wType
                 const varietyColor = varietyColorMap[wType]
