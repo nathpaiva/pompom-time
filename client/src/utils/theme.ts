@@ -9,6 +9,32 @@ export const customVariant = extendTheme({
     initialColorMode: 'dark',
     useSystemColorMode: false,
   },
+  fonts: {
+    heading: `'Quicksand', sans-serif`,
+    body: `'Nunito', sans-serif`,
+  },
+  colors: {
+    pompom: {
+      primary: '#655D8A',
+      secondary: '#7897AB',
+      tertiary: '#D885A3',
+      quaternary: '#F2C6B6',
+      bg: '#F3ECE7',
+      screen: '#FFFFFF',
+      inset: '#FBF7F4',
+      searchBg: '#F5EEEA',
+      text: '#2E2438',
+      textMuted: '#8D8096',
+      border: '#E7DFE6',
+      divider: '#F0EAEE',
+    },
+  },
+  radii: {
+    pompomInput: '14px',
+    pompomCard: '20px',
+    pompomPill: '999px',
+    pompomPhoneFrame: '48px',
+  },
   components: {
     Form: {
       variants: {
@@ -53,3 +79,6 @@ export const customVariant = extendTheme({
     },
   },
 })
+
+export const pompomGlowShadow = (hexColor: string) =>
+  `0 10px 24px ${hexColor}66`
