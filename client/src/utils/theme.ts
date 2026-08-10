@@ -6,7 +6,7 @@ const activeLabelStyles = {
 
 export const customVariant = extendTheme({
   config: {
-    initialColorMode: 'dark',
+    initialColorMode: 'light',
     useSystemColorMode: false,
   },
   fonts: {
@@ -54,7 +54,7 @@ export const customVariant = extendTheme({
               left: 0,
               zIndex: 2,
               position: 'absolute',
-              backgroundColor: 'var(--chakra-colors-chakra-body-bg)',
+              backgroundColor: 'pompom.inset',
               pointerEvents: 'none',
               mx: 3,
               px: 1,
