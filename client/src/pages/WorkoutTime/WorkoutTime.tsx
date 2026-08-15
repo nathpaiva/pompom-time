@@ -1,15 +1,16 @@
-import {
-  Box,
-  Button,
-  Heading,
-  Spinner,
-  Text,
-  VisuallyHidden,
-} from '@chakra-ui/react'
+import { ArrowBackIcon } from '@chakra-ui/icons'
+import { Box, Heading, IconButton, Spinner, Text } from '@chakra-ui/react'
 import { Workouts } from '@graph/types'
+import { Link } from 'react-router-dom'
 
 import { useGetWorkoutById } from '../../hooks'
-import { animationByWorkoutType } from './animationTime'
+import {
+  BreathingCircle,
+  RepDots,
+  VarietySwitcher,
+  WorkoutControls,
+} from './components'
+import { motionDescriptionByVariety } from './constants'
 import { usePulse } from './hooks'
 
 export const WorkoutTime = () => {
@@ -25,143 +26,80 @@ export const WorkoutTime = () => {
     countingDownInterval,
   } = usePulse(data)
 
-  const isShouldStartWorkout = !isCountingDown && !isResting && !isPulsing
-  const countList = Array.from(Array(data?.squeeze), (_, index) => ++index)
-  const counterTime = isShouldStartWorkout
-    ? ''
-    : isCountingDown
-      ? countingDownInterval // counting interval
-      : isResting
-        ? restingInterval // resting interval
-        : pulseInterval // pulsing interval
-
-  if (isLoading) {
+  if (isLoading || !data) {
     return <Spinner />
   }
 
+  const phase = isCountingDown
+    ? 'countdown'
+    : isResting
+      ? 'resting'
+      : isPulsing
+        ? 'active'
+        : 'idle'
+
+  const phaseLabel = {
+    countdown: 'Get ready',
+    resting: 'Resting',
+    active: 'Squeeze',
+    idle: 'Ready',
+  }[phase]
+
+  const statusText = {
+    countdown: String(countingDownInterval),
+    resting: String(restingInterval),
+    active: String(pulseInterval),
+    idle: `0/${data.squeeze}`,
+  }[phase]
+
+  // the set that just finished stays fully marked during its rest period
+  const completedReps =
+    phase === 'active' ? pulseInterval : phase === 'resting' ? data.squeeze : 0
+
+  const currentSet = Math.min(counter + 1, data.goal_per_day)
+
   return (
-    <Box>
-      <Heading>
-        {data?.name}: {data?.variety}
-      </Heading>
-
-      <Box
-        display="grid"
-        rowGap="5"
-        p="2"
-        maxW="350"
-        height="100vh"
-        maxHeight="900"
-        mt="2"
-        border="2px"
-        borderRadius="md"
-        mx="auto"
-        position="relative"
-        gridTemplateRows="40px 1fr"
-        sx={{
-          '@keyframes blinking': {
-            '0%': {
-              backgroundColor: 'pink.200',
-            },
-            '100%': {
-              backgroundColor: 'yellow.400',
-            },
-          },
-        }}
-      >
-        {/* create a component */}
-        {isShouldStartWorkout && <Text>Start workout</Text>}
-        {isCountingDown && <Text>The workout will start in:</Text>}
-        {isResting && <Text>Resting time:</Text>}
-        {isPulsing && <Text>Workout:</Text>}
-
-        <Box
-          w="150px"
-          h="150px"
-          bgColor="pink.200"
-          borderRadius={100}
-          margin="auto"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          animation={
-            isCountingDown
-              ? '1s blinking .1s infinite'
-              : isPulsing && data?.variety
-                ? animationByWorkoutType[data.variety].animation
-                : ''
-          }
-          sx={{
-            ...(isPulsing && data?.variety
-              ? animationByWorkoutType[data.variety].keyframes
-              : {}),
-          }}
-        >
-          <Text variant="span" fontSize="2xl" textAlign="center">
-            {counterTime}
+    <Box display="grid" rowGap="5" p="4" maxW="350" mx="auto">
+      <Box display="flex" alignItems="center" gap="3">
+        <IconButton
+          as={Link}
+          to="/admin/workout"
+          aria-label="Back"
+          icon={<ArrowBackIcon />}
+          variant="ghost"
+        />
+        <Box>
+          <Heading fontFamily="heading" fontWeight="700" fontSize="17px">
+            {data.name}
+          </Heading>
+          <Text fontSize="12px" color="pompom.textMuted">
+            Set {currentSet} of {data.goal_per_day}
           </Text>
         </Box>
-
-        <Text align="center">
-          Workout: {counter} / {data?.goal_per_day}
-        </Text>
-
-        <Box
-          as="ul"
-          display="flex"
-          justifyContent="center"
-          gap="10px"
-          flexWrap="wrap"
-        >
-          {countList.map((item) => {
-            return (
-              <Box
-                key={item}
-                as="li"
-                height="10px"
-                width="10px"
-                bgColor={
-                  (pulseInterval === item || pulseInterval > item) && isPulsing
-                    ? 'pink'
-                    : 'transparent'
-                }
-                border={
-                  pulseInterval !== item || pulseInterval < item || !isPulsing
-                    ? '1px solid pink'
-                    : ''
-                }
-                borderRadius="100%"
-              >
-                <VisuallyHidden>{item}</VisuallyHidden>
-              </Box>
-            )
-          })}
-        </Box>
-
-        <Box
-          display="grid"
-          gridTemplateColumns="repeat(2, 1fr)"
-          columnGap="5"
-          alignItems="end"
-          height="auto"
-        >
-          <Button
-            isDisabled={isPulsing || isResting || isCountingDown}
-            onClick={handleStartStopPulse}
-            colorScheme="purple"
-          >
-            Start workout
-          </Button>
-
-          <Button
-            isDisabled={!isPulsing || isResting || isCountingDown}
-            onClick={handleStartStopPulse}
-            colorScheme="pink"
-          >
-            Reset
-          </Button>
-        </Box>
       </Box>
+
+      <VarietySwitcher activeVariety={data.variety} />
+
+      <BreathingCircle
+        variety={data.variety}
+        phaseLabel={phaseLabel}
+        statusText={statusText}
+        motionDescription={motionDescriptionByVariety[data.variety]}
+      />
+
+      <RepDots
+        totalReps={data.squeeze}
+        completedReps={completedReps}
+        variety={data.variety}
+      />
+
+      <WorkoutControls
+        primaryLabel={isPulsing ? 'Pause' : 'Start workout'}
+        isPrimaryDisabled={phase === 'countdown' || phase === 'resting'}
+        isResetDisabled={phase === 'idle'}
+        onPrimaryClick={handleStartStopPulse}
+        onResetClick={handleStartStopPulse}
+      />
     </Box>
   )
 }

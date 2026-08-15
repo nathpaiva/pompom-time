@@ -10,3 +10,10 @@ export const intervalByWorkoutType: Record<Variety_Enum, number> = {
   [Variety_Enum.Resistance]: 500,
   [Variety_Enum.Strength]: 1500,
 } as const
+
+export const motionDescriptionByVariety: Record<Variety_Enum, string> = {
+  [Variety_Enum.Pulse]: 'Quick squeeze and release, light and fast.',
+  [Variety_Enum.Intensity]: 'Deep squeeze that gets stronger each rep.',
+  [Variety_Enum.Resistance]: 'Hold the squeeze, then let go slow.',
+  [Variety_Enum.Strength]: 'Squeeze up and lift, then lower back down.',
+} as const
