@@ -86,59 +86,94 @@ export const phaseDurationMs = (
   return 0
 }
 
+interface IPhaseCalculatorArgs {
+  elapsedMs: number
+  variety: Variety_Enum
+  repIndex: number
+  holdSeconds: number
+}
+
+type TPhaseCalculator = (args: IPhaseCalculatorArgs) => IPhaseState
+
+const contractState: TPhaseCalculator = ({ elapsedMs, variety, repIndex }) => {
+  const varietyColor = varietyColorMap[variety].background
+  const minScale = minScaleFor(variety, repIndex)
+  const t = easeOut(clampProgress(elapsedMs, CONTRACT_MS[variety]))
+  const translateY =
+    variety === Variety_Enum.Strength ? lerp(0, STRENGTH_MAX_LIFT_PX, t) : 0
+
+  return {
+    scale: lerp(1, minScale, t),
+    color: lerpColor(RELAXED_COLOR, varietyColor, t),
+    translateY,
+    ringOffset: 0,
+  }
+}
+
+const holdState: TPhaseCalculator = ({
+  elapsedMs,
+  variety,
+  repIndex,
+  holdSeconds,
+}) => {
+  const varietyColor = varietyColorMap[variety].background
+  const minScale = minScaleFor(variety, repIndex)
+  const t = clampProgress(elapsedMs, holdSeconds * 1000)
+  const translateY =
+    variety === Variety_Enum.Strength ? STRENGTH_MAX_LIFT_PX : 0
+
+  return {
+    scale: minScale,
+    color: varietyColor,
+    translateY,
+    ringOffset: lerp(RING_CIRCUMFERENCE, 0, t),
+  }
+}
+
+const releaseState: TPhaseCalculator = ({ elapsedMs, variety, repIndex }) => {
+  const varietyColor = varietyColorMap[variety].background
+  const minScale = minScaleFor(variety, repIndex)
+  const t = easeInOut(clampProgress(elapsedMs, RELEASE_MS[variety]))
+  const translateY =
+    variety === Variety_Enum.Strength ? lerp(STRENGTH_MAX_LIFT_PX, 0, t) : 0
+
+  return {
+    scale: lerp(minScale, 1, t),
+    color: lerpColor(varietyColor, RELAXED_COLOR, t),
+    translateY,
+    ringOffset: 0,
+  }
+}
+
+const restingState: TPhaseCalculator = () => ({
+  scale: 1,
+  color: RESTING_COLOR,
+  translateY: 0,
+  ringOffset: 0,
+})
+
+const relaxedState: TPhaseCalculator = () => ({
+  scale: 1,
+  color: RELAXED_COLOR,
+  translateY: 0,
+  ringOffset: 0,
+})
+
+const PHASE_CALCULATORS: Record<TPhase, TPhaseCalculator> = {
+  idle: relaxedState,
+  countdown: relaxedState,
+  contract: contractState,
+  hold: holdState,
+  release: releaseState,
+  resting: restingState,
+  done: relaxedState,
+}
+
 export const computePhaseState = (
   phase: TPhase,
   elapsedMs: number,
   variety: Variety_Enum,
   repIndex: number,
   holdSeconds = 0,
-): IPhaseState => {
-  const varietyColor = varietyColorMap[variety].background
-  const minScale = minScaleFor(variety, repIndex)
-
-  if (phase === 'contract') {
-    const t = easeOut(clampProgress(elapsedMs, CONTRACT_MS[variety]))
-    const translateY =
-      variety === Variety_Enum.Strength ? lerp(0, STRENGTH_MAX_LIFT_PX, t) : 0
-
-    return {
-      scale: lerp(1, minScale, t),
-      color: lerpColor(RELAXED_COLOR, varietyColor, t),
-      translateY,
-      ringOffset: 0,
-    }
-  }
-
-  if (phase === 'hold') {
-    const t = clampProgress(elapsedMs, holdSeconds * 1000)
-    const translateY =
-      variety === Variety_Enum.Strength ? STRENGTH_MAX_LIFT_PX : 0
-
-    return {
-      scale: minScale,
-      color: varietyColor,
-      translateY,
-      ringOffset: lerp(RING_CIRCUMFERENCE, 0, t),
-    }
-  }
-
-  if (phase === 'release') {
-    const t = easeInOut(clampProgress(elapsedMs, RELEASE_MS[variety]))
-    const translateY =
-      variety === Variety_Enum.Strength ? lerp(STRENGTH_MAX_LIFT_PX, 0, t) : 0
-
-    return {
-      scale: lerp(minScale, 1, t),
-      color: lerpColor(varietyColor, RELAXED_COLOR, t),
-      translateY,
-      ringOffset: 0,
-    }
-  }
-
-  if (phase === 'resting') {
-    return { scale: 1, color: RESTING_COLOR, translateY: 0, ringOffset: 0 }
-  }
-
-  // idle, countdown, done: relaxed appearance
-  return { scale: 1, color: RELAXED_COLOR, translateY: 0, ringOffset: 0 }
-}
+): IPhaseState =>
+  PHASE_CALCULATORS[phase]({ elapsedMs, variety, repIndex, holdSeconds })
