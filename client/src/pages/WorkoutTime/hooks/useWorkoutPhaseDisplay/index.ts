@@ -1,2 +1,1 @@
-export * from './usePulse'
 export * from './useWorkoutPhaseDisplay'

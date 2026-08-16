@@ -11,52 +11,28 @@ import {
   WorkoutControls,
 } from './components'
 import { motionDescriptionByVariety } from './constants'
-import { usePulse } from './hooks'
+import { usePulse, useWorkoutPhaseDisplay } from './hooks'
 
 export const WorkoutTime = () => {
   const { data, isLoading } = useGetWorkoutById<Workouts>()
+  const pulse = usePulse(data)
   const {
-    counter,
-    pulseInterval,
-    isPulsing,
-    handleStartStopPulse,
-    isResting,
-    restingInterval,
-    isCountingDown,
-    countingDownInterval,
-  } = usePulse(data)
+    phaseLabel,
+    statusText,
+    completedReps,
+    primaryLabel,
+    isPrimaryDisabled,
+    isResetDisabled,
+  } = useWorkoutPhaseDisplay(pulse, data)
 
   if (isLoading || !data) {
     return <Spinner />
   }
 
-  const phase = isCountingDown
-    ? 'countdown'
-    : isResting
-      ? 'resting'
-      : isPulsing
-        ? 'active'
-        : 'idle'
-
-  const phaseLabel = {
-    countdown: 'Get ready',
-    resting: 'Resting',
-    active: 'Squeeze',
-    idle: 'Ready',
-  }[phase]
-
-  const statusText = {
-    countdown: String(countingDownInterval),
-    resting: String(restingInterval),
-    active: String(pulseInterval),
-    idle: `0/${data.squeeze}`,
-  }[phase]
-
-  // the set that just finished stays fully marked during its rest period
-  const completedReps =
-    phase === 'active' ? pulseInterval : phase === 'resting' ? data.squeeze : 0
-
-  const currentSet = Math.min(counter + 1, data.goal_per_day)
+  const currentSet =
+    pulse.phase === 'done'
+      ? data.goal_per_day
+      : Math.min(pulse.setIndex + 1, data.goal_per_day)
 
   return (
     <Box display="grid" rowGap="5" p="4" maxW="350" mx="auto">
@@ -94,11 +70,11 @@ export const WorkoutTime = () => {
       />
 
       <WorkoutControls
-        primaryLabel={isPulsing ? 'Pause' : 'Start workout'}
-        isPrimaryDisabled={phase === 'countdown' || phase === 'resting'}
-        isResetDisabled={phase === 'idle'}
-        onPrimaryClick={handleStartStopPulse}
-        onResetClick={handleStartStopPulse}
+        primaryLabel={primaryLabel}
+        isPrimaryDisabled={isPrimaryDisabled}
+        isResetDisabled={isResetDisabled}
+        onPrimaryClick={pulse.handleStartStopPulse}
+        onResetClick={pulse.handleReset}
       />
     </Box>
   )
