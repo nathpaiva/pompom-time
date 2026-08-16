@@ -65,6 +65,7 @@ export const CardForm = ({
     <Card
       key={formKey}
       as="form"
+      variant="unstyled"
       onSubmit={(event) => {
         formTypeOpenedEnum.handleSubmit(onSubmit)(event)
       }}
