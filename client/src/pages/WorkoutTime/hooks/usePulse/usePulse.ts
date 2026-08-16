@@ -1,207 +1,274 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
-import {
-  PULSE_INTERVAL_FALLBACK,
-  PULSE_INTERVAL_RESTING,
-  intervalByWorkoutType,
-} from '../../constants'
-import { type TUsePulse, Variety_Enum } from './types'
+import { PULSE_INTERVAL_RESTING } from '../../constants'
+import { phaseDurationMs, type TPhase } from './phaseMath'
+import { Variety_Enum, type TUsePulse } from './types'
+
+const COUNTDOWN_START = 3
 
 export const usePulse: TUsePulse = (data) => {
-  const { interval, squeeze, repeat, rest, variety } = data ?? {}
-  const sets = data?.goal_per_day
+  const {
+    variety,
+    squeeze,
+    rest,
+    repeat,
+    goal_per_day: sets,
+    interval,
+  } = data ?? {}
+  const holdSeconds = variety === Variety_Enum.Resistance ? (interval ?? 0) : 0
 
-  const { _PULSE_INTERVAL, _PULSE_LIMIT, _REST, _REPEAT, _SETS } =
-    useMemo(() => {
-      return {
-        _PULSE_INTERVAL: !variety
-          ? PULSE_INTERVAL_FALLBACK
-          : variety === Variety_Enum.Resistance && interval
-            ? interval * 1000
-            : intervalByWorkoutType[variety],
-        _PULSE_LIMIT: squeeze,
-        _REST: rest,
-        _REPEAT: repeat,
-        _SETS: sets,
-      }
-    }, [variety, interval, squeeze, rest, repeat, sets])
+  const [phase, setPhase] = useState<TPhase>('idle')
+  const [repIndex, setRepIndex] = useState(0)
+  const [setIndex, setSetIndex] = useState(0)
+  const [countingDownInterval, setCountingDownInterval] =
+    useState(COUNTDOWN_START)
+  const [restingInterval, setRestingInterval] = useState(rest ?? 0)
 
-  // workout counter
-  const [counter, setCounter] = useState(0)
-  const _counter = useRef(0)
-  // workout
-  const [isPulsing, setIsPulsing] = useState(false)
-  const [pulseInterval, setPulseInterval] = useState(1)
-  const _pulseIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
-  const _pulseInterval = useRef(1)
-  // rest
-  const [isResting, setIsResting] = useState(false)
-  const [restingInterval, setRestingInterval] = useState(_REST ?? 0)
-  const _restingIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
-  const _restingInterval = useRef(_REST ?? 0)
-  // workout will start
-  const [isCountingDown, setIsCountingDown] = useState(false)
-  const [countingDownInterval, setCountingDownInterval] = useState(3)
-  const _countingDownIntervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
-  const _countingDownInterval = useRef(3)
-  const _handleStartStopPulseRef = useRef<(() => void) | undefined>(undefined)
+  // refs mirror the state above so timer callbacks always read the latest
+  // value, instead of a value captured in a stale useCallback closure
+  const phaseRef = useRef<TPhase>('idle')
+  const repIndexRef = useRef(0)
+  const setIndexRef = useRef(0)
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  const phaseStartedAtRef = useRef(0)
+  const pausedElapsedMsRef = useRef<number | undefined>(undefined)
 
-  const countingDownTimer = useCallback((callback: () => void) => {
-    _countingDownIntervalRef.current = setInterval(() => {
-      if (_countingDownInterval.current === 0) {
-        _countingDownInterval.current = 3
-        clearInterval(_countingDownIntervalRef.current)
+  const setPhaseState = useCallback((next: TPhase) => {
+    phaseRef.current = next
+    setPhase(next)
+  }, [])
 
-        _countingDownIntervalRef.current = undefined
-        setCountingDownInterval(3)
-        setIsCountingDown((prev) => !prev)
+  const setRepIndexState = useCallback((next: number) => {
+    repIndexRef.current = next
+    setRepIndex(next)
+  }, [])
 
-        callback()
+  const setSetIndexState = useCallback((next: number) => {
+    setIndexRef.current = next
+    setSetIndex(next)
+  }, [])
+
+  const clearPendingTimer = useCallback(() => {
+    clearTimeout(timeoutRef.current)
+    timeoutRef.current = undefined
+  }, [])
+
+  // mutually-recursive phase functions can't be plain useCallbacks (each
+  // would need the other in its deps, which would recreate both every
+  // render and re-trigger effects) — they're kept in refs, updated after
+  // every render via the effect below (keyed on the values they close
+  // over), and always called through the ref.
+  const enterPhaseRef = useRef<(next: TPhase, elapsedMs?: number) => void>(
+    () => undefined,
+  )
+  const advancePhaseRef = useRef<() => void>(() => undefined)
+  const startRestingRef = useRef<() => void>(() => undefined)
+  const startCountdownRef = useRef<() => void>(() => undefined)
+
+  // countdown/resting also run through enterPhase/advancePhase, one 1s
+  // tick at a time, so the same setTimeout + pause/resume mechanism as
+  // contract/hold/release applies uniformly to every active phase.
+  const tickCountdownRef = useRef<() => void>(() => undefined)
+  const tickRestingRef = useRef<() => void>(() => undefined)
+
+  // countingDownInterval/restingInterval need a synchronous read inside
+  // tickCountdownRef/tickRestingRef (state updates aren't visible until
+  // the next render), same reason phase/repIndex/setIndex use refs above
+  const countingDownIntervalRef = useRef(COUNTDOWN_START)
+  const restingIntervalRef = useRef(rest ?? 0)
+
+  useEffect(() => {
+    enterPhaseRef.current = (next: TPhase, elapsedMs = 0) => {
+      setPhaseState(next)
+      phaseStartedAtRef.current = Date.now() - elapsedMs
+
+      if (next === 'countdown') {
+        timeoutRef.current = setTimeout(
+          () => tickCountdownRef.current(),
+          PULSE_INTERVAL_RESTING - elapsedMs,
+        )
         return
       }
 
-      // decrease the resting
-      _countingDownInterval.current -= 1
-      setCountingDownInterval(_countingDownInterval.current)
-    }, PULSE_INTERVAL_RESTING)
-  }, [])
+      if (next === 'resting') {
+        timeoutRef.current = setTimeout(
+          () => tickRestingRef.current(),
+          PULSE_INTERVAL_RESTING - elapsedMs,
+        )
+        return
+      }
 
-  const resetRestingInterval = useCallback((value: number) => {
-    _restingInterval.current = value
-    setRestingInterval(value)
-  }, [])
+      if (!variety) return
 
-  const restingTimer = useCallback(
-    (callback: () => void) => {
-      if (!_REST) return
+      const durationMs = phaseDurationMs(next, variety, holdSeconds)
+      if (durationMs <= 0) return
 
-      // seed the countdown with the current rest value before starting
-      resetRestingInterval(_REST)
+      timeoutRef.current = setTimeout(() => {
+        advancePhaseRef.current()
+      }, durationMs - elapsedMs)
+    }
 
-      // start resting
-      _restingIntervalRef.current = setInterval(() => {
-        /**
-         * if get the resting limit stop resting:
-         * - clean the interval
-         * - reset the resting interval
-         * - reset internal resting
-         */
-        if (_restingInterval.current === 1) {
-          resetRestingInterval(_REST)
-          clearInterval(_restingIntervalRef.current)
+    startCountdownRef.current = () => {
+      setCountingDownInterval(COUNTDOWN_START)
+      enterPhaseRef.current('countdown')
+    }
 
-          _restingIntervalRef.current = undefined
-          setIsResting((prev) => !prev)
+    tickCountdownRef.current = () => {
+      const remaining = countingDownIntervalRef.current - 1
 
-          callback()
+      if (remaining === 0) {
+        setCountingDownInterval(COUNTDOWN_START)
+        setRepIndexState(0)
+        enterPhaseRef.current('contract')
+        return
+      }
+
+      countingDownIntervalRef.current = remaining
+      setCountingDownInterval(remaining)
+      enterPhaseRef.current('countdown')
+    }
+
+    startRestingRef.current = () => {
+      if (!rest) {
+        setPhaseState('done')
+        return
+      }
+
+      restingIntervalRef.current = rest
+      setRestingInterval(rest)
+      enterPhaseRef.current('resting')
+    }
+
+    tickRestingRef.current = () => {
+      const remaining = restingIntervalRef.current - 1
+
+      if (remaining === 0) {
+        setRestingInterval(rest ?? 0)
+        startCountdownRef.current()
+        return
+      }
+
+      restingIntervalRef.current = remaining
+      setRestingInterval(remaining)
+      enterPhaseRef.current('resting')
+    }
+
+    advancePhaseRef.current = () => {
+      const current = phaseRef.current
+
+      if (current === 'contract') {
+        if (variety === Variety_Enum.Resistance && holdSeconds > 0) {
+          enterPhaseRef.current('hold')
+          return
+        }
+        enterPhaseRef.current('release')
+        return
+      }
+
+      if (current === 'hold') {
+        enterPhaseRef.current('release')
+        return
+      }
+
+      if (current === 'release') {
+        const nextRep = repIndexRef.current + 1
+        setRepIndexState(nextRep)
+
+        if (!squeeze || nextRep < squeeze) {
+          enterPhaseRef.current('contract')
           return
         }
 
-        // decrease the resting
-        _restingInterval.current -= 1
-        setRestingInterval(_restingInterval.current)
-      }, PULSE_INTERVAL_RESTING)
-    },
-    [_REST, resetRestingInterval],
-  )
+        const nextSet = setIndexRef.current + 1
+        setSetIndexState(nextSet)
+        setRepIndexState(0)
 
-  const advanceSet = useCallback(
-    (nextCounter: number) => {
-      if (!nextCounter || !_REPEAT || !_REST || !_SETS) return
+        if (!sets || nextSet >= sets || !repeat) {
+          setPhaseState('done')
+          return
+        }
 
-      if (
-        nextCounter < _SETS &&
-        !_restingIntervalRef.current &&
-        !_pulseIntervalRef.current
-      ) {
-        setIsResting((prev) => !prev)
-        restingTimer(() => _handleStartStopPulseRef.current?.())
+        startRestingRef.current()
       }
-
-      if (nextCounter === _SETS) {
-        _counter.current = 0
-        setCounter(0)
-      }
-    },
-    [_REPEAT, _REST, _SETS, restingTimer],
-  )
-
-  const pulseTimer = useCallback(() => {
-    /**
-     * if has interval and the pulse is running:
-     * - clean the interval
-     * - reset the pulse interval
-     * - reset internal interval
-     */
-    if (_pulseIntervalRef.current && isPulsing) {
-      _pulseInterval.current = 1
-      clearInterval(_pulseIntervalRef.current)
-      _counter.current = 0
-      setCounter(0)
-
-      _pulseIntervalRef.current = undefined
-      setPulseInterval(_pulseInterval.current)
-      setIsPulsing(false)
-      return
     }
-
-    // start the pulse
-    _pulseIntervalRef.current = setInterval(() => {
-      /**
-       * if get the pulse limit stop pulsing:
-       * - clean the interval
-       * - reset the pulse interval
-       * - reset internal interval
-       */
-      if (_pulseInterval.current === _PULSE_LIMIT) {
-        _pulseInterval.current = 1
-        clearInterval(_pulseIntervalRef.current)
-
-        _pulseIntervalRef.current = undefined
-        setPulseInterval(_pulseInterval.current)
-        setIsPulsing((prev) => !prev)
-
-        const next = _counter.current + 1
-        _counter.current = next
-        setCounter(next)
-        advanceSet(next)
-
-        return
-      }
-
-      // increase the pulse
-      _pulseInterval.current += 1
-      setPulseInterval(_pulseInterval.current)
-    }, _PULSE_INTERVAL)
-  }, [isPulsing, _PULSE_INTERVAL, _PULSE_LIMIT, advanceSet])
-
-  const start = useCallback(() => {
-    setIsPulsing((prev) => !prev)
-    pulseTimer()
-  }, [pulseTimer])
-
-  const handleStartStopPulse = useCallback(() => {
-    if (isPulsing) {
-      pulseTimer()
-      return
-    }
-
-    setIsCountingDown((prev) => !prev)
-    countingDownTimer(start)
-  }, [isPulsing, pulseTimer, countingDownTimer, start])
+  }, [
+    variety,
+    holdSeconds,
+    squeeze,
+    sets,
+    repeat,
+    rest,
+    setPhaseState,
+    setRepIndexState,
+    setSetIndexState,
+  ])
 
   useEffect(() => {
-    _handleStartStopPulseRef.current = handleStartStopPulse
-  }, [handleStartStopPulse])
+    countingDownIntervalRef.current = countingDownInterval
+  }, [countingDownInterval])
+  useEffect(() => {
+    restingIntervalRef.current = restingInterval
+  }, [restingInterval])
+
+  useEffect(() => {
+    return () => clearPendingTimer()
+  }, [clearPendingTimer])
+
+  const pause = useCallback(() => {
+    pausedElapsedMsRef.current = Date.now() - phaseStartedAtRef.current
+    clearPendingTimer()
+  }, [clearPendingTimer])
+
+  const resume = useCallback(() => {
+    const elapsedMs = pausedElapsedMsRef.current ?? 0
+    pausedElapsedMsRef.current = undefined
+    enterPhaseRef.current(phaseRef.current, elapsedMs)
+  }, [])
+
+  const reset = useCallback(() => {
+    clearPendingTimer()
+    pausedElapsedMsRef.current = undefined
+    setRepIndexState(0)
+    setSetIndexState(0)
+    setCountingDownInterval(COUNTDOWN_START)
+    setRestingInterval(rest ?? 0)
+    setPhaseState('idle')
+  }, [
+    clearPendingTimer,
+    rest,
+    setPhaseState,
+    setRepIndexState,
+    setSetIndexState,
+  ])
+
+  const handleStartStopPulse = useCallback(() => {
+    const current = phaseRef.current
+
+    if (current === 'idle' || current === 'done') {
+      startCountdownRef.current()
+      return
+    }
+
+    // every other active phase (countdown/contract/hold/release/resting)
+    // pauses or resumes in place — it never discards progress
+    if (pausedElapsedMsRef.current !== undefined) {
+      resume()
+    } else {
+      pause()
+    }
+  }, [pause, resume])
+
+  const handleReset = useCallback(() => {
+    reset()
+  }, [reset])
 
   return {
-    pulseInterval,
-    isPulsing,
-    handleStartStopPulse,
-    counter,
-    isResting,
-    restingInterval,
-    isCountingDown,
+    phase,
+    repIndex,
+    setIndex,
     countingDownInterval,
+    restingInterval,
+    handleStartStopPulse,
+    handleReset,
   }
 }
