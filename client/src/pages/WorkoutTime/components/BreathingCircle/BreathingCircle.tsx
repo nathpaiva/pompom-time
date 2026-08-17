@@ -2,12 +2,21 @@ import { Box, Text } from '@chakra-ui/react'
 import { Variety_Enum } from '@graph/types'
 
 import { varietyColorMap } from '../../../../utils'
+import { ProgressRing } from '../ProgressRing'
+
+interface AnimatedStyle {
+  scale: number
+  color: string
+  translateY: number
+  ringOffset: number
+}
 
 interface BreathingCircleProps {
   variety: Variety_Enum
   phaseLabel: string
   statusText: string
   motionDescription: string
+  animatedStyle?: AnimatedStyle
 }
 
 export const BreathingCircle = ({
@@ -15,8 +24,13 @@ export const BreathingCircle = ({
   phaseLabel,
   statusText,
   motionDescription,
+  animatedStyle,
 }: BreathingCircleProps) => {
   const varietyColor = varietyColorMap[variety]
+  const backgroundColor = animatedStyle?.color ?? varietyColor.background
+  const transform = animatedStyle
+    ? `scale(${animatedStyle.scale}) translateY(${animatedStyle.translateY}px)`
+    : undefined
 
   return (
     <Box display="grid" justifyContent="center" rowGap="3">
@@ -26,17 +40,25 @@ export const BreathingCircle = ({
         display="flex"
         alignItems="center"
         justifyContent="center"
+        position="relative"
       >
+        {animatedStyle && animatedStyle.ringOffset > 0 && (
+          <ProgressRing
+            ringOffset={animatedStyle.ringOffset}
+            color={varietyColor.background}
+          />
+        )}
         <Box
           width="210px"
           height="210px"
           borderRadius="pompomPill"
-          bg={varietyColor.background}
+          bg={backgroundColor}
           display="flex"
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
           gap="1"
+          style={{ transform }}
         >
           <Text
             fontFamily="heading"
