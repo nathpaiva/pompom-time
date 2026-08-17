@@ -1,6 +1,6 @@
 import { ArrowBackIcon } from '@chakra-ui/icons'
 import { Box, Heading, IconButton, Spinner, Text } from '@chakra-ui/react'
-import { Workouts } from '@graph/types'
+import { Variety_Enum, Workouts } from '@graph/types'
 import { Link } from 'react-router-dom'
 
 import { useGetWorkoutById } from '../../hooks'
@@ -11,7 +11,9 @@ import {
   WorkoutControls,
 } from './components'
 import { motionDescriptionByVariety } from './constants'
-import { usePulse, useWorkoutPhaseDisplay } from './hooks'
+import { usePhaseAnimation, usePulse, useWorkoutPhaseDisplay } from './hooks'
+
+const ANIMATED_PHASES = ['contract', 'hold', 'release']
 
 export const WorkoutTime = () => {
   const { data, isLoading } = useGetWorkoutById<Workouts>()
@@ -25,6 +27,18 @@ export const WorkoutTime = () => {
     isResetDisabled,
   } = useWorkoutPhaseDisplay(pulse, data)
 
+  const holdSeconds =
+    data?.variety === Variety_Enum.Resistance ? (data.interval ?? 0) : 0
+
+  const animation = usePhaseAnimation(
+    pulse.phase,
+    pulse.phaseStartedAt,
+    pulse.isPaused,
+    data?.variety ?? Variety_Enum.Pulse,
+    pulse.repIndex,
+    holdSeconds,
+  )
+
   if (isLoading || !data) {
     return <Spinner />
   }
@@ -33,6 +47,10 @@ export const WorkoutTime = () => {
     pulse.phase === 'done'
       ? data.goal_per_day
       : Math.min(pulse.setIndex + 1, data.goal_per_day)
+
+  const animatedStyle = ANIMATED_PHASES.includes(pulse.phase)
+    ? animation
+    : undefined
 
   return (
     <Box display="grid" rowGap="5" p="4" maxW="350" mx="auto">
@@ -61,6 +79,7 @@ export const WorkoutTime = () => {
         phaseLabel={phaseLabel}
         statusText={statusText}
         motionDescription={motionDescriptionByVariety[data.variety]}
+        animatedStyle={animatedStyle}
       />
 
       <RepDots
