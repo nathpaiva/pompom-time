@@ -1,9 +1,11 @@
 import { Variety_Enum } from '@graph/types'
 import { useEffect, useState } from 'react'
 
-import { computePhaseState, type TPhase } from '../usePulse/phaseMath'
-
-const ACTIVE_PHASES: TPhase[] = ['contract', 'hold', 'release']
+import {
+  ACTIVE_PHASES,
+  computePhaseState,
+  type TPhase,
+} from '../usePulse/phaseMath'
 
 export const usePhaseAnimation = (
   phase: TPhase,

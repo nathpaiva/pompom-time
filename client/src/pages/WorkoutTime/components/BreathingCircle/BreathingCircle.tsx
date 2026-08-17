@@ -9,6 +9,7 @@ interface AnimatedStyle {
   color: string
   translateY: number
   ringOffset: number
+  showRing: boolean
 }
 
 interface BreathingCircleProps {
@@ -42,7 +43,7 @@ export const BreathingCircle = ({
         justifyContent="center"
         position="relative"
       >
-        {animatedStyle && animatedStyle.ringOffset > 0 && (
+        {animatedStyle && animatedStyle.showRing && (
           <ProgressRing
             ringOffset={animatedStyle.ringOffset}
             color={varietyColor.background}

@@ -12,8 +12,7 @@ import {
 } from './components'
 import { motionDescriptionByVariety } from './constants'
 import { usePhaseAnimation, usePulse, useWorkoutPhaseDisplay } from './hooks'
-
-const ANIMATED_PHASES = ['contract', 'hold', 'release']
+import { ACTIVE_PHASES } from './hooks/usePulse/phaseMath'
 
 export const WorkoutTime = () => {
   const { data, isLoading } = useGetWorkoutById<Workouts>()
@@ -48,8 +47,8 @@ export const WorkoutTime = () => {
       ? data.goal_per_day
       : Math.min(pulse.setIndex + 1, data.goal_per_day)
 
-  const animatedStyle = ANIMATED_PHASES.includes(pulse.phase)
-    ? animation
+  const animatedStyle = ACTIVE_PHASES.includes(pulse.phase)
+    ? { ...animation, showRing: pulse.phase === 'hold' }
     : undefined
 
   return (
