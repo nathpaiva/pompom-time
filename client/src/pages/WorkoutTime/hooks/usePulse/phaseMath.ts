@@ -5,6 +5,8 @@ import { varietyColorMap } from '../../../../utils'
 export type TPhase =
   'idle' | 'countdown' | 'contract' | 'hold' | 'release' | 'resting' | 'done'
 
+export const ACTIVE_PHASES: TPhase[] = ['contract', 'hold', 'release']
+
 interface IPhaseState {
   scale: number
   color: string

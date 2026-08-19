@@ -8,6 +8,8 @@ interface IUsePulse {
   setIndex: number
   countingDownInterval: number
   restingInterval: number
+  phaseStartedAt: number
+  isPaused: boolean
   handleStartStopPulse: () => void
   handleReset: () => void
 }

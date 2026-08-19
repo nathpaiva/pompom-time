@@ -23,6 +23,8 @@ export const usePulse: TUsePulse = (data) => {
   const [countingDownInterval, setCountingDownInterval] =
     useState(COUNTDOWN_START)
   const [restingInterval, setRestingInterval] = useState(rest ?? 0)
+  const [phaseStartedAt, setPhaseStartedAt] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
 
   // refs mirror the state above so timer callbacks always read the latest
   // value, instead of a value captured in a stale useCallback closure
@@ -81,6 +83,7 @@ export const usePulse: TUsePulse = (data) => {
     enterPhaseRef.current = (next: TPhase, elapsedMs = 0) => {
       setPhaseState(next)
       phaseStartedAtRef.current = Date.now() - elapsedMs
+      setPhaseStartedAt(phaseStartedAtRef.current)
 
       if (next === 'countdown') {
         timeoutRef.current = setTimeout(
@@ -216,12 +219,14 @@ export const usePulse: TUsePulse = (data) => {
 
   const pause = useCallback(() => {
     pausedElapsedMsRef.current = Date.now() - phaseStartedAtRef.current
+    setIsPaused(true)
     clearPendingTimer()
   }, [clearPendingTimer])
 
   const resume = useCallback(() => {
     const elapsedMs = pausedElapsedMsRef.current ?? 0
     pausedElapsedMsRef.current = undefined
+    setIsPaused(false)
     enterPhaseRef.current(phaseRef.current, elapsedMs)
   }, [])
 
@@ -268,6 +273,8 @@ export const usePulse: TUsePulse = (data) => {
     setIndex,
     countingDownInterval,
     restingInterval,
+    phaseStartedAt,
+    isPaused,
     handleStartStopPulse,
     handleReset,
   }
