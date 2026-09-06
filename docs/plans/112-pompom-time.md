@@ -9,7 +9,25 @@ Worktree: `.claude/worktrees/fix-112-pompom-time-spa-redirect`
 
 | # | Branch | Branched from | Carries | Status |
 |---|--------|---------------|---------|--------|
-| 1 | `fix/112-pompom-time-spa-redirect` | `main` | Everything | in progress |
+| 1 | `fix/112-pompom-time-spa-redirect` | `main` | Everything | done |
+
+### What shipped on branch 1
+
+Followed the plan. Two small things not in the Files table:
+
+- **`serverless/vite.config.ts`** got one line added to its `exclude` list.
+  The new `redirects.config.test.ts` sits at the repo root, so both Vitest
+  configs pick it up by default. It belongs to the client suite only, so it is
+  now excluded from `test:serverless`. This matches the `CLAUDE.md` note about
+  excluding new top-level test files in both configs.
+- The test resolves `netlify.toml` with `process.cwd()`, not
+  `import.meta.url`. `import.meta.url` is not a `file:` URL under the Vitest
+  transform and threw `The URL must be of scheme file`. `process.cwd()` is the
+  repo root when Vitest runs, same base the Vite config files use.
+
+Verified live: `netlify dev --dir dist` serves `/admin/workout` and
+`/admin/workout/start/:id` as `200` with `Rewrote URL to /index.html` in the
+log, and real assets still return `200`.
 
 ## Context
 
