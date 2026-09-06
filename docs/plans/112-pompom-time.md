@@ -9,7 +9,7 @@ Worktree: `.claude/worktrees/fix-112-pompom-time-spa-redirect`
 
 | # | Branch | Branched from | Carries | Status |
 |---|--------|---------------|---------|--------|
-| 1 | `fix/112-pompom-time-spa-redirect` | `main` | Everything | done |
+| 1 | `fix/112-pompom-time-spa-redirect` | `main` | Everything | done — PR #117 |
 
 ### What shipped on branch 1
 
