@@ -1,4 +1,5 @@
 export * from './BreathingCircle'
+export * from './ProgressRing'
 export * from './RepDots'
 export * from './VarietySwitcher'
 export * from './WorkoutControls'

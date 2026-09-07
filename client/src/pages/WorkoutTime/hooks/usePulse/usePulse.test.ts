@@ -202,4 +202,27 @@ describe('usePulse', () => {
     expect(result.current.phase).toBe('resting')
     expect(result.current.setIndex).toBe(1) // progress preserved
   })
+
+  it('should expose phaseStartedAt and isPaused, tracking pause state', () => {
+    const data = { ...mockDataResponse[1], variety: Variety_Enum.Strength }
+    const { result } = renderHook(() => usePulse(data))
+
+    expect(result.current.isPaused).toBe(false)
+
+    act(() => result.current.handleStartStopPulse())
+    act(() => vi.advanceTimersByTime(3000)) // -> contract
+    expect(result.current.phase).toBe('contract')
+    expect(result.current.isPaused).toBe(false)
+    const startedAt = result.current.phaseStartedAt
+    expect(startedAt).toBeGreaterThan(0)
+
+    act(() => vi.advanceTimersByTime(100))
+    act(() => result.current.handleStartStopPulse()) // pause
+    expect(result.current.isPaused).toBe(true)
+
+    act(() => result.current.handleStartStopPulse()) // resume
+    expect(result.current.isPaused).toBe(false)
+    // phaseStartedAt shifts backward on resume so elapsed time is preserved
+    expect(result.current.phaseStartedAt).toBeLessThanOrEqual(startedAt)
+  })
 })
