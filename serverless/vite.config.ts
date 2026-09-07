@@ -14,7 +14,13 @@ const viteConfig = {
     clearMocks: true,
     setupFiles: ['dotenv/config'],
     environment: 'node',
-    exclude: [...configDefaults.exclude, 'client', 'e2e', '.claude'],
+    exclude: [
+      ...configDefaults.exclude,
+      'client',
+      'e2e',
+      '.claude',
+      'redirects.config.test.ts',
+    ],
     coverage: {
       provider: 'v8',
       include: ['serverless/**/*'],

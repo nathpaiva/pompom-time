@@ -8,3 +8,12 @@
   functions = "serverless/functions"
   targetPort = 4201
   port = 4200
+
+# SPA fallback: the app uses client-side routing (createBrowserRouter), so any
+# unknown path must serve index.html. Without this, a hard reload of a route
+# like /admin/workout returns Netlify's own 404. See issue #112.
+# Real files and functions (/.netlify/functions/*) are matched before this rule.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
