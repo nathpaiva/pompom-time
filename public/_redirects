@@ -1,0 +1,11 @@
+# SPA fallback: the app uses client-side routing (createBrowserRouter), so any
+# unknown path must serve index.html. Without this, a hard reload of a route
+# like /admin/workout returns Netlify's own 404. See issue #112.
+#
+# This lives here, not in netlify.toml, on purpose: a netlify.toml
+# [[redirects]] block also applies to `netlify dev` in proxy mode (the normal
+# `yarn dev` workflow), where it intercepts every Vite module request too and
+# breaks the whole app. This file only takes effect once `vite build` copies
+# it into dist/, which is exactly where the SPA fallback is needed. See
+# issue #118.
+/*    /index.html   200
