@@ -9,11 +9,6 @@
   targetPort = 4201
   port = 4200
 
-# SPA fallback: the app uses client-side routing (createBrowserRouter), so any
-# unknown path must serve index.html. Without this, a hard reload of a route
-# like /admin/workout returns Netlify's own 404. See issue #112.
-# Real files and functions (/.netlify/functions/*) are matched before this rule.
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# The SPA fallback redirect lives in public/_redirects, not here. See #118:
+# a [[redirects]] block here also applies to `netlify dev` in proxy mode and
+# breaks every Vite module request.
