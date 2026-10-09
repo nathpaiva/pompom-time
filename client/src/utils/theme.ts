@@ -68,6 +68,10 @@ export const customVariant = extendTheme({
   },
   styles: {
     global: {
+      body: {
+        bg: 'pompom.bg',
+        color: 'pompom.text',
+      },
       main: {
         maxWidth: 'xl',
         margin: 'auto',
