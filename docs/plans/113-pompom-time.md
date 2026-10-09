@@ -9,7 +9,36 @@ Worktree: `.claude/worktrees/fix-113-pompom-time-dark-mode`
 
 | # | Branch | Branched from | Carries | Status |
 |---|--------|---------------|---------|--------|
-| 1 | `fix/113-pompom-time-dark-mode` | `main` | Everything | in progress |
+| 1 | `fix/113-pompom-time-dark-mode` | `main` | Everything | done |
+
+### What shipped on branch 1
+
+Followed the plan: `main.tsx` got `ColorModeScript` + a `colorModeManager` that
+always returns `light` and ignores writes, `theme.ts` got `styles.global.body`
+with `pompom.bg` / `pompom.text`. `e2e/color-mode.spec.ts` was written exactly
+as planned.
+
+Two deviations from the plan, both environment, not code:
+
+- **Merged `main` mid-branch.** This branch was created before #118 existed.
+  While writing the e2e spec, `yarn dev` broke in a way unrelated to this
+  fix — turned out to be the #112 `netlify.toml` redirect breaking the dev
+  proxy (see issue #118, fixed and merged separately as PR #119). Merged
+  `origin/main` into this branch afterward to pick up that fix before
+  continuing.
+- **e2e not run.** After the #118 merge, `yarn dev` / `yarn ntl dev` could not
+  stay up in this environment: Netlify's internal functions-serve relay
+  repeatedly failed to bind on a freshly-freed random port
+  ("Port N is already in use"), a known `netlify-cli` race between picking a
+  port and binding it. Confirmed clean each time (no listener on the port a
+  moment before), restarted OrbStack, still failed — 5 attempts total. Not
+  something fixable from the app code. `e2e/color-mode.spec.ts` is in the repo
+  and matches the plan, but is **not locally verified**. `yarn test` (91
+  passing) and `yarn lint` (clean) are what actually ran.
+
+Needs a manual check once `yarn dev` is stable in this environment again:
+open `/login` and `/admin/workout` with `chakra-ui-color-mode` preset to
+`dark` in `localStorage`, confirm the cream background.
 
 ## Context
 
