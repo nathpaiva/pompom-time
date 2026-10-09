@@ -9,7 +9,7 @@ Worktree: `.claude/worktrees/fix-113-pompom-time-dark-mode`
 
 | # | Branch | Branched from | Carries | Status |
 |---|--------|---------------|---------|--------|
-| 1 | `fix/113-pompom-time-dark-mode` | `main` | Everything | done |
+| 1 | `fix/113-pompom-time-dark-mode` | `main` | Everything | done — PR #120 |
 
 ### What shipped on branch 1
 
